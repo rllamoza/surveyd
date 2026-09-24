@@ -27,8 +27,26 @@ if ($method === 'POST') {
     $depCod = substr($ubigeoCompleto, 0, 2);
     $provCod = substr($ubigeoCompleto, 0, 4);
 
-    $satisfaccion = (int)($respuestas['calificacion'] ?? ($respuestas['pregunta_4'] ?? 5));
-    $nps = (int)($respuestas['escala_nps'] ?? ($respuestas['pregunta_5'] ?? 9));
+    // Detectar si la encuesta realmente contiene preguntas de calificación o NPS
+    $satisfaccion = null;
+    $nps = null;
+
+    if ($pdo) {
+        $pregStmt = $pdo->prepare("SELECT id, tipo FROM preguntas WHERE encuesta_id = :eid");
+        $pregStmt->execute([':eid' => $encuestaId]);
+        $pregMap = $pregStmt->fetchAll(PDO::FETCH_KEY_PAIR); // id => tipo
+
+        foreach ($respuestas as $k => $v) {
+            $pid = (int)str_replace('q_', '', (string)$k);
+            if (isset($pregMap[$pid])) {
+                if ($pregMap[$pid] === 'calificacion' && is_numeric($v)) {
+                    $satisfaccion = (int)$v;
+                } elseif ($pregMap[$pid] === 'escala_nps' && is_numeric($v)) {
+                    $nps = (int)$v;
+                }
+            }
+        }
+    }
 
     if ($pdo) {
         try {

@@ -86,6 +86,14 @@ if (!empty($preguntas)) {
     }
 }
 
+// 4.1 Verificar si la encuesta incluye preguntas específicas de Calificación o NPS
+$tieneCalificacion = false;
+$tieneNps = false;
+foreach ($preguntas as $p) {
+    if ($p['tipo'] === 'calificacion') $tieneCalificacion = true;
+    if ($p['tipo'] === 'escala_nps') $tieneNps = true;
+}
+
 // 5. Obtener todas las respuestas cabecera de la encuesta
 $stmtResp = $pdo->prepare("SELECT * FROM respuestas_encuesta 
                            WHERE encuesta_id = :eid 
@@ -214,9 +222,9 @@ echo "\xEF\xBB\xBF";
             <th>Provincia</th>
             <th>Distrito</th>
             <th>Código UBIGEO</th>
-            <th>Tiempo (seg)</th>
-            <th>Satisfacción (1-5)</th>
-            <th>NPS (0-10)</th>
+            <th>Tiempo de Respuesta (seg)</th>
+            <?php if ($tieneCalificacion): ?><th>Satisfacción (1-5)</th><?php endif; ?>
+            <?php if ($tieneNps): ?><th>NPS (0-10)</th><?php endif; ?>
 
             <!-- Una columna por cada pregunta de la encuesta con su nombre/enunciado -->
             <?php foreach ($preguntas as $idx => $p): ?>
@@ -230,7 +238,7 @@ echo "\xEF\xBB\xBF";
     <tbody>
         <?php if (empty($respuestas)): ?>
             <tr>
-                <td colspan="<?= 10 + count($preguntas) ?>" class="text-center" style="padding: 20px; color: #6b7280;">
+                <td colspan="<?= 8 + ($tieneCalificacion ? 1 : 0) + ($tieneNps ? 1 : 0) + count($preguntas) ?>" class="text-center" style="padding: 20px; color: #6b7280;">
                     <em>No hay respuestas registradas aún para esta encuesta.</em>
                 </td>
             </tr>
@@ -249,8 +257,8 @@ echo "\xEF\xBB\xBF";
                     <td><?= htmlspecialchars($r['distrito_nombre'] ?? '-') ?></td>
                     <td class="text-center" style="font-family: Consolas, monospace;"><?= htmlspecialchars($r['ubigeo_completo'] ?? '-') ?></td>
                     <td class="text-right"><?= (int)$r['tiempo_llenado_segundos'] ?> s</td>
-                    <td class="badge-sat"><?= $r['satisfaccion'] ? $r['satisfaccion'] . ' ★' : '-' ?></td>
-                    <td class="badge-nps"><?= $r['nps'] !== null ? $r['nps'] : '-' ?></td>
+                    <?php if ($tieneCalificacion): ?><td class="badge-sat"><?= $r['satisfaccion'] ? $r['satisfaccion'] . ' ★' : '-' ?></td><?php endif; ?>
+                    <?php if ($tieneNps): ?><td class="badge-nps"><?= $r['nps'] !== null ? $r['nps'] : '-' ?></td><?php endif; ?>
 
                     <!-- Celdas para cada una de las preguntas -->
                     <?php foreach ($preguntas as $p): 
