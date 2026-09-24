@@ -67,11 +67,19 @@ if ($method === 'POST') {
                 foreach ($respuestas as $key => $val) {
                     $valTexto = is_string($val) ? $val : null;
                     $valNum = is_numeric($val) ? (float)$val : null;
-                    $opcJson = is_array($val) ? json_encode($val) : null;
+                    $opcJson = is_array($val) ? json_encode($val, JSON_UNESCAPED_UNICODE) : null;
+                    
+                    // Extraer ID real de la pregunta
+                    $pidClean = str_replace('q_', '', (string)$key);
+                    $preguntaId = is_numeric($pidClean) ? (int)$pidClean : 0;
+                    if ($preguntaId <= 0) {
+                        // Fallback si la clave era numérica directa
+                        $preguntaId = is_numeric($key) ? (int)$key : 1;
+                    }
                     
                     $detStmt->execute([
                         ':rid' => $respuestaId,
-                        ':pid' => 1,
+                        ':pid' => $preguntaId,
                         ':vt' => $valTexto,
                         ':vn' => $valNum,
                         ':opt' => $opcJson

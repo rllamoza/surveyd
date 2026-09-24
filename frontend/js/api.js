@@ -476,10 +476,22 @@ const API = (() => {
         tiempo_estimado_min: 4,
         total_pasos: payload.preguntas ? payload.preguntas.length : 3,
         preguntas: payload.preguntas || [],
-        created_at: new Date().toISOString().replace('T', ' ').slice(0, 19)
-      };
+        };
       localStore.encuestas.unshift(nueva);
       return { encuesta: nueva, preguntas_importadas: nueva.total_pasos };
+    },
+
+    // --- EXPORTAR EXCEL ---
+    getBaseUrl() {
+      return BASE_URL;
+    },
+
+    getExportExcelUrl(encuestaId, usuarioId = null) {
+      const params = new URLSearchParams();
+      if (encuestaId) params.append('encuesta_id', encuestaId);
+      if (usuarioId) params.append('usuario_id', usuarioId);
+      const q = params.toString();
+      return `${BASE_URL}/export_excel.php${q ? '?' + q : ''}`;
     }
   };
 })();

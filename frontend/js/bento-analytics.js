@@ -705,49 +705,33 @@ const BentoAnalytics = (() => {
 
     btnExport.dataset.bound = 'true';
     btnExport.addEventListener('click', () => {
-      if (!analyticsData) return;
+      const currentUser = App.getCurrentUser ? App.getCurrentUser() : null;
+      const userId = currentUser ? currentUser.id : null;
+      const surveyId = currentSurveyId || (analyticsData && analyticsData.encuesta_seleccionada ? analyticsData.encuesta_seleccionada.id : null);
 
-      const surveyName = analyticsData.encuesta_seleccionada 
-        ? analyticsData.encuesta_seleccionada.titulo.replace(/[^a-zA-Z0-9]/g, '_')
-        : 'General';
-
-      const csvRows = [
-        ['--- REPORTE ANALITICO DE ENCUESTA ---'],
-        ['Encuesta', analyticsData.encuesta_seleccionada?.titulo || 'Todas'],
-        ['Codigo', analyticsData.encuesta_seleccionada?.codigo || 'N/A'],
-        ['Total Respuestas', analyticsData.kpis?.total_respuestas || 0],
-        ['Completitud', `${analyticsData.kpis?.tasa_completitud || 0}%`],
-        ['Tiempo Promedio', `${analyticsData.kpis?.tiempo_promedio_min || 0} min`],
-        ['NPS Score', analyticsData.kpis?.nps_score || 0],
-        [],
-        ['--- DISTRIBUCION GEOGRAFICA ---'],
-        ['Departamento', 'Respuestas', 'Porcentaje'],
-        ...analyticsData.geo_distribucion.map(g => [g.departamento, g.respuestas, `${g.porcentaje}%`]),
-        [],
-        ['--- ANALISIS DE PREGUNTAS Y OPCIONES ---'],
-        ['Pregunta Orden', 'Tipo Grafico', 'Enunciado', 'Alternativa / Metrica', 'Respuestas / Conteo', 'Porcentaje']
-      ];
-
-      if (analyticsData.preguntas_metricas) {
-        analyticsData.preguntas_metricas.forEach(p => {
-          if (p.opciones && p.opciones.length > 0) {
-            p.opciones.forEach(opc => {
-              csvRows.push([`P${p.orden}`, p.grafico_tipo, `"${p.enunciado.replace(/"/g, '""')}"`, `"${opc.etiqueta.replace(/"/g, '""')}"`, opc.conteo, `${opc.porcentaje}%`]);
-            });
-          }
-        });
+      if (!surveyId) {
+        App.showToast('Seleccione una encuesta para exportar sus microdatos', 'warning');
+        return;
       }
 
-      const csvContent = 'data:text/csv;charset=utf-8,' + csvRows.map(e => e.join(',')).join('\n');
-      const encodedUri = encodeURI(csvContent);
+      const surveyName = analyticsData && analyticsData.encuesta_seleccionada 
+        ? analyticsData.encuesta_seleccionada.titulo 
+        : `Encuesta #${surveyId}`;
+
+      App.showToast(`Generando tabla detallada en Excel para "${surveyName}"...`, 'info');
+
+      // Invocar endpoint de descarga oficial de Excel
+      const exportUrl = API.getExportExcelUrl 
+        ? API.getExportExcelUrl(surveyId, userId)
+        : `../backend/api/export_excel.php?encuesta_id=${surveyId}${userId ? '&usuario_id=' + userId : ''}`;
+
       const link = document.createElement('a');
-      link.setAttribute('href', encodedUri);
-      link.setAttribute('download', `OmniPoll_Analytics_${surveyName}_${Date.now()}.csv`);
+      link.href = exportUrl;
+      link.setAttribute('download', '');
+      link.style.display = 'none';
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-
-      App.showToast(`Informe de "${analyticsData.encuesta_seleccionada?.titulo || 'Encuesta'}" exportado a CSV`, 'success');
+      setTimeout(() => document.body.removeChild(link), 1000);
     });
   };
 
