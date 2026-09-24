@@ -141,19 +141,20 @@
   <header class="sticky top-0 z-40 w-full backdrop-blur-xl bg-surface/75 border-b border-glass-card-border px-4 sm:px-6 py-3 transition-colors">
     <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
       
-      <!-- Logotipo Minimalista OmniPoll -->
-      <a href="index.html" class="flex items-center gap-2.5 group">
-        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 p-[1px] shadow-sm group-hover:scale-105 transition-transform">
-          <div class="h-full w-full bg-slate-950/80 rounded-[10px] flex items-center justify-center backdrop-blur-md">
-            <span class="material-symbols-outlined text-primary text-lg">poll</span>
+      <!-- Logotipo de la Encuesta / OmniPoll -->
+      <a href="index.html" class="flex items-center gap-2.5 group" id="public-header-brand-link">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 p-[1.5px] shadow-sm group-hover:scale-105 transition-transform overflow-hidden flex items-center justify-center shrink-0" id="public-header-logo-box">
+          <img id="public-header-custom-logo" src="" alt="Logo" class="h-full w-full object-contain rounded-[10px] hidden bg-white/10 p-0.5"/>
+          <div id="public-header-default-icon" class="h-full w-full bg-slate-950/80 rounded-[10px] flex items-center justify-center backdrop-blur-md">
+            <span class="material-symbols-outlined text-primary text-xl">poll</span>
           </div>
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col min-w-0">
           <div class="flex items-center gap-1.5">
-            <span class="font-headline font-extrabold text-base tracking-tight text-on-surface">Omni<span class="text-primary font-black">Poll</span></span>
-            <span class="badge badge-approved text-[9px] uppercase py-0.5 px-1.5 font-bold">Oficial</span>
+            <span class="font-headline font-extrabold text-base tracking-tight text-on-surface truncate" id="public-header-brand-title">Omni<span class="text-primary font-black">Poll</span></span>
+            <span class="badge badge-approved text-[9px] uppercase py-0.5 px-1.5 font-bold shrink-0" id="public-header-brand-badge">Oficial</span>
           </div>
-          <span class="font-mono text-[9px] text-on-surface-variant font-medium">Participación Ciudadana</span>
+          <span class="font-mono text-[9px] text-on-surface-variant font-medium truncate" id="public-header-brand-subtitle">Participación Ciudadana</span>
         </div>
       </a>
 
@@ -359,8 +360,8 @@
 
         <div>
           <span class="badge badge-approved text-xs uppercase mb-2 font-bold">RESPUESTA REGISTRADA EN MYSQL</span>
-          <h2 class="font-headline text-2xl sm:text-3xl font-extrabold text-on-surface">¡Muchas Gracias por su Participación!</h2>
-          <p class="text-sm text-on-surface-variant mt-2 max-w-lg mx-auto leading-relaxed">
+          <h2 class="font-headline text-2xl sm:text-3xl font-extrabold text-on-surface" id="public-survey-success-title">¡Muchas Gracias por su Participación!</h2>
+          <p class="text-sm text-on-surface-variant mt-2 max-w-lg mx-auto leading-relaxed" id="public-survey-success-desc">
             Sus respuestas han sido cifradas y almacenadas exitosamente en la base de datos oficial. No tiene más preguntas pendientes por responder.
           </p>
         </div>

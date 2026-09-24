@@ -52,6 +52,129 @@ const SurveyBuilder = (() => {
   };
 
   /**
+   * Obtener objeto de Branding del formulario
+   */
+  const getBrandingData = () => {
+    const primaryInput = document.getElementById('branding-color-primary');
+    const secondaryInput = document.getElementById('branding-color-secondary');
+    const fontInput = document.getElementById('branding-font-family');
+    const logoInput = document.getElementById('branding-logo-url');
+    const titleInput = document.getElementById('branding-public-title');
+    const subInput = document.getElementById('branding-public-subtitle');
+    const welcomeInput = document.getElementById('branding-welcome-msg');
+    const thanksInput = document.getElementById('branding-thanks-msg');
+
+    return {
+      primary_color: primaryInput ? primaryInput.value : '#00F2FE',
+      secondary_color: secondaryInput ? secondaryInput.value : '#8B5CF6',
+      font_family: fontInput ? fontInput.value : 'Plus Jakarta Sans',
+      logo_url: logoInput ? logoInput.value.trim() : '',
+      public_title: titleInput ? titleInput.value.trim() : '',
+      public_subtitle: subInput ? subInput.value.trim() : '',
+      welcome_message: welcomeInput ? welcomeInput.value.trim() : '',
+      thank_you_message: thanksInput ? thanksInput.value.trim() : ''
+    };
+  };
+
+  /**
+   * Cargar datos de Branding en el formulario
+   */
+  const setBrandingData = (b) => {
+    const data = b || {};
+    const primaryInput = document.getElementById('branding-color-primary');
+    const secondaryInput = document.getElementById('branding-color-secondary');
+    const fontInput = document.getElementById('branding-font-family');
+    const logoInput = document.getElementById('branding-logo-url');
+    const titleInput = document.getElementById('branding-public-title');
+    const subInput = document.getElementById('branding-public-subtitle');
+    const welcomeInput = document.getElementById('branding-welcome-msg');
+    const thanksInput = document.getElementById('branding-thanks-msg');
+    const labelPrimary = document.getElementById('label-primary-color');
+    const labelSecondary = document.getElementById('label-secondary-color');
+
+    const prim = data.primary_color || '#00F2FE';
+    const sec = data.secondary_color || '#8B5CF6';
+
+    if (primaryInput) primaryInput.value = prim;
+    if (secondaryInput) secondaryInput.value = sec;
+    if (labelPrimary) labelPrimary.textContent = prim;
+    if (labelSecondary) labelSecondary.textContent = sec;
+    if (fontInput) fontInput.value = data.font_family || 'Plus Jakarta Sans';
+    if (logoInput) logoInput.value = data.logo_url || '';
+    if (titleInput) titleInput.value = data.public_title || '';
+    if (subInput) subInput.value = data.public_subtitle || '';
+    if (welcomeInput) welcomeInput.value = data.welcome_message || '';
+    if (thanksInput) thanksInput.value = data.thank_you_message || '';
+
+    updateLivePreview();
+  };
+
+  /**
+   * Cambiar color de branding desde un selector o preset
+   */
+  const setBrandingColor = (type, hex) => {
+    if (type === 'primary') {
+      const el = document.getElementById('branding-color-primary');
+      const label = document.getElementById('label-primary-color');
+      if (el) el.value = hex;
+      if (label) label.textContent = hex;
+    } else if (type === 'secondary') {
+      const el = document.getElementById('branding-color-secondary');
+      const label = document.getElementById('label-secondary-color');
+      if (el) el.value = hex;
+      if (label) label.textContent = hex;
+    }
+    updateLivePreview();
+  };
+
+  /**
+   * Seleccionar preset de logo
+   */
+  const setLogoPreset = (url) => {
+    const el = document.getElementById('branding-logo-url');
+    if (el) el.value = url;
+    updateLivePreview();
+  };
+
+  /**
+   * Actualizar mini vista previa de branding en tiempo real
+   */
+  const updateLivePreview = () => {
+    const data = getBrandingData();
+    const previewBox = document.getElementById('branding-live-preview-box');
+    const previewTitle = document.getElementById('preview-title');
+    const previewSubtitle = document.getElementById('preview-subtitle');
+    const previewBtn = document.getElementById('preview-btn');
+    const previewLogoIcon = document.getElementById('preview-logo-icon');
+    const previewLogoImg = document.getElementById('preview-logo-img');
+
+    if (previewBox) {
+      previewBox.style.fontFamily = `'${data.font_family}', sans-serif`;
+    }
+    if (previewTitle) {
+      previewTitle.textContent = data.public_title || (document.getElementById('survey-title-input')?.value || 'Título de la Encuesta');
+    }
+    if (previewSubtitle) {
+      previewSubtitle.textContent = data.public_subtitle || (document.getElementById('survey-cat-input')?.value || 'Subtítulo u Organización');
+    }
+    if (previewBtn) {
+      previewBtn.style.backgroundColor = data.primary_color;
+      previewBtn.style.color = '#0b132b';
+    }
+    if (previewLogoImg && previewLogoIcon) {
+      if (data.logo_url) {
+        previewLogoImg.src = data.logo_url;
+        previewLogoImg.classList.remove('hidden');
+        previewLogoIcon.classList.add('hidden');
+      } else {
+        previewLogoImg.classList.add('hidden');
+        previewLogoIcon.classList.remove('hidden');
+        previewLogoIcon.style.color = data.primary_color;
+      }
+    }
+  };
+
+  /**
    * Resetear a Nueva Encuesta en Blanco
    */
   const createNewSurvey = (notify = true) => {
@@ -64,6 +187,8 @@ const SurveyBuilder = (() => {
     const modeBadge = document.getElementById('builder-mode-badge');
     const modeLabel = document.getElementById('builder-mode-label');
     const selector = document.getElementById('builder-survey-selector');
+    const btnViewPublic = document.getElementById('btn-builder-view-public');
+    const btnViewPublicQuick = document.getElementById('btn-builder-view-public-quick');
 
     if (titleInput) titleInput.value = '';
     if (catInput) catInput.value = '';
@@ -78,6 +203,21 @@ const SurveyBuilder = (() => {
     if (selector && selector.value !== 'new') {
       selector.value = 'new';
     }
+
+    // Ocultar botones de ver encuesta porque es nueva
+    if (btnViewPublic) {
+      btnViewPublic.classList.add('hidden');
+      btnViewPublic.classList.remove('flex');
+      btnViewPublic.href = '#';
+    }
+    if (btnViewPublicQuick) {
+      btnViewPublicQuick.classList.add('hidden');
+      btnViewPublicQuick.classList.remove('flex');
+      btnViewPublicQuick.href = '#';
+    }
+
+    // Resetear branding a valores estándar
+    setBrandingData({});
 
     renderQuestionsList();
     if (notify && typeof App !== 'undefined' && App.showToast) {
@@ -109,6 +249,8 @@ const SurveyBuilder = (() => {
       const modeBadge = document.getElementById('builder-mode-badge');
       const modeLabel = document.getElementById('builder-mode-label');
       const selector = document.getElementById('builder-survey-selector');
+      const btnViewPublic = document.getElementById('btn-builder-view-public');
+      const btnViewPublicQuick = document.getElementById('btn-builder-view-public-quick');
 
       if (titleInput) titleInput.value = survey.titulo || '';
       if (catInput) catInput.value = survey.categoria || '';
@@ -121,6 +263,24 @@ const SurveyBuilder = (() => {
         modeLabel.textContent = `📝 Editando: ${survey.codigo || ''} - ${survey.titulo}`;
       }
       if (selector) selector.value = survey.id;
+
+      // Habilitar y vincular botones permanentes para ver encuesta pública
+      const surveyCode = survey.codigo || survey.id;
+      const publicUrl = `encuesta.html?id=${encodeURIComponent(surveyCode)}`;
+
+      if (btnViewPublic) {
+        btnViewPublic.href = publicUrl;
+        btnViewPublic.classList.remove('hidden');
+        btnViewPublic.classList.add('flex');
+      }
+      if (btnViewPublicQuick) {
+        btnViewPublicQuick.href = publicUrl;
+        btnViewPublicQuick.classList.remove('hidden');
+        btnViewPublicQuick.classList.add('flex');
+      }
+
+      // Cargar Branding exclusivo
+      setBrandingData(survey.branding || {});
 
       // Adaptar preguntas del backend
       questions = (survey.preguntas || []).map((p, idx) => ({
@@ -744,7 +904,8 @@ const SurveyBuilder = (() => {
           norma_tecnica: norma,
           estado: 'pendiente',
           publicar: false,
-          preguntas: questions
+          preguntas: questions,
+          branding: getBrandingData()
         };
 
         const res = await API.createEncuesta(payload);
@@ -759,6 +920,21 @@ const SurveyBuilder = (() => {
           await refreshSurveySelector();
           const selector = document.getElementById('builder-survey-selector');
           if (selector) selector.value = res.id;
+
+          const btnViewPublic = document.getElementById('btn-builder-view-public');
+          const btnViewPublicQuick = document.getElementById('btn-builder-view-public-quick');
+          const code = res.codigo || res.id;
+          const publicUrl = `encuesta.html?id=${encodeURIComponent(code)}`;
+          if (btnViewPublic) {
+            btnViewPublic.href = publicUrl;
+            btnViewPublic.classList.remove('hidden');
+            btnViewPublic.classList.add('flex');
+          }
+          if (btnViewPublicQuick) {
+            btnViewPublicQuick.href = publicUrl;
+            btnViewPublicQuick.classList.remove('hidden');
+            btnViewPublicQuick.classList.add('flex');
+          }
         }
 
         App.showToast(`Borrador "${title}" guardado en MySQL con éxito`, 'success');
@@ -811,7 +987,8 @@ const SurveyBuilder = (() => {
           norma_tecnica: norma,
           estado: 'aprobada',
           publicar: true,
-          preguntas: questions
+          preguntas: questions,
+          branding: getBrandingData()
         };
 
         const res = await API.createEncuesta(payload);
@@ -839,6 +1016,21 @@ const SurveyBuilder = (() => {
         if (urlInput) urlInput.value = fullPublicUrl;
         if (openBtn) openBtn.href = fullPublicUrl;
 
+        // Actualizar botones de ver encuesta en el constructor
+        const btnViewPublic = document.getElementById('btn-builder-view-public');
+        const btnViewPublicQuick = document.getElementById('btn-builder-view-public-quick');
+        if (btnViewPublic) {
+          btnViewPublic.href = fullPublicUrl;
+          btnViewPublic.classList.remove('hidden');
+          btnViewPublic.classList.add('flex');
+        }
+        if (btnViewPublicQuick) {
+          btnViewPublicQuick.href = fullPublicUrl;
+          btnViewPublicQuick.classList.remove('hidden');
+          btnViewPublicQuick.classList.add('flex');
+        }
+
+        if (res && res.id) editingSurveyId = res.id;
         await refreshSurveySelector();
 
         // Abrir modal conmemorativo
@@ -862,6 +1054,50 @@ const SurveyBuilder = (() => {
     ['btn-publish-survey', 'btn-publish-survey-bottom'].forEach(id => {
       const b = document.getElementById(id);
       if (b) b.addEventListener('click', handlePublishSurvey);
+    });
+
+    // Guardar Branding Exclusivo de la Encuesta
+    const btnSaveBranding = document.getElementById('btn-save-survey-branding');
+    if (btnSaveBranding) {
+      btnSaveBranding.addEventListener('click', async () => {
+        if (!editingSurveyId) {
+          App.showToast('Primero guarde el borrador o cargue una encuesta existente para guardar su branding', 'info');
+          return;
+        }
+
+        const branding = getBrandingData();
+        btnSaveBranding.disabled = true;
+        btnSaveBranding.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">autorenew</span> Guardando...';
+
+        try {
+          await API.updateBranding(editingSurveyId, branding);
+          btnSaveBranding.disabled = false;
+          btnSaveBranding.innerHTML = '<span class="material-symbols-outlined text-base">palette</span><span>Guardar Branding de esta Encuesta</span>';
+          App.showToast('¡Branding exclusivo de la encuesta guardado correctamente!', 'success');
+        } catch (err) {
+          btnSaveBranding.disabled = false;
+          btnSaveBranding.innerHTML = '<span class="material-symbols-outlined text-base">palette</span><span>Guardar Branding de esta Encuesta</span>';
+          App.showToast('Error al guardar el branding de la encuesta', 'error');
+        }
+      });
+    }
+
+    // Escuchadores en vivo para la vista previa del branding
+    ['branding-color-primary', 'branding-color-secondary', 'branding-font-family', 'branding-logo-url', 'branding-public-title', 'branding-public-subtitle', 'survey-title-input', 'survey-cat-input'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', () => {
+          if (id === 'branding-color-primary') {
+            const lbl = document.getElementById('label-primary-color');
+            if (lbl) lbl.textContent = el.value;
+          }
+          if (id === 'branding-color-secondary') {
+            const lbl = document.getElementById('label-secondary-color');
+            if (lbl) lbl.textContent = el.value;
+          }
+          updateLivePreview();
+        });
+      }
     });
 
     // Copiar Enlace Funcional
@@ -901,6 +1137,11 @@ const SurveyBuilder = (() => {
     createNewSurvey,
     loadSurveyForEdit,
     refreshSurveySelector,
+    getBrandingData,
+    setBrandingData,
+    setBrandingColor,
+    setLogoPreset,
+    updateLivePreview,
     toggleRequired,
     changeQuestionType,
     updateQuestionText,

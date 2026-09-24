@@ -79,6 +79,7 @@ CREATE TABLE `encuestas` (
   `creador_id` INT NULL,
   `resolucion_aprobacion` VARCHAR(100) NULL,
   `motivo_rechazo` TEXT NULL,
+  `branding_json` JSON NULL,
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (`creador_id`) REFERENCES `usuarios`(`id`) ON DELETE SET NULL,

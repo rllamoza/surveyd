@@ -54,6 +54,13 @@ if ($method === 'GET') {
                         $opcStmt->execute([':pid' => $preg['id']]);
                         $preg['opciones'] = $opcStmt->fetchAll();
                     }
+                    if (!empty($encuesta['branding_json'])) {
+                        $encuesta['branding'] = is_string($encuesta['branding_json']) 
+                            ? json_decode($encuesta['branding_json'], true) 
+                            : $encuesta['branding_json'];
+                    } else {
+                        $encuesta['branding'] = null;
+                    }
                     $encuesta['preguntas'] = $preguntas;
                     sendResponse($encuesta);
                 } else {
@@ -107,9 +114,27 @@ function generarCodigoOficial($titulo, $id) {
     return $letters . sprintf('%03d', (int)$id);
 }
 
-// --- POST: Crear nueva encuesta (desde Constructor o Excel) en MySQL ---
+// --- POST: Crear nueva encuesta o actualizar branding en MySQL ---
 if ($method === 'POST') {
     $body = getRequestBody();
+
+    // Acción rápida para actualizar el branding exclusivo de una encuesta
+    if (isset($_GET['action']) && $_GET['action'] === 'update_branding') {
+        $surveyId = (int)($body['encuesta_id'] ?? ($body['id'] ?? ($id ?? 0)));
+        if (!$surveyId) {
+            sendError('ID de encuesta no proporcionado', 400);
+        }
+        $branding = $body['branding'] ?? [];
+        $brandingJson = json_encode($branding, JSON_UNESCAPED_UNICODE);
+
+        if ($pdo) {
+            $stmt = $pdo->prepare("UPDATE encuestas SET branding_json = :br WHERE id = :id");
+            $stmt->execute([':br' => $brandingJson, ':id' => $surveyId]);
+            sendResponse(['id' => $surveyId, 'branding' => $branding], 200, 'Personalización de branding guardada exitosamente');
+            exit;
+        }
+        sendError('Error de base de datos', 500);
+    }
 
     if (empty($body['titulo'])) {
         sendError('El título de la encuesta es obligatorio', 400);
@@ -123,6 +148,7 @@ if ($method === 'POST') {
     $estado = $esPublicada ? 'aprobada' : ($body['estado'] ?? 'pendiente');
     $preguntas = $body['preguntas'] ?? [];
     $totalPasos = count($preguntas) > 0 ? count($preguntas) : 4;
+    $brandingJson = !empty($body['branding']) ? json_encode($body['branding'], JSON_UNESCAPED_UNICODE) : null;
 
     if ($pdo) {
         try {
@@ -132,8 +158,8 @@ if ($method === 'POST') {
             $tempCodigo = 'TEMP-' . bin2hex(random_bytes(6));
 
             $stmt = $pdo->prepare("INSERT INTO encuestas 
-                (codigo, titulo, descripcion, norma_tecnica, categoria, version, estado, tiempo_estimado_min, total_pasos, creador_id) 
-                VALUES (:cod, :tit, :des, :nor, :cat, 'v1.0', :est, :tmp, :pas, 1)");
+                (codigo, titulo, descripcion, norma_tecnica, categoria, version, estado, tiempo_estimado_min, total_pasos, creador_id, branding_json) 
+                VALUES (:cod, :tit, :des, :nor, :cat, 'v1.0', :est, :tmp, :pas, 1, :brn)");
             $stmt->execute([
                 ':cod' => $tempCodigo,
                 ':tit' => $titulo,
@@ -142,7 +168,8 @@ if ($method === 'POST') {
                 ':cat' => $categoria,
                 ':est' => $estado,
                 ':tmp' => max(3, (int)ceil($totalPasos * 0.8)),
-                ':pas' => $totalPasos
+                ':pas' => $totalPasos,
+                ':brn' => $brandingJson
             ]);
 
             $nuevaEncuestaId = (int)$pdo->lastInsertId();

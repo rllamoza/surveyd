@@ -97,6 +97,9 @@ const PublicSurvey = (() => {
       document.getElementById('public-survey-time').textContent = `~ ${surveyData.tiempo_estimado_min || 4} min`;
       document.title = `${surveyData.titulo} - OmniPoll Oficial`;
 
+      // Aplicar personalización de colores, branding, logos y tipografía exclusiva de esta encuesta
+      applySurveyBranding(surveyData.branding);
+
       // Verificar si la encuesta contiene pregunta de UBIGEO
       const hasUbigeoQ = (surveyData.preguntas || []).some(q => q.tipo === 'ubigeo_cascada');
       const topUbigeoSec = document.getElementById('section-ubigeo');
@@ -121,6 +124,82 @@ const PublicSurvey = (() => {
         errorEl.classList.remove('hidden');
         document.getElementById('survey-error-desc').textContent = `No se pudo encontrar ninguna encuesta activa con el código "${idOrCode}". Verifique la dirección o contacte al administrador.`;
       }
+    }
+  };
+
+  /**
+   * Aplicar personalización y branding exclusivo de la encuesta
+   */
+  const applySurveyBranding = (branding) => {
+    if (!branding || typeof branding !== 'object') return;
+
+    // 1. Colores personalizados
+    const primaryColor = branding.primary_color || branding.color_primario;
+    const secondaryColor = branding.secondary_color || branding.color_secundario;
+    const bgColor = branding.bg_color || branding.color_fondo;
+
+    if (primaryColor) {
+      document.documentElement.style.setProperty('--primary', primaryColor);
+      document.documentElement.style.setProperty('--primary-container', primaryColor);
+      document.documentElement.style.setProperty('--primary-hover', primaryColor);
+      document.documentElement.style.setProperty('--primary-fixed-dim', primaryColor);
+    }
+    if (secondaryColor) {
+      document.documentElement.style.setProperty('--secondary', secondaryColor);
+      document.documentElement.style.setProperty('--secondary-container', secondaryColor);
+    }
+    if (bgColor) {
+      document.documentElement.style.setProperty('--surface', bgColor);
+      document.body.style.backgroundColor = bgColor;
+    }
+
+    // 2. Tipografía (Google Font dinámico)
+    const fontFamily = branding.font_family || branding.fuente_familia;
+    if (fontFamily && fontFamily !== 'Default') {
+      const fontUrl = fontFamily.replace(/\s+/g, '+');
+      const fontLink = document.createElement('link');
+      fontLink.rel = 'stylesheet';
+      fontLink.href = `https://fonts.googleapis.com/css2?family=${fontUrl}:wght@300;400;500;600;700;800&display=swap`;
+      document.head.appendChild(fontLink);
+      document.body.style.fontFamily = `"${fontFamily}", sans-serif`;
+      document.documentElement.style.fontFamily = `"${fontFamily}", sans-serif`;
+    }
+
+    // 3. Logotipo de la encuesta
+    const customLogoImg = document.getElementById('public-header-custom-logo');
+    const defaultLogoIcon = document.getElementById('public-header-default-icon');
+    if (branding.logo_url && customLogoImg) {
+      customLogoImg.src = branding.logo_url;
+      customLogoImg.classList.remove('hidden');
+      if (defaultLogoIcon) defaultLogoIcon.classList.add('hidden');
+    }
+
+    // 4. Título, subtítulo y textos presentados
+    const pubTitle = branding.public_title || branding.titulo_publico;
+    const pubSubtitle = branding.public_subtitle || branding.subtitulo_publico;
+    const welcomeMsg = branding.welcome_message || branding.mensaje_bienvenida;
+    const thanksMsg = branding.thank_you_message || branding.mensaje_agradecimiento;
+
+    if (pubTitle) {
+      const pTitle = document.getElementById('public-survey-title');
+      const bTitle = document.getElementById('public-header-brand-title');
+      if (pTitle) pTitle.textContent = pubTitle;
+      if (bTitle) bTitle.textContent = pubTitle;
+      document.title = `${pubTitle} - OmniPoll`;
+    }
+    if (pubSubtitle) {
+      const bSubtitle = document.getElementById('public-header-brand-subtitle');
+      const pCat = document.getElementById('public-survey-cat');
+      if (bSubtitle) bSubtitle.textContent = pubSubtitle;
+      if (pCat) pCat.textContent = pubSubtitle;
+    }
+    if (welcomeMsg) {
+      const pDesc = document.getElementById('public-survey-desc');
+      if (pDesc) pDesc.textContent = welcomeMsg;
+    }
+    if (thanksMsg) {
+      const pThanks = document.getElementById('public-survey-success-desc');
+      if (pThanks) pThanks.textContent = thanksMsg;
     }
   };
 

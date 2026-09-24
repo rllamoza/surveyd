@@ -85,6 +85,10 @@ const AdminApproval = (() => {
         </td>
         <td class="p-4 text-right">
           <div class="flex items-center justify-end gap-2">
+            <a href="encuesta.html?id=${encodeURIComponent(e.codigo || e.id)}" target="_blank" class="btn btn-primary text-xs py-1.5 px-3 flex items-center gap-1 shadow-sm hover:brightness-110" title="Abrir dirección permanente de la encuesta pública">
+              <span class="material-symbols-outlined text-sm">open_in_new</span>
+              <span>Ver Encuesta</span>
+            </a>
             ${e.estado === 'pendiente' ? `
               <button class="btn btn-success text-xs py-1.5 px-3" onclick="AdminApproval.openApproveModal(${e.id})">
                 <span class="material-symbols-outlined text-sm">verified</span>

@@ -327,6 +327,14 @@ const API = (() => {
       return nuevo;
     },
 
+    async updateBranding(encuestaId, brandingPayload) {
+      const res = await request('encuestas.php?action=update_branding', {
+        method: 'POST',
+        body: JSON.stringify({ encuesta_id: encuestaId, branding: brandingPayload })
+      });
+      return res;
+    },
+
     // --- RESPUESTAS DE ENCUESTA ---
     async submitRespuesta(payload) {
       const res = await request('respuestas.php', {
