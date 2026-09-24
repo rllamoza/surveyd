@@ -64,10 +64,13 @@ const AdminApproval = (() => {
     tbody.innerHTML = list.map(e => `
       <tr class="border-b border-glass-card-border hover:bg-primary/5 transition-colors">
         <td class="p-4">
-          <div class="flex flex-col">
-            <span class="font-headline text-sm font-bold text-on-surface">${escapeHtml(e.titulo)}</span>
+          <a href="encuesta.html?id=${encodeURIComponent(e.codigo || e.id)}" target="_blank" class="flex flex-col group hover:opacity-90" title="Haga clic para ver la encuesta pública en vivo">
+            <span class="font-headline text-sm font-bold text-on-surface group-hover:text-primary transition-colors flex items-center gap-1.5">
+              <span>${escapeHtml(e.titulo)}</span>
+              <span class="material-symbols-outlined text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+            </span>
             <span class="text-xs font-mono text-primary font-semibold">${escapeHtml(e.codigo)}</span>
-          </div>
+          </a>
         </td>
         <td class="p-4">
           <span class="badge badge-glass text-xs font-mono font-semibold">
@@ -217,7 +220,8 @@ const AdminApproval = (() => {
   const openPreviewModal = (id) => {
     const enc = encuestasList.find(e => e.id === id);
     if (!enc) return;
-    App.showToast(`Visualizando: ${enc.titulo} (${enc.codigo})`);
+    const url = `encuesta.html?id=${encodeURIComponent(enc.codigo || enc.id)}`;
+    window.open(url, '_blank');
   };
 
   const openModal = (id) => {

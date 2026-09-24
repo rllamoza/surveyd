@@ -72,6 +72,11 @@ const SurveyRunner = (() => {
         if (descEl) descEl.textContent = det.descripcion;
         if (codeEl) codeEl.textContent = `ID: ${det.codigo}`;
         if (normaEl) normaEl.textContent = det.norma_tecnica || 'N/A';
+
+        const btnPublic = document.getElementById('btn-open-active-public');
+        if (btnPublic) {
+          btnPublic.href = `encuesta.html?id=${encodeURIComponent(det.codigo || det.id)}`;
+        }
       }
     };
 

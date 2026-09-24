@@ -132,6 +132,14 @@
             <span class="material-symbols-outlined text-lg">manage_accounts</span>
             <span>Gestión de Usuarios</span>
           </a>
+
+          <div class="pt-2 mt-2 border-t border-outline-variant/30">
+            <a href="encuesta.html" target="_blank" class="nav-item text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 border border-emerald-500/30 transition-all shadow-sm" id="nav-portal-publico" title="Abrir página pública de encuestas en vivo">
+              <span class="material-symbols-outlined text-lg">public</span>
+              <span class="font-bold">Portal Público (En Vivo)</span>
+              <span class="material-symbols-outlined text-xs ml-auto">open_in_new</span>
+            </a>
+          </div>
         </div>
 
         <!-- Telemetría en Vivo del Sistema & Base de Datos -->
@@ -382,9 +390,15 @@
               <span class="material-symbols-outlined text-primary text-base">ballot</span>
               <span>Instrumento Activo:</span>
             </label>
-            <select id="select-active-survey" class="input-glass text-xs py-1.5 px-3 max-w-lg cursor-pointer font-semibold text-primary">
-              <option value="1">CENSO-PE-2025-Q1 - Censo Nacional de Conectividad 2025</option>
-            </select>
+            <div class="flex items-center gap-2 flex-wrap">
+              <select id="select-active-survey" class="input-glass text-xs py-1.5 px-3 max-w-lg cursor-pointer font-semibold text-primary">
+                <option value="1">CENSO-PE-2025-Q1 - Censo Nacional de Conectividad 2025</option>
+              </select>
+              <a href="encuesta.html?id=CENSO001" target="_blank" id="btn-open-active-public" class="btn btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 shadow-sm hover:brightness-110 shrink-0" title="Abrir esta encuesta en el portal público permanente">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>Ver en Portal Público</span>
+              </a>
+            </div>
           </div>
 
           <!-- Cabecera Oficial -->
