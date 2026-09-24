@@ -195,22 +195,81 @@ try {
             'ayuda' => $p['ayuda']
         ];
 
+        // Consultar respuestas reales para esta pregunta
+        $realDetStmt = $pdo->prepare("SELECT valor_texto, opciones_json FROM detalle_respuestas WHERE pregunta_id = :pid");
+        $realDetStmt->execute([':pid' => $p['id']]);
+        $realRows = $realDetStmt->fetchAll(PDO::FETCH_ASSOC);
+        $hasRealData = count($realRows) > 0;
+
         switch ($p['tipo']) {
             case 'opcion_unica':
                 // Gráfico Donut / Circular con líder
-                $basePct = [52.4, 28.6, 12.0, 4.8, 2.2];
-                $opcList = [];
-                foreach ($opciones as $idx => $opc) {
-                    $pct = $basePct[$idx] ?? round(100 / max(1, $totalOpc), 1);
-                    $conteo = max(1, round(($pct / 100) * max(1, $totalResp)));
-                    $opcList[] = [
-                        'etiqueta' => $opc['etiqueta'],
-                        'valor' => $opc['valor'],
-                        'conteo' => $conteo,
-                        'porcentaje' => $pct,
-                        'color' => $palette[$idx % count($palette)],
-                        'es_lider' => ($idx === 0)
-                    ];
+                if ($hasRealData) {
+                    $counts = [];
+                    foreach ($realRows as $r) {
+                        $opts = json_decode($r['opciones_json'] ?? '', true);
+                        if (is_array($opts) && !empty($opts)) {
+                            foreach ($opts as $o) {
+                                $k = strtolower(trim((string)$o));
+                                if ($k !== '') $counts[$k] = ($counts[$k] ?? 0) + 1;
+                            }
+                        } elseif (!empty($r['valor_texto'])) {
+                            $k = strtolower(trim((string)$r['valor_texto']));
+                            if ($k !== '') $counts[$k] = ($counts[$k] ?? 0) + 1;
+                        }
+                    }
+
+                    $opcList = [];
+                    foreach ($opciones as $opc) {
+                        $vKey = strtolower(trim((string)$opc['valor']));
+                        $eKey = strtolower(trim((string)$opc['etiqueta']));
+                        $cnt = $counts[$vKey] ?? ($counts[$eKey] ?? 0);
+                        if ($cnt > 0) {
+                            $opcList[] = [
+                                'etiqueta' => $opc['etiqueta'],
+                                'valor' => $opc['valor'],
+                                'conteo' => $cnt,
+                                'porcentaje' => $totalResp > 0 ? round(($cnt / $totalResp) * 100, 1) : 0
+                            ];
+                        }
+                    }
+
+                    usort($opcList, fn($a, $b) => $b['conteo'] <=> $a['conteo']);
+
+                    if (count($opcList) > 5) {
+                        $topOpc = array_slice($opcList, 0, 4);
+                        $resto = array_slice($opcList, 4);
+                        $restoCount = array_sum(array_column($resto, 'conteo'));
+                        $restoPct = round(array_sum(array_column($resto, 'porcentaje')), 1);
+                        $topOpc[] = [
+                            'etiqueta' => 'Otras redes (' . count($resto) . ')',
+                            'valor' => 'otras',
+                            'conteo' => $restoCount,
+                            'porcentaje' => $restoPct
+                        ];
+                        $opcList = $topOpc;
+                    }
+
+                    foreach ($opcList as $idx => &$item) {
+                        $item['color'] = $palette[$idx % count($palette)];
+                        $item['es_lider'] = ($idx === 0);
+                    }
+                    unset($item);
+                } else {
+                    $basePct = [52.4, 28.6, 12.0, 4.8, 2.2];
+                    $opcList = [];
+                    foreach ($opciones as $idx => $opc) {
+                        $pct = $basePct[$idx] ?? round(100 / max(1, $totalOpc), 1);
+                        $conteo = max(1, round(($pct / 100) * max(1, $totalResp)));
+                        $opcList[] = [
+                            'etiqueta' => $opc['etiqueta'],
+                            'valor' => $opc['valor'],
+                            'conteo' => $conteo,
+                            'porcentaje' => $pct,
+                            'color' => $palette[$idx % count($palette)],
+                            'es_lider' => ($idx === 0)
+                        ];
+                    }
                 }
                 $metricaData['opciones'] = $opcList;
                 $metricaData['grafico_tipo'] = 'donut';
@@ -218,19 +277,62 @@ try {
 
             case 'opcion_multiple':
                 // Gráfico de Barras Horizontales con penetración multiselección
-                $baseMulti = [78.5, 62.4, 41.2, 23.0, 14.5];
-                $opcMulti = [];
-                foreach ($opciones as $idx => $opc) {
-                    $pct = $baseMulti[$idx] ?? max(10, 80 - ($idx * 15));
-                    $conteo = max(1, round(($pct / 100) * max(1, $totalResp)));
-                    $opcMulti[] = [
-                        'etiqueta' => $opc['etiqueta'],
-                        'valor' => $opc['valor'],
-                        'conteo' => $conteo,
-                        'porcentaje' => $pct,
-                        'color' => $palette[$idx % count($palette)],
-                        'es_lider' => ($idx === 0)
-                    ];
+                if ($hasRealData) {
+                    $counts = [];
+                    foreach ($realRows as $r) {
+                        $opts = json_decode($r['opciones_json'] ?? '', true);
+                        if (is_array($opts) && !empty($opts)) {
+                            foreach ($opts as $o) {
+                                $k = strtolower(trim((string)$o));
+                                if ($k !== '') $counts[$k] = ($counts[$k] ?? 0) + 1;
+                            }
+                        } elseif (!empty($r['valor_texto'])) {
+                            $parts = explode(';', (string)$r['valor_texto']);
+                            foreach ($parts as $pPart) {
+                                $k = strtolower(trim($pPart));
+                                if ($k !== '') $counts[$k] = ($counts[$k] ?? 0) + 1;
+                            }
+                        }
+                    }
+
+                    $opcMulti = [];
+                    foreach ($opciones as $opc) {
+                        $vKey = strtolower(trim((string)$opc['valor']));
+                        $eKey = strtolower(trim((string)$opc['etiqueta']));
+                        $cnt = $counts[$vKey] ?? ($counts[$eKey] ?? 0);
+                        if ($cnt > 0) {
+                            $opcMulti[] = [
+                                'etiqueta' => $opc['etiqueta'],
+                                'valor' => $opc['valor'],
+                                'conteo' => $cnt,
+                                'porcentaje' => $totalResp > 0 ? round(($cnt / $totalResp) * 100, 1) : 0
+                            ];
+                        }
+                    }
+
+                    usort($opcMulti, fn($a, $b) => $b['conteo'] <=> $a['conteo']);
+                    $opcMulti = array_slice($opcMulti, 0, 6);
+
+                    foreach ($opcMulti as $idx => &$item) {
+                        $item['color'] = $palette[$idx % count($palette)];
+                        $item['es_lider'] = ($idx === 0);
+                    }
+                    unset($item);
+                } else {
+                    $baseMulti = [78.5, 62.4, 41.2, 23.0, 14.5];
+                    $opcMulti = [];
+                    foreach ($opciones as $idx => $opc) {
+                        $pct = $baseMulti[$idx] ?? max(10, 80 - ($idx * 15));
+                        $conteo = max(1, round(($pct / 100) * max(1, $totalResp)));
+                        $opcMulti[] = [
+                            'etiqueta' => $opc['etiqueta'],
+                            'valor' => $opc['valor'],
+                            'conteo' => $conteo,
+                            'porcentaje' => $pct,
+                            'color' => $palette[$idx % count($palette)],
+                            'es_lider' => ($idx === 0)
+                        ];
+                    }
                 }
                 $metricaData['opciones'] = $opcMulti;
                 $metricaData['grafico_tipo'] = 'horizontal_bar';
