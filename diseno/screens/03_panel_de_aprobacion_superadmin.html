@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-primary-fixed":"#002022","surface-container-lowest":"#0b0e14","error-container":"#93000a","on-primary-container":"#006a70","on-background":"#e0e2eb","surface-container-high":"#272a31","tertiary-container":"#67f4b7","secondary-fixed-dim":"#fbabff","error":"#ffb4ab","on-tertiary-fixed-variant":"#005236","on-surface-variant":"#b9cacb","tertiary":"#e1ffec","primary":"#e0fdff","on-tertiary-fixed":"#002113","on-error":"#690005","outline":"#849495","tertiary-fixed-dim":"#4edea3","inverse-primary":"#00696f","secondary-fixed":"#ffd6fd","inverse-surface":"#e0e2eb","surface-variant":"#32353c","surface-tint":"#00dce6","background":"#10131a","surface-container-highest":"#32353c","surface":"#10131a","primary-fixed-dim":"#00dce6","on-secondary-fixed-variant":"#7c008e","on-tertiary-container":"#006e4b","primary-fixed":"#6ff6ff","on-tertiary":"#003824","on-error-container":"#ffdad6","secondary-container":"#ae05c6","primary-container":"#00f2fe","on-secondary-container":"#ffd8fd","on-primary":"#00373a","on-secondary-fixed":"#36003e","on-primary-fixed-variant":"#004f53","on-surface":"#e0e2eb","surface-dim":"#10131a","inverse-on-surface":"#2d3037","surface-bright":"#363940","on-secondary":"#580065","surface-container":"#1d2026","surface-container-low":"#191c22","secondary":"#fbabff","tertiary-fixed":"#6ffbbe","outline-variant":"#3a494b"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-sm":"0.5rem","gutter-desktop":"1.5rem","gutter":"1.25rem","margin":"1rem","space-xs":"0.25rem","margin-desktop":"3rem","space-xl":"2.5rem","margin-tablet":"2rem","space-lg":"1.5rem","space-md":"1rem"},"fontFamily":{"label-code-md":["JetBrains Mono"],"body-md":["Inter"],"label-code-sm":["JetBrains Mono"],"headline-lg":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"display-hero":["Plus Jakarta Sans"],"body-lg":["Inter"],"display-hero-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"label-code-lg":["JetBrains Mono"],"headline-sm":["Plus Jakarta Sans"],"body-sm":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"]},"fontSize":{"label-code-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"label-code-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"600"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-xl":["40px",{"lineHeight":"48px","letterSpacing":"-0.025em","fontWeight":"700"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.03em","fontWeight":"800"}],"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"-0.005em","fontWeight":"400"}],"display-hero-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"800"}],"headline-md":["22px",{"lineHeight":"30px","letterSpacing":"-0.015em","fontWeight":"600"}],"label-code-lg":["14px",{"lineHeight":"20px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-sm":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen relative overflow-x-hidden"><div class="fixed inset-0 pointer-events-none z-0 overflow-hidden"><div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-primary-container/10 blur-[120px]"></div><div class="absolute -bottom-40 right-0 w-[500px] h-[500px] rounded-full bg-secondary-container/10 blur-[140px]"></div></div><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest/80 backdrop-blur-xl border-r border-outline-variant/30 z-50 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)]"><div class="flex flex-col"><div class="h-20 px-space-lg flex items-center gap-space-sm border-b border-outline-variant/20"><img alt="OmniPoll Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Xb5mp554YDtdOagbJ4kCnZH5TfcRd_6VQRTYIz-mosZLwy8ojvuDYAfY15To27tVIppFM9Gkvk5k_ihpKWoZUZWgs_IAclLI9oLRkvdJy5RBbkTwkRUaCzqCewV2WGvjmF9NNMtI0x4d31QS6IKaQjCFmJC6yhLIoMzg1HaRNwF59XAB749zpgADLJBP-dMLHjSwhLSTVRkwxgcvB6cez2B2mVgAn4Rdth5HG5yVo0BzMRyqGYIVNoRxI"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold tracking-tight text-primary">OmniPoll</span><span class="px-1.5 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed text-label-code-sm font-label-code-sm uppercase tracking-wider border border-primary-container/40 shadow-[0_0_10px_rgba(0,242,254,0.3)]">Spatial 3.0</span></div><span class="text-body-sm font-body-sm text-on-surface-variant">Data Intelligence Core</span></div></div><div class="px-space-md pt-space-lg pb-space-sm"><span class="px-space-sm text-label-code-sm font-label-code-sm text-outline uppercase tracking-widest">Navegación Cuántica</span></div><nav class="px-space-md flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container border-l-2 border-primary-container shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="constructor-&-excel" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">dataset</span><span class="font-body-md text-body-md">Constructor & Excel</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="encuestas-activas" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">public</span><span class="font-body-md text-body-md">Encuestas Activas</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="bento-analytics" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">space_dashboard</span><span class="font-body-md text-body-md">Bento Analytics</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="aprobacion-admin" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">verified_user</span><span class="font-body-md text-body-md">Aprobación Admin</span></a></nav></div><div class="p-space-md border-t border-outline-variant/20 bg-surface-container-low/50"><div class="p-space-md rounded-xl bg-surface-container/60 border border-outline-variant/30 flex items-center justify-between"><div class="flex flex-col"><span class="text-label-code-sm font-label-code-sm text-tertiary-fixed">CLUSTER ACTIVO</span><span class="text-body-sm font-body-sm text-on-surface font-medium">LatAm South-1</span></div><span class="flex h-2.5 w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-container opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-tertiary-fixed-dim"></span></span></div></div></aside><div class="pl-72 flex flex-col min-h-screen relative z-10"><header class="fixed top-0 left-72 right-0 h-20 bg-surface-container-lowest/75 backdrop-blur-xl border-b border-outline-variant/30 z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm px-space-md py-2 rounded-full bg-surface-container border border-outline-variant/40"><span class="material-symbols-outlined text-outline text-lg">terminal</span><span class="font-label-code-md text-label-code-md text-on-surface-variant">v3.4-PRO / SPATIAL_SURVEY</span></div></div><div class="flex items-center gap-space-lg"><button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all text-body-sm font-body-sm" type="button"><span class="material-symbols-outlined text-primary-fixed-dim text-lg">lightbulb</span><span>Día/Noche</span><span class="h-2 w-2 rounded-full bg-primary-container shadow-[0_0_8px_#00f2fe]"></span></button><button class="flex items-center gap-space-sm px-space-lg py-2.5 rounded-lg bg-gradient-to-r from-primary-container to-surface-tint text-on-primary-fixed font-headline-sm text-body-sm font-bold tracking-tight shadow-[0_4px_20px_-2px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all" type="button"><span class="material-symbols-outlined text-on-primary-fixed text-lg">upload_file</span><span>+ Importar .XLSX</span></button><div class="relative flex items-center"><button class="p-2 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_#fbabff]"></span></button></div><div class="h-8 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-md pl-space-xs"><div class="relative flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-container/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcce7dS_nJ2wgLWDDnQIBGXWuN_9s4KinQOgvxpJc8djJEOxgRiUTlbgWmQbNSKulsMyHdLOFlcyu46yhH68sbimyHXqhtTL--bl5tIvDqYDmegl-ow5k8o6nSHTL3ppeBvw-Gxsw2-cLh-HN47X3XefiCmg-CU8Y23A5JPntJ18CVrX-wmj-1LhXJfBCTcIcxbE4fKmWb845_oW2krCvusCMaoPS3RbrTjoEivyce9su6pNvjQjam"/><span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-tertiary-fixed-dim ring-2 ring-surface"></span></div><div class="flex flex-col text-left"><span class="font-headline-sm text-body-sm font-bold text-on-surface tracking-tight">Ing. Valdivia</span><span class="text-label-code-sm font-label-code-sm text-primary-fixed-dim">SuperAdmin</span></div><span class="material-symbols-outlined text-outline text-lg">expand_more</span></div></div></header><main class="w-full pt-20 bg-transparent flex-1 px-gutter-desktop"><div class="flex flex-col w-full pb-16 space-y-8">
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low/80 backdrop-blur-2xl p-space-lg shadow-xl">
+<div class="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary-container/10 blur-[100px] pointer-events-none"></div>
+<div class="absolute right-96 -bottom-20 h-56 w-56 rounded-full bg-secondary-container/15 blur-[90px] pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg">
+<div class="space-y-1">
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed text-label-code-sm font-label-code-sm uppercase tracking-wider shadow-sm">
+            MYSQL SECURE IAM CLUSTER
+          </span>
+<span class="text-label-code-sm font-label-code-sm text-outline">•</span>
+<span class="text-label-code-sm font-label-code-sm text-tertiary-fixed flex items-center gap-1">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim animate-pulse"></span>
+            SYNC LIVE (v3.4.1)
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">
+          Gobernanza & Aprobación de Administradores
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+          Control central de acceso jerárquico, validación criptográfica y provisión atómica de permisos en clúster relacional MySQL.
+        </p>
+</div>
+<div class="flex items-center gap-space-sm flex-wrap sm:flex-nowrap">
+<div class="flex items-center gap-space-sm px-space-md py-3 rounded-lg bg-surface-container/70 shadow-sm backdrop-blur-md">
+<div class="p-2 rounded-lg bg-secondary-container/20 text-secondary">
+<span class="material-symbols-outlined text-lg">pending_actions</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface leading-none" id="pendingCounter">12</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant uppercase">Pendientes</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm px-space-md py-3 rounded-lg bg-surface-container/70 shadow-sm backdrop-blur-md">
+<div class="p-2 rounded-lg bg-tertiary-container/20 text-tertiary-fixed-dim">
+<span class="material-symbols-outlined text-lg">shield_person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface leading-none">48</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant uppercase">Activos</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm px-space-md py-3 rounded-lg bg-surface-container/70 shadow-sm backdrop-blur-md">
+<div class="p-2 rounded-lg bg-error-container/20 text-error">
+<span class="material-symbols-outlined text-lg">gpp_bad</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface leading-none">0</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant uppercase">Bloqueados</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg">
+<div class="xl:col-span-8 flex flex-col space-y-space-lg">
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low/75 backdrop-blur-2xl p-space-lg shadow-xl">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-md gap-4">
+<div class="flex items-center gap-space-sm">
+<div class="h-8 w-1 rounded-full bg-primary-container"></div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">
+                Bandeja de Aprobación de Nuevos Administradores
+              </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Solicitudes entrantes validadas contra el esquema DDL y firmas RSA-4096
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-space-sm py-1 rounded bg-surface-container-high text-on-surface-variant font-label-code-sm text-label-code-sm">
+              Filtrar: Todos (3 prioritarios)
+            </span>
+</div>
+</div>
+<div class="space-y-space-md pt-space-xs" id="approvalContainer">
+<div class="relative group rounded-xl bg-surface-container/60 hover:bg-surface-container/90 transition-all p-space-md shadow-md backdrop-blur-lg" id="card-usr-1">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-space-md">
+<div class="relative">
+<img class="w-12 h-12 rounded-xl object-cover shadow-md" data-alt="Portrait photo of Lic. Carlos Mendoza wearing formal office attire in an analytics agency, soft cinematic blue and cyan backlighting, confident expression, sharp focus professional headshot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFEYVzkTHlLA2xep2_mrBb8OW2HzRC47zgEZwAsxDmxqLxL5Zx59vXX9jqapLJjSKTjjayXIwlVjLtmFHxQgSk-4BnuJcDU8zNMyu3pN1yyKk-anvwLo_ngefPK5BqbQ1SXyjw58Gv9NkuLBn4gs3c7eR69vo84nHAaaWJ_hS3lWTfu5Xgx0Al3RzOEglDDmkIfDsNHxWkLMVmXnE_HHzZ35sj7LaRunSjR9QNscVZrmRewkp4Ylnw"/>
+<span class="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-primary-container shadow-sm"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Lic. Carlos Mendoza</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-container/15 text-primary-fixed text-label-code-sm font-label-code-sm font-semibold">
+                      Admin Encuestador Regional
+                    </span>
+</div>
+<div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm mt-1 flex-wrap">
+<span class="flex items-center gap-1 font-label-code-md text-label-code-md text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">mail</span> c.mendoza@muni-lima.gob.pe
+                    </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-primary-container">location_on</span> Región: Lima (UBI: 150101)
+                    </span>
+<span class="text-outline text-label-code-sm font-label-code-sm">Hoy, 10:45 AM</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end md:self-center flex-shrink-0">
+<button class="px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface transition-all text-body-sm font-body-sm flex items-center gap-1" onclick="showCredentials('Carlos Mendoza', 'c.mendoza@muni-lima.gob.pe', 'Admin Encuestador Regional', 'Lima')" type="button">
+<span class="material-symbols-outlined text-sm">badge</span>
+<span>Credenciales</span>
+</button>
+<button class="px-3 py-2 rounded-lg bg-error-container/30 hover:bg-error-container text-error hover:text-on-error transition-all text-body-sm font-body-sm font-semibold flex items-center gap-1" onclick="rejectUser('card-usr-1', 'Carlos Mendoza')" type="button">
+<span class="material-symbols-outlined text-sm">close</span>
+<span>Rechazar</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-tertiary-container hover:bg-tertiary-fixed text-on-tertiary-container font-headline-sm text-body-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1" onclick="approveUser('card-usr-1', 'Carlos Mendoza')" type="button">
+<span class="material-symbols-outlined text-sm">check</span>
+<span>Aprobar Acceso</span>
+</button>
+</div>
+</div>
+</div>
+<div class="relative group rounded-xl bg-surface-container/60 hover:bg-surface-container/90 transition-all p-space-md shadow-md backdrop-blur-lg" id="card-usr-2">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-space-md">
+<div class="relative">
+<img class="w-12 h-12 rounded-xl object-cover shadow-md" data-alt="Professional studio portrait of Dra. Elena Quispe, high ranking epidemiological data analyst, sharp gaze, modern high-tech research laboratory background with glowing violet and emerald server racks, ultra detailed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS1lU11agzJXai-Oi7ym2ChIbcvTfltoA4ooIqesvQdW0U_PDYWwREsclToX_yB0sXpsBEJovrHv30ts_9QTOgJP3RPh3Ux0cirKSsQT3pblyVK-gH5W3XUMLSCc9jEPXWOwrVEEGpFtVvYJ1dxAhuL1UnI_Y1Fn_xnJ1iPuQutuUPylGoTr3nk9auD2sQOeXHnU69lHQk8wCq5_7HnWG8ypQnV04yQa2YQ9c2LbMPnamTG_gXwfTM"/>
+<span class="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-secondary shadow-sm"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Dra. Elena Quispe</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/30 text-secondary-fixed text-label-code-sm font-label-code-sm font-semibold">
+                      Analista de Datos
+                    </span>
+</div>
+<div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm mt-1 flex-wrap">
+<span class="flex items-center gap-1 font-label-code-md text-label-code-md text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">mail</span> elena.quispe@saludperu.org
+                    </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-secondary">location_on</span> Región: Arequipa (UBI: 040101)
+                    </span>
+<span class="text-outline text-label-code-sm font-label-code-sm">Hoy, 09:12 AM</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end md:self-center flex-shrink-0">
+<button class="px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface transition-all text-body-sm font-body-sm flex items-center gap-1" onclick="showCredentials('Elena Quispe', 'elena.quispe@saludperu.org', 'Analista de Datos', 'Arequipa')" type="button">
+<span class="material-symbols-outlined text-sm">badge</span>
+<span>Credenciales</span>
+</button>
+<button class="px-3 py-2 rounded-lg bg-error-container/30 hover:bg-error-container text-error hover:text-on-error transition-all text-body-sm font-body-sm font-semibold flex items-center gap-1" onclick="rejectUser('card-usr-2', 'Elena Quispe')" type="button">
+<span class="material-symbols-outlined text-sm">close</span>
+<span>Rechazar</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-tertiary-container hover:bg-tertiary-fixed text-on-tertiary-container font-headline-sm text-body-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1" onclick="approveUser('card-usr-2', 'Elena Quispe')" type="button">
+<span class="material-symbols-outlined text-sm">check</span>
+<span>Aprobar Acceso</span>
+</button>
+</div>
+</div>
+</div>
+<div class="relative group rounded-xl bg-surface-container/60 hover:bg-surface-container/90 transition-all p-space-md shadow-md backdrop-blur-lg" id="card-usr-3">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-space-md">
+<div class="relative">
+<img class="w-12 h-12 rounded-xl object-cover shadow-md" data-alt="Close up cinematic portrait of Ing. Roberto Farfan in tech data center, glowing multi-monitor screens reflecting subtle cyan light, professional attire, crisp focus, clean modern technology aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXc_1uIB2hYFBYegNr12pJn3nSAyP2ISme1nocsm31eV9tBEbDSdx8Vj5tvaAqsxWkcwJz0CTIwYr8X4alpPmyWdvqSsScU43PtA2WrcdnhnNUnRmERqRs7PTs9Ch4U9FO-MksxFnHScPC6ovK6fc9CUx7IybF-4OaY3gBrVnDx0TrWVvFjF_q-jdVjtn_sbhnpBqFNcfdcjncqg4mVjrUhUhbfbODcV_LaR1_mMRDQMNwv9cscj_W"/>
+<span class="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-tertiary-fixed-dim shadow-sm"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Ing. Roberto Farfán</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-container/15 text-primary-fixed text-label-code-sm font-label-code-sm font-semibold">
+                      Admin Gestor de Plantillas Excel
+                    </span>
+</div>
+<div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm mt-1 flex-wrap">
+<span class="flex items-center gap-1 font-label-code-md text-label-code-md text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">mail</span> rfarfan@techdata.pe
+                    </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-primary-container">location_on</span> Región: La Libertad (UBI: 130101)
+                    </span>
+<span class="text-outline text-label-code-sm font-label-code-sm">Ayer, 06:30 PM</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end md:self-center flex-shrink-0">
+<button class="px-3 py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface transition-all text-body-sm font-body-sm flex items-center gap-1" onclick="showCredentials('Roberto Farfán', 'rfarfan@techdata.pe', 'Admin Gestor de Plantillas Excel', 'La Libertad')" type="button">
+<span class="material-symbols-outlined text-sm">badge</span>
+<span>Credenciales</span>
+</button>
+<button class="px-3 py-2 rounded-lg bg-error-container/30 hover:bg-error-container text-error hover:text-on-error transition-all text-body-sm font-body-sm font-semibold flex items-center gap-1" onclick="rejectUser('card-usr-3', 'Roberto Farfán')" type="button">
+<span class="material-symbols-outlined text-sm">close</span>
+<span>Rechazar</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-tertiary-container hover:bg-tertiary-fixed text-on-tertiary-container font-headline-sm text-body-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1" onclick="approveUser('card-usr-3', 'Roberto Farfán')" type="button">
+<span class="material-symbols-outlined text-sm">check</span>
+<span>Aprobar Acceso</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-space-lg p-space-md rounded-xl bg-surface-container-lowest/60 flex items-center gap-space-md shadow-sm">
+<div class="p-2 rounded-lg bg-primary-container/10 text-primary-fixed-dim flex-shrink-0">
+<span class="material-symbols-outlined text-xl">verified</span>
+</div>
+<div class="flex flex-col">
+<span class="text-body-sm font-body-sm font-semibold text-primary">Protocolo de Alta Inmediata</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">
+              Aprobación con firma criptográfica y activación instantánea en base de datos MySQL (Transaction Isolation: READ COMMITTED).
+            </span>
+</div>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low/75 backdrop-blur-2xl p-space-lg shadow-xl">
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="h-8 w-1 rounded-full bg-secondary"></div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">
+                Control de Roles y Privilegios PHP / MySQL
+              </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Matriz RBAC con persistencia de esquemas y restricciones de vistas
+              </p>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-primary text-body-sm font-body-sm transition-all flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-sm">add_moderator</span>
+<span>+ Crear Rol</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<div class="p-space-md rounded-xl bg-surface-container/60 shadow-sm space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container">admin_panel_settings</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">SuperAdmin Global</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed font-label-code-sm text-label-code-sm font-bold">ALL_PRIVILEGES</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Acceso irrestricto a esquemas, logs forenses, credenciales de clúster y triggers.</p>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-code-md text-label-code-md text-outline">GRANT OPTION: TRUE</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" disabled="" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container/60 shadow-sm space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">ballot</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Admin de Encuestas</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/25 text-secondary-fixed font-label-code-sm text-label-code-sm">CRUD_SURVEYS</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Creación, edición y despliegue territorial de instrumentos de medición en campo.</p>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-code-md text-label-code-md text-outline">Publicar Encuestas</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container/60 shadow-sm space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">table_chart</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Gestor de Excel</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary-fixed font-label-code-sm text-label-code-sm">IO_DATA_LOAD</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Carga por lotes, mapeo sintáctico de columnas XLSX y normalización de datos.</p>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-code-md text-label-code-md text-outline">Importación Masiva</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-tertiary-container"></div>
+</label>
+</div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container/60 shadow-sm space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">visibility</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Analista Solo Lectura</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-code-sm text-label-code-sm">READ_ONLY</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Visualización de paneles Bento Analytics, exportación limitada a PDF anonimizado.</p>
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-code-md text-label-code-md text-outline">Descarga Cruda CSV</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="xl:col-span-4 flex flex-col space-y-space-lg">
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low/75 backdrop-blur-2xl p-space-lg shadow-xl">
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">monitoring</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">
+              Auditoría en Tiempo Real
+            </h2>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container/15 text-tertiary-fixed text-label-code-sm font-label-code-sm">
+            POOL: 64/64
+          </span>
+</div>
+<div class="space-y-space-sm" id="auditLogs">
+<div class="p-space-sm rounded-lg bg-surface-container/50 space-y-1">
+<div class="flex items-center justify-between text-label-code-sm font-label-code-sm">
+<span class="text-primary-fixed-dim">AUTH_GRANT</span>
+<span class="text-outline">10:49:12</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">SuperAdmin aprobó cuenta ID #1042 con rol Regional</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container/50 space-y-1">
+<div class="flex items-center justify-between text-label-code-sm font-label-code-sm">
+<span class="text-tertiary-fixed-dim">IO_IMPORT</span>
+<span class="text-outline">10:41:00</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">Nueva plantilla Excel importada: Censo_2025.xlsx (4,210 filas)</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container/50 space-y-1">
+<div class="flex items-center justify-between text-label-code-sm font-label-code-sm">
+<span class="text-secondary">DB_SYNC</span>
+<span class="text-outline">10:35:28</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">Conexión MySQL sincronizada (Pool: 64 conexiones activas)</p>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container/50 space-y-1">
+<div class="flex items-center justify-between text-label-code-sm font-label-code-sm">
+<span class="text-error">SECURITY_WARN</span>
+<span class="text-outline">09:58:04</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">Verificación 2FA requerida para IP desconocida 190.237.45.12</p>
+</div>
+</div>
+<div class="mt-space-md p-space-sm rounded-lg bg-surface-container-lowest/80">
+<div class="flex items-center justify-between font-label-code-sm text-label-code-sm text-outline mb-1">
+<span>CONSUMO HILOS MYSQL</span>
+<span class="text-primary-fixed-dim">38%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary-container h-1.5 rounded-full" style="width: 38%"></div>
+</div>
+</div>
+</div>
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low/75 backdrop-blur-2xl p-space-lg shadow-xl">
+<div class="flex items-center gap-space-sm pb-space-md">
+<span class="material-symbols-outlined text-primary-fixed-dim">tune</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">
+            Configuración del Sistema
+          </h2>
+</div>
+<div class="space-y-space-md">
+<div class="p-space-md rounded-xl bg-surface-container/60 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="p-2 rounded-lg bg-surface-container-highest text-primary-container">
+<span class="material-symbols-outlined text-lg">dark_mode</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md font-semibold text-on-surface">Modo Noche Inmersivo</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Predeterminado para nuevas cuentas</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container/60 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="p-2 rounded-lg bg-surface-container-highest text-secondary">
+<span class="material-symbols-outlined text-lg">phonelink_lock</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md font-semibold text-on-surface">Doble Factor (2FA)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Obligatorio para roles SuperAdmin</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container/60 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="p-2 rounded-lg bg-surface-container-highest text-tertiary-fixed-dim">
+<span class="material-symbols-outlined text-lg">lan</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md font-semibold text-on-surface">Restricción por IP / VPN</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Limitar consola a subredes autorizadas</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<div class="mt-space-lg pt-space-md flex items-center justify-between">
+<span class="text-label-code-sm font-label-code-sm text-outline">SHA256 CHECKSUM: ok</span>
+<button class="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary-fixed text-label-code-md font-label-code-md font-bold shadow-md hover:brightness-110 transition-all" type="button">
+            Guardar Parámetros
+          </button>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xl hidden" id="credentialsModal">
+<div class="w-full max-w-lg rounded-xl bg-surface-container p-space-lg shadow-2xl relative">
+<div class="flex items-center justify-between pb-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container">badge</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Credenciales & Ficha de Validación</h3>
+</div>
+<button class="p-1 rounded-lg text-outline hover:text-on-surface" onclick="closeModal()" type="button">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="space-y-space-md">
+<div class="p-space-md rounded-lg bg-surface-container-lowest font-label-code-md text-label-code-md space-y-2">
+<div class="flex justify-between">
+<span class="text-outline">USUARIO:</span>
+<span class="text-primary" id="modalUserName">-</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">CORREO:</span>
+<span class="text-on-surface" id="modalUserMail">-</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">ROL ASIGNADO:</span>
+<span class="text-secondary" id="modalUserRole">-</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">JURISDICCIÓN:</span>
+<span class="text-tertiary-fixed" id="modalUserRegion">-</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">DIGEST HASH:</span>
+<span class="text-on-surface-variant truncate w-48 text-right">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-high/60 flex items-center gap-2 text-body-sm font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary-container text-base">verified_user</span>
+<span>Validado contra RENIEC / Directorio Institucional verificado</span>
+</div>
+</div>
+<div class="mt-space-lg flex justify-end gap-2">
+<button class="px-4 py-2 rounded-lg bg-surface-container-highest text-on-surface text-body-sm font-body-sm" onclick="closeModal()" type="button">
+          Cerrar
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  let pendingCount = 12;
+
+  function appendLog(action, msg, badgeClass, badgeText) {
+    const logBox = document.getElementById('auditLogs');
+    const now = new Date();
+    const timeStr = now.toTimeString().split(' ')[0];
+    const logEl = document.createElement('div');
+    logEl.className = 'p-space-sm rounded-lg bg-surface-container/50 space-y-1';
+    logEl.innerHTML = `
+      <div class="flex items-center justify-between text-label-code-sm font-label-code-sm">
+        <span class="${badgeClass}">${badgeText}</span>
+        <span class="text-outline">${timeStr}</span>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface">${msg}</p>
+    `;
+    logBox.insertBefore(logEl, logBox.firstChild);
+  }
+
+  function approveUser(cardId, name) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    card.classList.add('opacity-40', 'pointer-events-none');
+    setTimeout(() => {
+      card.remove();
+      pendingCount = Math.max(0, pendingCount - 1);
+      document.getElementById('pendingCounter').innerText = pendingCount;
+      appendLog('APPROVE', `SuperAdmin aprobó con éxito acceso para: ${name}. Registro consolidado en MySQL IAM.`, 'text-tertiary-fixed-dim', 'IAM_APPROVED');
+    }, 300);
+  }
+
+  function rejectUser(cardId, name) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    card.classList.add('opacity-30', 'pointer-events-none');
+    setTimeout(() => {
+      card.remove();
+      pendingCount = Math.max(0, pendingCount - 1);
+      document.getElementById('pendingCounter').innerText = pendingCount;
+      appendLog('REJECT', `Acceso denegado para: ${name}. Credenciales revocadas del búfer transaccional.`, 'text-error', 'IAM_REJECTED');
+    }, 300);
+  }
+
+  function showCredentials(name, email, role, region) {
+    document.getElementById('modalUserName').innerText = name;
+    document.getElementById('modalUserMail').innerText = email;
+    document.getElementById('modalUserRole').innerText = role;
+    document.getElementById('modalUserRegion').innerText = region;
+    document.getElementById('credentialsModal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('credentialsModal').classList.add('hidden');
+  }
+</script></main></div></body></html>

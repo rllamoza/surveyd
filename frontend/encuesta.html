@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OmniPoll - Encuesta Oficial de Participación Ciudadana</title>
+  
+  <!-- Favicon y Metadatos -->
+  <meta name="description" content="Portal oficial de llenado de encuestas georreferenciadas con estándar técnico INEI - OmniPoll Spatial Core"/>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-symbol.svg"/>
+  
+  <!-- Tipografía Google Fonts Oficial: Outfit, Inter y Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  
+  <!-- Iconografía Oficial Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'surface': 'var(--surface)',
+            'surface-container': 'var(--surface-container)',
+            'surface-container-high': 'var(--surface-container-high)',
+            'surface-container-highest': 'var(--surface-container-highest)',
+            'on-surface': 'var(--on-surface)',
+            'on-surface-variant': 'var(--on-surface-variant)',
+            'outline': 'var(--outline)',
+            'outline-variant': 'var(--outline-variant)',
+            'primary': 'var(--primary)',
+            'primary-container': 'var(--primary-container)',
+            'on-primary': 'var(--on-primary)',
+            'secondary': 'var(--secondary)',
+            'secondary-container': 'var(--secondary-container)',
+            'tertiary': 'var(--tertiary)',
+            'error': 'var(--error)'
+          },
+          fontFamily: {
+            headline: ['Outfit', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Hojas de Estilo SondeoGlass Lumina Oficiales -->
+  <link rel="stylesheet" href="css/theme.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+
+  <style>
+    /* Estilos de alta reactividad visual para selección de alternativas */
+    .option-card-label {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1.5px solid var(--outline-variant);
+      background: var(--glass-card);
+      position: relative;
+    }
+    .option-card-label:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px -3px rgba(2, 132, 199, 0.18);
+    }
+    
+    /* Estado cuando el radio o checkbox está marcado */
+    input[type="radio"]:checked + .option-card-label,
+    input[type="checkbox"]:checked + .option-card-label {
+      border-color: var(--primary) !important;
+      background: rgba(2, 132, 199, 0.08) !important;
+      box-shadow: 0 0 0 2px var(--primary), 0 8px 24px -4px rgba(2, 132, 199, 0.28) !important;
+    }
+    html.dark input[type="radio"]:checked + .option-card-label,
+    html.dark input[type="checkbox"]:checked + .option-card-label {
+      background: rgba(0, 242, 254, 0.12) !important;
+      box-shadow: 0 0 0 2px var(--primary), 0 8px 24px -4px rgba(0, 242, 254, 0.35) !important;
+    }
+
+    /* Punto interior del radio button al estar marcado */
+    input[type="radio"]:checked + .option-card-label .radio-custom-circle {
+      border-color: var(--primary) !important;
+    }
+    input[type="radio"]:checked + .option-card-label .radio-custom-dot {
+      opacity: 1 !important;
+      transform: scale(1) !important;
+    }
+
+    /* Cuadro y check del checkbox al estar marcado */
+    input[type="checkbox"]:checked + .option-card-label .checkbox-custom-box {
+      border-color: var(--primary) !important;
+      background-color: var(--primary) !important;
+    }
+    input[type="checkbox"]:checked + .option-card-label .checkbox-custom-icon {
+      opacity: 1 !important;
+      transform: scale(1) !important;
+    }
+
+    /* Resaltado de pregunta requerida no completada */
+    .question-required-highlight {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.4) !important;
+      animation: pulse-border 1.5s infinite;
+    }
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.15); }
+    }
+  </style>
+
+  <!-- Sincronización inmediata de tema: POR DEFECTO MODO DÍA / CLARO -->
+  <script>
+    (function() {
+      try {
+        const t = localStorage.getItem('omnipoll_theme');
+        if (t === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch(e) {}
+    })();
+  </script>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden selection:bg-primary-container selection:text-on-primary light-theme">
+
+  <!-- Orbes de Luz Ambiental SondeoGlass Lumina -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-[15%] left-[10%] w-[550px] h-[550px] rounded-full bg-gradient-to-br from-cyan-500/20 via-sky-500/10 to-transparent blur-[120px] animate-pulse"></div>
+    <div class="absolute top-[40%] -right-[10%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-indigo-500/15 via-blue-600/10 to-transparent blur-[140px]"></div>
+    <div class="absolute -bottom-[10%] left-[25%] w-[500px] h-[500px] rounded-full bg-gradient-to-br from-emerald-500/15 to-transparent blur-[130px]"></div>
+  </div>
+
+  <!-- Barra de Cabecera Superior Minimalista -->
+  <header class="sticky top-0 z-40 w-full backdrop-blur-xl bg-surface/75 border-b border-glass-card-border px-4 sm:px-6 py-3 transition-colors">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
+      
+      <!-- Logotipo Minimalista OmniPoll -->
+      <a href="index.html" class="flex items-center gap-2.5 group">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 p-[1px] shadow-sm group-hover:scale-105 transition-transform">
+          <div class="h-full w-full bg-slate-950/80 rounded-[10px] flex items-center justify-center backdrop-blur-md">
+            <span class="material-symbols-outlined text-primary text-lg">poll</span>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="font-headline font-extrabold text-base tracking-tight text-on-surface">Omni<span class="text-primary font-black">Poll</span></span>
+            <span class="badge badge-approved text-[9px] uppercase py-0.5 px-1.5 font-bold">Oficial</span>
+          </div>
+          <span class="font-mono text-[9px] text-on-surface-variant font-medium">Participación Ciudadana</span>
+        </div>
+      </a>
+
+      <!-- Herramientas: Conmutador Día/Noche & Retorno -->
+      <div class="flex items-center gap-2.5">
+        <button id="theme-toggle-btn" class="btn-icon h-9 w-9 rounded-xl glass-subcard text-on-surface hover:text-primary transition-all shadow-sm" title="Cambiar Tema (Día / Noche)">
+          <span class="material-symbols-outlined text-lg" id="theme-toggle-icon">light_mode</span>
+        </button>
+
+        <a href="index.html" class="btn btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 rounded-lg" title="Ir al Panel Principal">
+          <span class="material-symbols-outlined text-sm">home</span>
+          <span class="hidden sm:inline">Panel</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal del Cuestionario Minimalista -->
+  <main class="flex-1 z-10 w-full max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Estado de Carga -->
+    <div id="survey-loading" class="glass-panel p-12 text-center rounded-2xl flex flex-col items-center justify-center space-y-4">
+      <div class="h-12 w-12 rounded-2xl bg-primary-container/10 border border-primary-container/40 flex items-center justify-center text-primary-container shadow-sm animate-spin">
+        <span class="material-symbols-outlined text-2xl">sync</span>
+      </div>
+      <div>
+        <h3 class="font-headline text-lg font-bold text-on-surface">Cargando instrumento...</h3>
+        <p class="text-xs text-on-surface-variant font-mono mt-1">Conectando con base de datos MySQL</p>
+      </div>
+    </div>
+
+    <!-- Estado de Error -->
+    <div id="survey-error" class="hidden glass-panel p-10 text-center rounded-2xl border-error/40 space-y-4">
+      <div class="h-14 w-14 rounded-2xl bg-error/10 border border-error/30 flex items-center justify-center text-error mx-auto shadow-sm">
+        <span class="material-symbols-outlined text-3xl">error_outline</span>
+      </div>
+      <h3 class="font-headline text-xl font-bold text-on-surface" id="survey-error-title">Encuesta no disponible</h3>
+      <p class="text-sm text-on-surface-variant max-w-md mx-auto" id="survey-error-desc">
+        No se encontró ninguna encuesta con el identificador proporcionado en la URL.
+      </p>
+      <div class="pt-2">
+        <a href="index.html" class="btn btn-primary text-xs py-2 px-4 inline-flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          <span>Ver Encuestas Disponibles</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Contenido Activo de la Encuesta -->
+    <div id="survey-content" class="hidden space-y-6">
+
+      <!-- Ficha Cabecera Minimalista del Instrumento -->
+      <article class="glass-panel p-6 sm:p-8 rounded-2xl border-t-2 border-t-primary/70 relative overflow-hidden">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-primary" id="public-survey-code">
+              ID: CENSO001
+            </span>
+            <span class="text-slate-300 dark:text-slate-600">•</span>
+            <span class="text-xs font-mono text-on-surface-variant" id="public-survey-cat">
+              General
+            </span>
+          </div>
+          <div class="flex items-center gap-1.5 font-mono text-xs text-on-surface-variant">
+            <span class="material-symbols-outlined text-sm text-primary">schedule</span>
+            <span id="public-survey-time">~ 3 min</span>
+          </div>
+        </div>
+
+        <h1 class="font-headline text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2 leading-tight" id="public-survey-title">
+          Título de la Encuesta
+        </h1>
+        <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-5 font-normal" id="public-survey-desc">
+          Descripción del instrumento.
+        </p>
+
+        <!-- Barra de Progreso Minimalista -->
+        <div class="space-y-1.5 pt-4 border-t border-glass-card-border">
+          <div class="flex justify-between items-center text-xs font-mono">
+            <span class="text-on-surface-variant font-medium" id="progress-text">0 de 3 respondidas</span>
+            <span class="text-primary font-bold" id="progress-pct">0% COMPLETADO</span>
+          </div>
+          <div class="h-1.5 w-full rounded-full bg-slate-200/80 dark:bg-slate-800 overflow-hidden">
+            <div id="progress-bar" class="h-full rounded-full bg-gradient-to-r from-sky-400 to-primary transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- UBIGEO Minimalista (Solo se muestra como fallback si las preguntas no tienen ubigeo específico) -->
+      <section class="glass-panel p-5 sm:p-6 rounded-2xl space-y-4 hidden" id="section-ubigeo">
+        <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-xl">map</span>
+            <h3 class="font-headline text-sm font-bold text-on-surface">Ubicación de Residencia (UBIGEO)</h3>
+          </div>
+          <span class="badge badge-approved text-[10px] font-mono">INEI OFICIAL</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="text-[11px] text-on-surface-variant font-semibold block mb-1">Región / Depto:</label>
+            <select id="public-select-dep" class="input-glass text-xs py-2 px-2.5 cursor-pointer font-medium w-full">
+              <option value="15" selected>Lima (15)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] text-on-surface-variant font-semibold block mb-1">Provincia:</label>
+            <select id="public-select-prov" class="input-glass text-xs py-2 px-2.5 cursor-pointer font-medium w-full">
+              <option value="1501" selected>Lima Metropolitana</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] text-on-surface-variant font-semibold block mb-1">Distrito:</label>
+            <select id="public-select-dist" class="input-glass text-xs py-2 px-2.5 cursor-pointer font-medium w-full">
+              <option value="150122" selected>Miraflores</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTENEDOR DINÁMICO DE PREGUNTAS -->
+      <form id="public-survey-form" class="space-y-6" onsubmit="event.preventDefault(); PublicSurvey.submitSurvey(); return false;">
+        <div id="dynamic-questions-container" class="space-y-6">
+          <!-- Renderizado dinámico de preguntas desde public-survey.js -->
+        </div>
+
+        <!-- Botón de Envío y Revisión Minimalista -->
+        <div class="glass-panel p-6 sm:p-8 rounded-2xl flex flex-col items-center justify-center text-center gap-3 border-t-2 border-t-primary/60">
+          <button type="button" id="btn-submit-survey" onclick="PublicSurvey.reviewAnswers()" class="btn btn-primary py-3.5 px-10 text-sm sm:text-base font-bold shadow-[0_0_25px_rgba(2,132,199,0.35)] rounded-xl w-full sm:w-auto flex items-center justify-center gap-2 transition-all">
+            <span>Revisar Respuestas y Continuar</span>
+            <span class="material-symbols-outlined text-lg">fact_check</span>
+          </button>
+          <p class="text-xs text-on-surface-variant font-normal">
+            Podrá revisar un resumen de sus respuestas y corregirlas antes del registro definitivo en la base de datos.
+          </p>
+        </div>
+      </form>
+
+    </div>
+
+    <!-- PANTALLA DE RESUMEN DE RESPUESTAS & CONFIRMACIÓN PREVIA -->
+    <div id="survey-summary-container" class="hidden space-y-6">
+      <div class="glass-panel p-6 sm:p-8 rounded-3xl border-t-4 border-t-primary shadow-xl space-y-6">
+        
+        <!-- Cabecera del Resumen -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-glass-card-border">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-2xl bg-primary/15 border border-primary/40 flex items-center justify-center text-primary shrink-0 shadow-sm">
+              <span class="material-symbols-outlined text-2xl">checklist</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge badge-approved text-[9px] uppercase font-bold">VERIFICACIÓN PREVIA</span>
+                <span class="badge text-[9px] font-mono bg-surface-container text-primary" id="summary-code-badge">ID</span>
+              </div>
+              <h2 class="font-headline text-xl sm:text-2xl font-bold text-on-surface">Resumen de tus Respuestas</h2>
+              <p class="text-xs text-on-surface-variant">Verifica tus respuestas. Si deseas modificar alguna, haz clic en "Corregir" o regresa al formulario.</p>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary text-xs py-2 px-3.5 flex items-center gap-1.5 self-start sm:self-auto rounded-xl" onclick="PublicSurvey.backToQuestions()">
+            <span class="material-symbols-outlined text-sm">edit</span>
+            <span>Volver a Editar</span>
+          </button>
+        </div>
+
+        <!-- Ficha de Ubicación Declarada -->
+        <div class="glass-subcard p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono border border-glass-card-border">
+          <div class="flex items-center gap-2 text-on-surface-variant">
+            <span class="material-symbols-outlined text-primary text-base">pin_drop</span>
+            <span class="font-bold text-on-surface">Ubicación Registrada (UBIGEO):</span>
+          </div>
+          <span class="text-primary font-bold" id="summary-ubigeo-text">Lima > Lima Metropolitana > Miraflores</span>
+        </div>
+
+        <!-- Lista Detallada de Preguntas y Respuestas del Usuario -->
+        <div id="summary-answers-list" class="space-y-3">
+          <!-- Renderizado dinámico desde public-survey.js -->
+        </div>
+
+        <!-- Botones de Acción: Regresar / Confirmar Envío -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-5 border-t border-glass-card-border">
+          <button type="button" class="btn btn-secondary text-xs sm:text-sm py-3 px-6 w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl" onclick="PublicSurvey.backToQuestions()">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            <span>Regresar y Modificar Respuestas</span>
+          </button>
+
+          <button type="button" id="btn-confirm-final-submit" class="btn btn-primary text-xs sm:text-sm py-3.5 px-8 w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl font-bold shadow-[0_0_25px_rgba(2,132,199,0.35)]" onclick="PublicSurvey.confirmFinalSubmit()">
+            <span>Confirmar y Enviar Respuestas</span>
+            <span class="material-symbols-outlined text-base">check_circle</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANTALLA EXCLUSIVA DE CONFIRMACIÓN AL REGISTRAR (Reemplaza el formulario al terminar) -->
+    <div id="survey-success-container" class="hidden space-y-6">
+      <div class="glass-panel p-8 sm:p-12 text-center rounded-3xl border-t-4 border-t-emerald-500 shadow-xl space-y-6 max-w-2xl mx-auto">
+        
+        <!-- Icono de Éxito con Aura Verde Esmeralda -->
+        <div class="h-24 w-24 rounded-full bg-emerald-500/15 border-2 border-emerald-500/40 flex items-center justify-center text-emerald-500 mx-auto shadow-[0_0_35px_rgba(16,185,129,0.35)]">
+          <span class="material-symbols-outlined text-5xl font-black">check_circle</span>
+        </div>
+
+        <div>
+          <span class="badge badge-approved text-xs uppercase mb-2 font-bold">RESPUESTA REGISTRADA EN MYSQL</span>
+          <h2 class="font-headline text-2xl sm:text-3xl font-extrabold text-on-surface">¡Muchas Gracias por su Participación!</h2>
+          <p class="text-sm text-on-surface-variant mt-2 max-w-lg mx-auto leading-relaxed">
+            Sus respuestas han sido cifradas y almacenadas exitosamente en la base de datos oficial. No tiene más preguntas pendientes por responder.
+          </p>
+        </div>
+
+        <!-- Ficha de Recibo Criptográfico Oficial -->
+        <div class="glass-subcard p-5 rounded-2xl text-left space-y-3 font-mono text-xs border border-glass-card-border">
+          <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
+            <span class="text-on-surface-variant">Hash Criptográfico:</span>
+            <span class="text-primary font-bold" id="receipt-hash-val">OMNI-HASH-8B7C91</span>
+          </div>
+          <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
+            <span class="text-on-surface-variant">Código de Sesión:</span>
+            <span class="text-on-surface font-semibold" id="receipt-session-val">SES-2026-F9812</span>
+          </div>
+          <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
+            <span class="text-on-surface-variant">Ubicación Geocodificada:</span>
+            <span class="text-emerald-500 dark:text-emerald-400 font-bold" id="receipt-ubigeo-val">Lima &gt; Lima Metropolitana &gt; Miraflores</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-on-surface-variant">Fecha y Hora UTC-5:</span>
+            <span class="text-on-surface" id="receipt-date-val">2026-09-24 12:30:00</span>
+          </div>
+        </div>
+
+        <!-- Acciones de Cierre Limpias -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
+          <button type="button" class="btn btn-secondary text-xs w-full sm:w-auto flex items-center justify-center gap-2" onclick="window.print()">
+            <span class="material-symbols-outlined text-base">print</span>
+            <span>Imprimir Comprobante</span>
+          </button>
+          <button type="button" class="btn btn-primary text-xs w-full sm:w-auto flex items-center justify-center gap-2" onclick="window.close(); App ? window.location.href='about:blank' : null;">
+            <span class="material-symbols-outlined text-base">check</span>
+            <span>Finalizar y Salir</span>
+          </button>
+        </div>
+
+        <p class="text-[11px] font-mono text-on-surface-variant">
+          Este registro es único e intransferible conforme a la Norma Técnica DS-024-INEI-PE.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL DE RECIBO Y CONFIRMACIÓN CRIPTOGRÁFICA -->
+  <div id="modal-receipt" class="modal-overlay">
+    <div class="modal-dialog max-w-lg p-6 sm:p-8 space-y-6 text-center border border-emerald-500/40">
+      
+      <!-- Icono de Éxito con Aura Verde Esmeralda -->
+      <div class="h-20 w-20 rounded-full bg-emerald-500/15 border-2 border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto shadow-[0_0_35px_rgba(16,185,129,0.35)] animate-bounce">
+        <span class="material-symbols-outlined text-4xl font-black">check_circle</span>
+      </div>
+
+      <div>
+        <span class="badge badge-approved text-xs uppercase mb-2">RESPUESTA REGISTRADA EN MYSQL</span>
+        <h2 class="font-headline text-2xl font-bold text-on-surface">¡Muchas Gracias por su Participación!</h2>
+        <p class="text-xs sm:text-sm text-on-surface-variant mt-1">
+          Su respuesta ha sido georreferenciada y encriptada en la base de datos de OmniPoll con éxito.
+        </p>
+      </div>
+
+      <!-- Ficha de Recibo Criptográfico -->
+      <div class="glass-subcard p-4 rounded-xl text-left space-y-2.5 font-mono text-xs">
+        <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
+          <span class="text-on-surface-variant">Hash Criptográfico:</span>
+          <span class="text-primary font-bold" id="receipt-modal-hash-val">OMNI-HASH-8B7C91</span>
+        </div>
+        <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
+          <span class="text-on-surface-variant">Código de Sesión:</span>
+          <span class="text-on-surface font-semibold" id="receipt-modal-session-val">SES-2026-F9812</span>
+        </div>
+        <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
+          <span class="text-on-surface-variant">Ubicación Geocodificada:</span>
+          <span class="text-emerald-400 font-bold" id="receipt-modal-ubigeo-val">Lima &gt; Lima Metropolitana &gt; Miraflores</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">Fecha y Hora UTC-5:</span>
+          <span class="text-on-surface" id="receipt-modal-date-val">2026-09-24 12:30:00</span>
+        </div>
+      </div>
+
+      <!-- Acciones de Cierre -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <button type="button" class="btn btn-secondary text-xs w-full sm:w-auto" onclick="window.print()">
+          <span class="material-symbols-outlined text-base">print</span>
+          <span>Imprimir Recibo</span>
+        </button>
+        <button type="button" class="btn btn-primary text-xs w-full sm:w-auto" onclick="document.getElementById('modal-receipt').classList.remove('active')">
+          <span class="material-symbols-outlined text-base">check</span>
+          <span>Aceptar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Progreso Flotante Inferior para Smartphones / Móviles -->
+  <div id="floating-mobile-progress" class="fixed bottom-0 inset-x-0 z-40 p-3 bg-surface/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-glass-card-border shadow-2xl transition-all duration-300 transform translate-y-full opacity-0 sm:hidden">
+    <div class="max-w-md mx-auto space-y-1.5">
+      <div class="flex items-center justify-between text-[11px] font-mono">
+        <div class="flex items-center gap-1.5 font-bold text-on-surface">
+          <span class="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+          <span id="floating-progress-text">0 de 3 respondidas</span>
+        </div>
+        <span class="text-primary font-extrabold" id="floating-progress-pct">0% COMPLETADO</span>
+      </div>
+      <div class="h-2 w-full rounded-full bg-slate-200/80 dark:bg-slate-800 overflow-hidden shadow-inner">
+        <div id="floating-progress-bar" class="h-full rounded-full bg-gradient-to-r from-sky-400 to-primary transition-all duration-300 w-0"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor Flotante de Toast -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts: Cliente API y Lógica de Encuesta Pública -->
+  <script src="js/api.js"></script>
+  <script src="js/public-survey.js"></script>
+</body>
+</html>

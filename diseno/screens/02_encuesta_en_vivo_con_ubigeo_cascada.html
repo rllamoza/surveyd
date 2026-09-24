@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-primary-fixed":"#002022","surface-container-lowest":"#0b0e14","error-container":"#93000a","on-primary-container":"#006a70","on-background":"#e0e2eb","surface-container-high":"#272a31","tertiary-container":"#67f4b7","secondary-fixed-dim":"#fbabff","error":"#ffb4ab","on-tertiary-fixed-variant":"#005236","on-surface-variant":"#b9cacb","tertiary":"#e1ffec","primary":"#e0fdff","on-tertiary-fixed":"#002113","on-error":"#690005","outline":"#849495","tertiary-fixed-dim":"#4edea3","inverse-primary":"#00696f","secondary-fixed":"#ffd6fd","inverse-surface":"#e0e2eb","surface-variant":"#32353c","surface-tint":"#00dce6","background":"#10131a","surface-container-highest":"#32353c","surface":"#10131a","primary-fixed-dim":"#00dce6","on-secondary-fixed-variant":"#7c008e","on-tertiary-container":"#006e4b","primary-fixed":"#6ff6ff","on-tertiary":"#003824","on-error-container":"#ffdad6","secondary-container":"#ae05c6","primary-container":"#00f2fe","on-secondary-container":"#ffd8fd","on-primary":"#00373a","on-secondary-fixed":"#36003e","on-primary-fixed-variant":"#004f53","on-surface":"#e0e2eb","surface-dim":"#10131a","inverse-on-surface":"#2d3037","surface-bright":"#363940","on-secondary":"#580065","surface-container":"#1d2026","surface-container-low":"#191c22","secondary":"#fbabff","tertiary-fixed":"#6ffbbe","outline-variant":"#3a494b"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-sm":"0.5rem","gutter-desktop":"1.5rem","gutter":"1.25rem","margin":"1rem","space-xs":"0.25rem","margin-desktop":"3rem","space-xl":"2.5rem","margin-tablet":"2rem","space-lg":"1.5rem","space-md":"1rem"},"fontFamily":{"label-code-md":["JetBrains Mono"],"body-md":["Inter"],"label-code-sm":["JetBrains Mono"],"headline-lg":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"display-hero":["Plus Jakarta Sans"],"body-lg":["Inter"],"display-hero-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"label-code-lg":["JetBrains Mono"],"headline-sm":["Plus Jakarta Sans"],"body-sm":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"]},"fontSize":{"label-code-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"label-code-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"600"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-xl":["40px",{"lineHeight":"48px","letterSpacing":"-0.025em","fontWeight":"700"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.03em","fontWeight":"800"}],"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"-0.005em","fontWeight":"400"}],"display-hero-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"800"}],"headline-md":["22px",{"lineHeight":"30px","letterSpacing":"-0.015em","fontWeight":"600"}],"label-code-lg":["14px",{"lineHeight":"20px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-sm":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen relative overflow-x-hidden"><div class="fixed inset-0 pointer-events-none z-0 overflow-hidden"><div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-primary-container/10 blur-[120px]"></div><div class="absolute -bottom-40 right-0 w-[500px] h-[500px] rounded-full bg-secondary-container/10 blur-[140px]"></div></div><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest/80 backdrop-blur-xl border-r border-outline-variant/30 z-50 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)]"><div class="flex flex-col"><div class="h-20 px-space-lg flex items-center gap-space-sm border-b border-outline-variant/20"><img alt="OmniPoll Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Xb5mp554YDtdOagbJ4kCnZH5TfcRd_6VQRTYIz-mosZLwy8ojvuDYAfY15To27tVIppFM9Gkvk5k_ihpKWoZUZWgs_IAclLI9oLRkvdJy5RBbkTwkRUaCzqCewV2WGvjmF9NNMtI0x4d31QS6IKaQjCFmJC6yhLIoMzg1HaRNwF59XAB749zpgADLJBP-dMLHjSwhLSTVRkwxgcvB6cez2B2mVgAn4Rdth5HG5yVo0BzMRyqGYIVNoRxI"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold tracking-tight text-primary">OmniPoll</span><span class="px-1.5 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed text-label-code-sm font-label-code-sm uppercase tracking-wider border border-primary-container/40 shadow-[0_0_10px_rgba(0,242,254,0.3)]">Spatial 3.0</span></div><span class="text-body-sm font-body-sm text-on-surface-variant">Data Intelligence Core</span></div></div><div class="px-space-md pt-space-lg pb-space-sm"><span class="px-space-sm text-label-code-sm font-label-code-sm text-outline uppercase tracking-widest">Navegación Cuántica</span></div><nav class="px-space-md flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container border-l-2 border-primary-container shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="constructor-&-excel" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">dataset</span><span class="font-body-md text-body-md">Constructor & Excel</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-3 rounded-lg transition-all group bg-surface-container-high text-primary-container border-l-2 border-primary-container shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]" data-path="encuestas-activas" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">public</span><span class="font-body-md text-body-md">Encuestas Activas</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="bento-analytics" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">space_dashboard</span><span class="font-body-md text-body-md">Bento Analytics</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="aprobacion-admin" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">verified_user</span><span class="font-body-md text-body-md">Aprobación Admin</span></a></nav></div><div class="p-space-md border-t border-outline-variant/20 bg-surface-container-low/50"><div class="p-space-md rounded-xl bg-surface-container/60 border border-outline-variant/30 flex items-center justify-between"><div class="flex flex-col"><span class="text-label-code-sm font-label-code-sm text-tertiary-fixed">CLUSTER ACTIVO</span><span class="text-body-sm font-body-sm text-on-surface font-medium">LatAm South-1</span></div><span class="flex h-2.5 w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-container opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-tertiary-fixed-dim"></span></span></div></div></aside><div class="pl-72 flex flex-col min-h-screen relative z-10"><header class="fixed top-0 left-72 right-0 h-20 bg-surface-container-lowest/75 backdrop-blur-xl border-b border-outline-variant/30 z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm px-space-md py-2 rounded-full bg-surface-container border border-outline-variant/40"><span class="material-symbols-outlined text-outline text-lg">terminal</span><span class="font-label-code-md text-label-code-md text-on-surface-variant">v3.4-PRO / SPATIAL_SURVEY</span></div></div><div class="flex items-center gap-space-lg"><button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all text-body-sm font-body-sm" type="button"><span class="material-symbols-outlined text-primary-fixed-dim text-lg">lightbulb</span><span>Día/Noche</span><span class="h-2 w-2 rounded-full bg-primary-container shadow-[0_0_8px_#00f2fe]"></span></button><button class="flex items-center gap-space-sm px-space-lg py-2.5 rounded-lg bg-gradient-to-r from-primary-container to-surface-tint text-on-primary-fixed font-headline-sm text-body-sm font-bold tracking-tight shadow-[0_4px_20px_-2px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all" type="button"><span class="material-symbols-outlined text-on-primary-fixed text-lg">upload_file</span><span>+ Importar .XLSX</span></button><div class="relative flex items-center"><button class="p-2 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_#fbabff]"></span></button></div><div class="h-8 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-md pl-space-xs"><div class="relative flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-container/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcce7dS_nJ2wgLWDDnQIBGXWuN_9s4KinQOgvxpJc8djJEOxgRiUTlbgWmQbNSKulsMyHdLOFlcyu46yhH68sbimyHXqhtTL--bl5tIvDqYDmegl-ow5k8o6nSHTL3ppeBvw-Gxsw2-cLh-HN47X3XefiCmg-CU8Y23A5JPntJ18CVrX-wmj-1LhXJfBCTcIcxbE4fKmWb845_oW2krCvusCMaoPS3RbrTjoEivyce9su6pNvjQjam"/><span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-tertiary-fixed-dim ring-2 ring-surface"></span></div><div class="flex flex-col text-left"><span class="font-headline-sm text-body-sm font-bold text-on-surface tracking-tight">Ing. Valdivia</span><span class="text-label-code-sm font-label-code-sm text-primary-fixed-dim">SuperAdmin</span></div><span class="material-symbols-outlined text-outline text-lg">expand_more</span></div></div></header><main class="w-full pt-20 bg-transparent flex-1 px-gutter-desktop"><div class="flex flex-col w-full pb-28">
+<!-- Ambient Light Orbs Local Scope -->
+<div class="relative w-full">
+<div class="absolute -top-16 left-1/4 w-[600px] h-[350px] bg-primary-container/10 blur-[130px] pointer-events-none rounded-full"></div>
+<div class="absolute top-48 right-10 w-[500px] h-[400px] bg-secondary-container/15 blur-[150px] pointer-events-none rounded-full"></div>
+</div>
+<!-- HUD Control Flotante Superior: Telemetría de Progreso Cuántico -->
+<header class="w-full max-w-5xl mx-auto mb-8 z-20">
+<div class="bg-surface-container-lowest/80 backdrop-blur-2xl p-space-md rounded-xl shadow-[0_20px_45px_-12px_rgba(0,0,0,0.8)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-3">
+<div class="flex items-center gap-space-sm">
+<div class="h-8 w-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-fixed-dim shadow-inner">
+<span class="material-symbols-outlined text-lg">stacked_bar_chart</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-body-sm font-bold tracking-tight text-on-surface">Paso 3 de 5</span>
+<span class="text-label-code-sm font-label-code-sm text-primary-fixed px-2 py-0.5 rounded-full bg-primary-container/15">60% COMPLETADO</span>
+</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Sección 2 • Geometría y Ubicación Demográfica</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md self-end sm:self-auto">
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface-variant text-label-code-sm font-label-code-sm">
+<span class="material-symbols-outlined text-primary-fixed-dim text-sm animate-pulse">timer</span>
+<span>2 MIN RESTANTES</span>
+</div>
+<div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-tertiary-fixed text-label-code-sm font-label-code-sm">
+<span class="h-2 w-2 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
+<span>SESIÓN CIFRADA #4492</span>
+</div>
+</div>
+</div>
+<!-- Barra de Progreso Gradiente Cyan -> Violeta Neón -->
+<div class="relative w-full h-2 rounded-full bg-surface-container-high overflow-hidden shadow-inner">
+<div class="h-full rounded-full bg-gradient-to-r from-primary-container via-surface-tint to-secondary-fixed-dim shadow-[0_0_18px_#00f2fe] w-[60%] transition-all duration-700"></div>
+</div>
+</div>
+</header>
+<!-- Contenedor Principal Spatial Glassmorphism -->
+<main class="w-full max-w-5xl mx-auto flex flex-col gap-y-8 z-10">
+<!-- Card Principal: Protocolo Oficial & Pregunta de Ubicación Geo-Espacial -->
+<article class="relative bg-surface-container-low/70 backdrop-blur-2xl rounded-xl p-space-lg sm:p-space-xl shadow-[0_30px_70px_-20px_rgba(0,0,0,0.85)]">
+<!-- Foco luminoso en vértice superior derecho -->
+<div class="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-primary-container/10 via-transparent to-transparent pointer-events-none rounded-tr-xl"></div>
+<!-- Metadatos de Cabecera de Instrumento -->
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-space-md pb-6">
+<div class="flex flex-col gap-1.5">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="px-2.5 py-1 rounded-md bg-tertiary-container/15 text-tertiary-fixed font-label-code-sm text-label-code-sm tracking-wider uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+              Oficial • Verificada
+            </span>
+<span class="px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-code-sm text-label-code-sm">ID: CENSO-PE-2025-Q1</span>
+<span class="px-2.5 py-1 rounded-md bg-surface-container-high text-primary-fixed-dim font-label-code-sm text-label-code-sm">UBIGEO 6-DIGIT CORE</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight mt-1">
+            Censo Nacional de Conectividad & Servicios Digitales 2025
+          </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Instrumento de recolección georreferenciado para el diseño de infraestructura de telecomunicaciones e inclusión digital.
+          </p>
+</div>
+<div class="flex md:flex-col items-center md:items-end justify-between gap-2 shrink-0">
+<span class="text-label-code-sm font-label-code-sm text-outline uppercase tracking-wider">Norma Técnica</span>
+<span class="px-3 py-1 rounded-lg bg-surface-container text-on-surface font-label-code-md text-label-code-md">DS-024-INEI-PE</span>
+</div>
+</div>
+<!-- Pregunta Activa 03: Desglose en Cascada 4 Pasos -->
+<section class="mt-4 flex flex-col gap-y-6">
+<div class="flex items-start gap-space-md">
+<div class="h-9 w-9 rounded-xl bg-primary-container text-on-primary-fixed font-headline-sm text-body-lg font-bold flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(0,242,254,0.45)]">
+            03
+          </div>
+<div class="flex flex-col">
+<span class="font-label-code-sm text-label-code-sm text-primary-fixed-dim uppercase tracking-wider">Pregunta Condicional de Cobertura</span>
+<h2 class="font-headline-md text-headline-sm sm:text-headline-md text-on-surface mt-0.5">
+              Indique su ubicación de residencia actual para segmentación regional:
+            </h2>
+</div>
+</div>
+<!-- Cascada Táctil 4 Fases (Glass Neumórfico) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Paso 1: País (Fijado) -->
+<div class="bg-surface-container/90 rounded-xl p-space-md flex flex-col justify-between shadow-md transition-all hover:bg-surface-container-high">
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">PASO 01 / PAÍS</span>
+<span class="material-symbols-outlined text-tertiary-fixed text-lg">check_circle</span>
+</div>
+<div class="flex items-center gap- space-xs">
+<span class="text-2xl mr-2">🇵🇪</span>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-body-md font-bold text-on-surface">Perú</span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary-fixed font-medium">UBI: 00-00-00</span>
+</div>
+</div>
+</div>
+<!-- Paso 2: Departamento / Región (Activo Lleno) -->
+<div class="bg-surface-container/90 rounded-xl p-space-md flex flex-col justify-between shadow-md transition-all hover:bg-surface-container-high">
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-code-sm text-label-code-sm text-primary-fixed-dim">PASO 02 / DEPTO</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed font-label-code-sm text-label-code-sm shadow-[0_0_10px_rgba(0,242,254,0.3)]">ACTIVO</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-body-md font-bold text-primary truncate">Lima</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">Cod. Región: 15</span>
+</div>
+<span class="material-symbols-outlined text-primary-fixed-dim">tune</span>
+</div>
+</div>
+<!-- Paso 3: Provincia (Activo Seleccionado) -->
+<div class="bg-surface-container/90 rounded-xl p-space-md flex flex-col justify-between shadow-md transition-all hover:bg-surface-container-high">
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">PASO 03 / PROV</span>
+<span class="material-symbols-outlined text-outline text-lg">expand_more</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-body-md font-bold text-on-surface truncate">Lima Metropolitana</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">Provincia Central</span>
+</div>
+<span class="material-symbols-outlined text-outline">location_city</span>
+</div>
+</div>
+<!-- Paso 4: Distrito (En Foco - Abierto con Menú Desplegable) -->
+<div class="bg-surface-container-high rounded-xl p-space-md flex flex-col justify-between shadow-[0_0_24px_rgba(0,242,254,0.18)]">
+<div class="flex items-center justify-between mb-3">
+<span class="font-label-code-sm text-label-code-sm text-primary-container">PASO 04 / DISTRITO</span>
+<span class="h-2 w-2 rounded-full bg-primary-container animate-pulse shadow-[0_0_8px_#00f2fe]"></span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-body-md font-bold text-primary-fixed">Miraflores</span>
+<span class="font-label-code-sm text-label-code-sm text-primary-fixed-dim">UBIGEO: 150122</span>
+</div>
+<span class="material-symbols-outlined text-primary-container">near_me</span>
+</div>
+</div>
+</div>
+<!-- Menú Desplegable Estilizado Abierto con Búsqueda en Tiempo Real -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-2xl rounded-xl p-space-md shadow-[0_20px_50px_rgba(0,0,0,0.7)] flex flex-col gap-3">
+<div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-sm pb-2">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-primary-fixed-dim text-lg">search</span>
+<input class="w-full bg-surface-container-high text-on-surface pl-10 pr-4 py-2 rounded-lg font-body-md text-body-sm focus:outline-none focus:bg-surface-bright transition-all" placeholder="Buscar distrito o código UBIGEO..." type="text" value="Mirafl"/>
+</div>
+<div class="flex items-center gap-space-xs text-label-code-sm font-label-code-sm text-on-surface-variant">
+<span>Resultados para:</span>
+<span class="text-primary-fixed font-bold">"Mirafl" (1 coincidencia directa)</span>
+</div>
+</div>
+<!-- Lista de Opciones Estilizada -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+<!-- Opción Coincidente Activa -->
+<button class="bg-primary-container/15 p-3 rounded-lg flex items-center justify-between text-left shadow-[0_0_15px_rgba(0,242,254,0.12)]" type="button">
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-sm font-bold text-primary-fixed">Miraflores</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">Zona Costera • 150122</span>
+</div>
+<span class="material-symbols-outlined text-primary-container text-lg">check</span>
+</button>
+<!-- Opción Relacionada 1 -->
+<button class="bg-surface-container p-3 rounded-lg flex items-center justify-between text-left hover:bg-surface-container-high transition-colors" type="button">
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-sm font-medium text-on-surface">San Isidro</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">Zona Financiera • 150131</span>
+</div>
+<span class="material-symbols-outlined text-outline text-lg">chevron_right</span>
+</button>
+<!-- Opción Relacionada 2 -->
+<button class="bg-surface-container p-3 rounded-lg flex items-center justify-between text-left hover:bg-surface-container-high transition-colors" type="button">
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-sm font-medium text-on-surface">Santiago de Surco</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">Sur Este • 150140</span>
+</div>
+<span class="material-symbols-outlined text-outline text-lg">chevron_right</span>
+</button>
+<!-- Opción Relacionada 3 -->
+<button class="bg-surface-container p-3 rounded-lg flex items-center justify-between text-left hover:bg-surface-container-high transition-colors" type="button">
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-sm font-medium text-on-surface">Barranco</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">Distrito Cultural • 150104</span>
+</div>
+<span class="material-symbols-outlined text-outline text-lg">chevron_right</span>
+</button>
+</div>
+<!-- Micro-Banner Informativo / Validación RENIEC-INEI -->
+<div class="flex items-center gap-space-sm p-2.5 rounded-lg bg-surface-container/70 text-on-surface-variant text-body-sm font-body-sm mt-1">
+<span class="material-symbols-outlined text-primary-fixed-dim text-lg shrink-0">info</span>
+<span class="text-body-sm">El sistema valida automáticamente el código UBIGEO de 6 dígitos ante el catálogo oficial RENIEC/INEI para evitar duplicidad de padrón.</span>
+</div>
+</div>
+</section>
+<!-- Divisor Faint Gradient -->
+<div class="h-px w-full bg-gradient-to-r from-transparent via-outline-variant/40 to-transparent my-8"></div>
+<!-- Pregunta Complementaria 04: Radio Pills Translúcidas -->
+<section class="flex flex-col gap-y-5">
+<div class="flex items-start gap-space-md">
+<div class="h-9 w-9 rounded-xl bg-surface-container-high text-on-surface font-headline-sm text-body-lg font-bold flex items-center justify-center shrink-0">
+            04
+          </div>
+<div class="flex flex-col">
+<span class="font-label-code-sm text-label-code-sm text-outline uppercase tracking-wider">Infraestructura Residencial</span>
+<h3 class="font-headline-md text-headline-sm text-on-surface mt-0.5">
+              ¿Qué tipo de conexión a internet utiliza predominantemente en su hogar?
+            </h3>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Radio Option 1: Seleccionada Fibra Óptica -->
+<label class="group relative cursor-pointer flex flex-col justify-between p-space-md rounded-xl bg-surface-container-high shadow-[0_0_20px_rgba(0,242,254,0.15)] transition-all">
+<input checked="" class="sr-only" name="internet_type" type="radio"/>
+<div class="flex items-center justify-between mb-4">
+<span class="p-2.5 rounded-lg bg-primary-container/20 text-primary-fixed shadow-inner">
+<span class="material-symbols-outlined text-xl">speed</span>
+</span>
+<div class="h-5 w-5 rounded-full bg-primary-container flex items-center justify-center shadow-[0_0_8px_#00f2fe]">
+<div class="h-2 w-2 rounded-full bg-on-primary-fixed"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md font-bold text-primary">Fibra Óptica 1Gbps+</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Simétrica dedicada FTTH</span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary-fixed mt-2">Latencia típica: < 5ms</span>
+</div>
+</label>
+<!-- Radio Option 2: 5G Móvil -->
+<label class="group relative cursor-pointer flex flex-col justify-between p-space-md rounded-xl bg-surface-container/60 hover:bg-surface-container transition-all">
+<input class="sr-only" name="internet_type" type="radio"/>
+<div class="flex items-center justify-between mb-4">
+<span class="p-2.5 rounded-lg bg-surface-container text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">cell_tower</span>
+</span>
+<div class="h-5 w-5 rounded-full bg-surface-container-highest"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md font-bold text-on-surface">5G Inalámbrico / Móvil</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Router SIM / CPE FWA</span>
+<span class="font-label-code-sm text-label-code-sm text-outline mt-2">Latencia típica: 15-25ms</span>
+</div>
+</label>
+<!-- Radio Option 3: Satelital -->
+<label class="group relative cursor-pointer flex flex-col justify-between p-space-md rounded-xl bg-surface-container/60 hover:bg-surface-container transition-all">
+<input class="sr-only" name="internet_type" type="radio"/>
+<div class="flex items-center justify-between mb-4">
+<span class="p-2.5 rounded-lg bg-surface-container text-on-surface-variant group-hover:text-secondary-fixed transition-colors">
+<span class="material-symbols-outlined text-xl">satellite_alt</span>
+</span>
+<div class="h-5 w-5 rounded-full bg-surface-container-highest"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md font-bold text-on-surface">Satelital (LEO / GEO)</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Starlink / HughesNet</span>
+<span class="font-label-code-sm text-label-code-sm text-outline mt-2">Cobertura Rural Total</span>
+</div>
+</label>
+<!-- Radio Option 4: ADSL / Cobre -->
+<label class="group relative cursor-pointer flex flex-col justify-between p-space-md rounded-xl bg-surface-container/60 hover:bg-surface-container transition-all">
+<input class="sr-only" name="internet_type" type="radio"/>
+<div class="flex items-center justify-between mb-4">
+<span class="p-2.5 rounded-lg bg-surface-container text-on-surface-variant group-hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-xl">settings_ethernet</span>
+</span>
+<div class="h-5 w-5 rounded-full bg-surface-container-highest"></div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-body-md font-bold text-on-surface">HFC / Coaxial / ADSL</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Par de cobre tradicional</span>
+<span class="font-label-code-sm text-label-code-sm text-outline mt-2">Tecnología Legada</span>
+</div>
+</label>
+</div>
+</section>
+</article>
+<!-- Barra de Navegación Inferior Flotante Spatial -->
+<nav class="sticky bottom-6 w-full z-40 bg-surface-container-lowest/85 backdrop-blur-2xl rounded-xl p-space-md shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<!-- Botón Anterior Glass Tactile -->
+<button class="w-full sm:w-auto px-6 py-3 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-all text-body-md font-body-md font-medium flex items-center justify-center gap-space-xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-lg">arrow_back</span>
+<span>Anterior</span>
+</button>
+<!-- Indicador Central de Persistencia en Tiempo Real -->
+<div class="flex items-center gap-space-xs text-tertiary-fixed text-label-code-sm font-label-code-sm">
+<span class="h-2 w-2 rounded-full bg-tertiary-fixed shadow-[0_0_8px_#4edea3]"></span>
+<span>Sincronizado en MySQL en tiempo real</span>
+<span class="text-outline">/ Ping 14ms</span>
+</div>
+<!-- Botón Primario Eléctrico con Glow Multiespectral -->
+<button class="w-full sm:w-auto px-7 py-3 rounded-lg bg-gradient-to-r from-primary-container via-surface-tint to-secondary-fixed-dim text-on-primary-fixed font-headline-sm text-body-md font-bold tracking-tight shadow-[0_4px_30px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-space-sm" type="button">
+<span>Guardar en Base de Datos y Continuar</span>
+<span class="material-symbols-outlined text-lg text-on-primary-fixed">arrow_forward</span>
+</button>
+</nav>
+</main>
+<!-- Control Flotante Esquina Inferior Derecha: Toggle Inmersivo Día / Noche -->
+<aside class="fixed bottom-6 right-8 z-50">
+<div class="bg-surface-container-high/90 backdrop-blur-xl p-2 rounded-full shadow-[0_10px_35px_rgba(0,0,0,0.8)] flex items-center gap-1.5">
+<button class="h-9 px-3 rounded-full bg-surface-container-lowest text-primary-fixed text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-inner" id="theme-night" type="button">
+<span class="material-symbols-outlined text-sm">dark_mode</span>
+<span class="hidden sm:inline">Noche Inmersivo</span>
+</button>
+<button class="h-9 px-3 rounded-full bg-transparent text-on-surface-variant hover:text-on-surface text-label-code-sm font-label-code-sm flex items-center gap-1 transition-colors" id="theme-day" type="button">
+<span class="material-symbols-outlined text-sm">light_mode</span>
+<span class="hidden sm:inline">Día Luminoso</span>
+</button>
+</div>
+</aside>
+<!-- Interactive Script for Micro-interactions -->
+<script>
+    (function () {
+      const btnNight = document.getElementById('theme-night');
+      const btnDay = document.getElementById('theme-day');
+      const htmlEl = document.documentElement;
+
+      if (btnNight && btnDay) {
+        btnNight.addEventListener('click', () => {
+          htmlEl.classList.add('dark');
+          btnNight.className = 'h-9 px-3 rounded-full bg-surface-container-lowest text-primary-fixed text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-inner';
+          btnDay.className = 'h-9 px-3 rounded-full bg-transparent text-on-surface-variant hover:text-on-surface text-label-code-sm font-label-code-sm flex items-center gap-1 transition-colors';
+        });
+
+        btnDay.addEventListener('click', () => {
+          htmlEl.classList.remove('dark');
+          btnDay.className = 'h-9 px-3 rounded-full bg-surface-container-lowest text-primary-container text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-inner';
+          btnNight.className = 'h-9 px-3 rounded-full bg-transparent text-on-surface-variant hover:text-on-surface text-label-code-sm font-label-code-sm flex items-center gap-1 transition-colors';
+        });
+      }
+    })();
+  </script>
+</div></main></div></body></html>

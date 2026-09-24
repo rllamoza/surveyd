@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-primary-fixed":"#002022","surface-container-lowest":"#0b0e14","error-container":"#93000a","on-primary-container":"#006a70","on-background":"#e0e2eb","surface-container-high":"#272a31","tertiary-container":"#67f4b7","secondary-fixed-dim":"#fbabff","error":"#ffb4ab","on-tertiary-fixed-variant":"#005236","on-surface-variant":"#b9cacb","tertiary":"#e1ffec","primary":"#e0fdff","on-tertiary-fixed":"#002113","on-error":"#690005","outline":"#849495","tertiary-fixed-dim":"#4edea3","inverse-primary":"#00696f","secondary-fixed":"#ffd6fd","inverse-surface":"#e0e2eb","surface-variant":"#32353c","surface-tint":"#00dce6","background":"#10131a","surface-container-highest":"#32353c","surface":"#10131a","primary-fixed-dim":"#00dce6","on-secondary-fixed-variant":"#7c008e","on-tertiary-container":"#006e4b","primary-fixed":"#6ff6ff","on-tertiary":"#003824","on-error-container":"#ffdad6","secondary-container":"#ae05c6","primary-container":"#00f2fe","on-secondary-container":"#ffd8fd","on-primary":"#00373a","on-secondary-fixed":"#36003e","on-primary-fixed-variant":"#004f53","on-surface":"#e0e2eb","surface-dim":"#10131a","inverse-on-surface":"#2d3037","surface-bright":"#363940","on-secondary":"#580065","surface-container":"#1d2026","surface-container-low":"#191c22","secondary":"#fbabff","tertiary-fixed":"#6ffbbe","outline-variant":"#3a494b"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-sm":"0.5rem","gutter-desktop":"1.5rem","gutter":"1.25rem","margin":"1rem","space-xs":"0.25rem","margin-desktop":"3rem","space-xl":"2.5rem","margin-tablet":"2rem","space-lg":"1.5rem","space-md":"1rem"},"fontFamily":{"label-code-md":["JetBrains Mono"],"body-md":["Inter"],"label-code-sm":["JetBrains Mono"],"headline-lg":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"display-hero":["Plus Jakarta Sans"],"body-lg":["Inter"],"display-hero-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"label-code-lg":["JetBrains Mono"],"headline-sm":["Plus Jakarta Sans"],"body-sm":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"]},"fontSize":{"label-code-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"label-code-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"600"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-xl":["40px",{"lineHeight":"48px","letterSpacing":"-0.025em","fontWeight":"700"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.03em","fontWeight":"800"}],"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"-0.005em","fontWeight":"400"}],"display-hero-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"800"}],"headline-md":["22px",{"lineHeight":"30px","letterSpacing":"-0.015em","fontWeight":"600"}],"label-code-lg":["14px",{"lineHeight":"20px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-sm":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen relative overflow-x-hidden"><div class="fixed inset-0 pointer-events-none z-0 overflow-hidden"><div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-primary-container/10 blur-[120px]"></div><div class="absolute -bottom-40 right-0 w-[500px] h-[500px] rounded-full bg-secondary-container/10 blur-[140px]"></div></div><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest/80 backdrop-blur-xl border-r border-outline-variant/30 z-50 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)]"><div class="flex flex-col"><div class="h-20 px-space-lg flex items-center gap-space-sm border-b border-outline-variant/20"><img alt="OmniPoll Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Xb5mp554YDtdOagbJ4kCnZH5TfcRd_6VQRTYIz-mosZLwy8ojvuDYAfY15To27tVIppFM9Gkvk5k_ihpKWoZUZWgs_IAclLI9oLRkvdJy5RBbkTwkRUaCzqCewV2WGvjmF9NNMtI0x4d31QS6IKaQjCFmJC6yhLIoMzg1HaRNwF59XAB749zpgADLJBP-dMLHjSwhLSTVRkwxgcvB6cez2B2mVgAn4Rdth5HG5yVo0BzMRyqGYIVNoRxI"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold tracking-tight text-primary">OmniPoll</span><span class="px-1.5 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed text-label-code-sm font-label-code-sm uppercase tracking-wider border border-primary-container/40 shadow-[0_0_10px_rgba(0,242,254,0.3)]">Spatial 3.0</span></div><span class="text-body-sm font-body-sm text-on-surface-variant">Data Intelligence Core</span></div></div><div class="px-space-md pt-space-lg pb-space-sm"><span class="px-space-sm text-label-code-sm font-label-code-sm text-outline uppercase tracking-widest">Navegación Cuántica</span></div><nav class="px-space-md flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container border-l-2 border-primary-container shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="constructor-&-excel" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">dataset</span><span class="font-body-md text-body-md">Constructor & Excel</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="encuestas-activas" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">public</span><span class="font-body-md text-body-md">Encuestas Activas</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-3 rounded-lg transition-all group bg-surface-container-high text-primary-container border-l-2 border-primary-container shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]" data-path="bento-analytics" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">space_dashboard</span><span class="font-body-md text-body-md">Bento Analytics</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="aprobacion-admin" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">verified_user</span><span class="font-body-md text-body-md">Aprobación Admin</span></a></nav></div><div class="p-space-md border-t border-outline-variant/20 bg-surface-container-low/50"><div class="p-space-md rounded-xl bg-surface-container/60 border border-outline-variant/30 flex items-center justify-between"><div class="flex flex-col"><span class="text-label-code-sm font-label-code-sm text-tertiary-fixed">CLUSTER ACTIVO</span><span class="text-body-sm font-body-sm text-on-surface font-medium">LatAm South-1</span></div><span class="flex h-2.5 w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-container opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-tertiary-fixed-dim"></span></span></div></div></aside><div class="pl-72 flex flex-col min-h-screen relative z-10"><header class="fixed top-0 left-72 right-0 h-20 bg-surface-container-lowest/75 backdrop-blur-xl border-b border-outline-variant/30 z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm px-space-md py-2 rounded-full bg-surface-container border border-outline-variant/40"><span class="material-symbols-outlined text-outline text-lg">terminal</span><span class="font-label-code-md text-label-code-md text-on-surface-variant">v3.4-PRO / SPATIAL_SURVEY</span></div></div><div class="flex items-center gap-space-lg"><button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all text-body-sm font-body-sm" type="button"><span class="material-symbols-outlined text-primary-fixed-dim text-lg">lightbulb</span><span>Día/Noche</span><span class="h-2 w-2 rounded-full bg-primary-container shadow-[0_0_8px_#00f2fe]"></span></button><button class="flex items-center gap-space-sm px-space-lg py-2.5 rounded-lg bg-gradient-to-r from-primary-container to-surface-tint text-on-primary-fixed font-headline-sm text-body-sm font-bold tracking-tight shadow-[0_4px_20px_-2px_rgba(0,242,254,0.4)] hover:brightness-110 active:scale-[0.98] transition-all" type="button"><span class="material-symbols-outlined text-on-primary-fixed text-lg">upload_file</span><span>+ Importar .XLSX</span></button><div class="relative flex items-center"><button class="p-2 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_#fbabff]"></span></button></div><div class="h-8 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-md pl-space-xs"><div class="relative flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-container/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcce7dS_nJ2wgLWDDnQIBGXWuN_9s4KinQOgvxpJc8djJEOxgRiUTlbgWmQbNSKulsMyHdLOFlcyu46yhH68sbimyHXqhtTL--bl5tIvDqYDmegl-ow5k8o6nSHTL3ppeBvw-Gxsw2-cLh-HN47X3XefiCmg-CU8Y23A5JPntJ18CVrX-wmj-1LhXJfBCTcIcxbE4fKmWb845_oW2krCvusCMaoPS3RbrTjoEivyce9su6pNvjQjam"/><span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-tertiary-fixed-dim ring-2 ring-surface"></span></div><div class="flex flex-col text-left"><span class="font-headline-sm text-body-sm font-bold text-on-surface tracking-tight">Ing. Valdivia</span><span class="text-label-code-sm font-label-code-sm text-primary-fixed-dim">SuperAdmin</span></div><span class="material-symbols-outlined text-outline text-lg">expand_more</span></div></div></header><main class="w-full pt-20 bg-transparent flex-1 px-gutter-desktop"><div class="flex flex-col w-full pb-16 space-y-8">
+<section class="flex flex-col gap-6 pt-4">
+<div class="flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-col space-y-1">
+<div class="flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-primary-container shadow-sm"></span>
+<span class="text-label-code-sm font-label-code-sm uppercase tracking-widest text-primary-fixed-dim">Telemetry Matrix // Live Polling</span>
+</div>
+<h1 class="text-headline-xl font-headline-xl text-primary tracking-tight">Bento Analytics Center • Encuesta Nacional 2025</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-variant transition-all text-body-sm font-body-sm shadow-md" type="button">
+<span class="material-symbols-outlined text-primary-container text-base">sync</span>
+<span>Sincronizar MySQL</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-variant transition-all text-body-sm font-body-sm shadow-md" type="button">
+<span class="material-symbols-outlined text-secondary text-base">csv</span>
+<span>Exportar CSV</span>
+</button>
+<button class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary-container text-on-primary-fixed font-headline-sm text-body-sm font-bold shadow-lg hover:brightness-110 active:scale-[0.98] transition-all" type="button">
+<span class="material-symbols-outlined text-on-primary-fixed text-lg">download</span>
+<span>+ Exportar a Excel (.xlsx)</span>
+</button>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-4 p-3 rounded-xl bg-surface-container-lowest backdrop-blur-xl shadow-md">
+<div class="flex flex-wrap items-center gap-3">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm shadow-sm">
+<span class="material-symbols-outlined text-outline text-base">calendar_today</span>
+<span class="text-on-surface-variant">Rango:</span>
+<span class="font-medium text-primary">Últimos 30 días</span>
+<span class="material-symbols-outlined text-outline text-sm">expand_more</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm shadow-sm">
+<span class="material-symbols-outlined text-outline text-base">travel_explore</span>
+<span class="text-on-surface-variant">Segmento:</span>
+<span class="font-medium text-on-surface">Todas las Regiones (PE)</span>
+<span class="material-symbols-outlined text-outline text-sm">expand_more</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface text-body-sm font-body-sm shadow-sm">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-base">check_circle</span>
+<span class="text-on-surface-variant">Estado:</span>
+<span class="font-medium text-tertiary">Completadas (94.2%)</span>
+<span class="material-symbols-outlined text-outline text-sm">expand_more</span>
+</div>
+</div>
+<div class="flex items-center gap-3 text-label-code-sm font-label-code-sm text-on-surface-variant">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span>
+          STREAMING EN VIVO
+        </span>
+<span class="text-outline">•</span>
+<span>LATENCIA: 14ms</span>
+<span class="text-outline">•</span>
+<span>UBIGEO v2.4</span>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-12 gap-6">
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="flex flex-col justify-between p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl relative overflow-hidden group">
+<div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-primary-container/10 blur-xl pointer-events-none"></div>
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="text-label-code-sm font-label-code-sm uppercase tracking-wider">Total Respuestas</span>
+<span class="p-2 rounded-lg bg-surface-container-high text-primary">
+<span class="material-symbols-outlined text-lg">stacked_bar_chart</span>
+</span>
+</div>
+<div class="mt-4 flex flex-col">
+<span class="font-label-code-lg text-headline-xl text-primary font-bold tracking-tight">48,290</span>
+<div class="flex items-center gap-2 mt-2">
+<span class="flex items-center text-label-code-sm font-label-code-sm px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary font-semibold">
+<span class="material-symbols-outlined text-xs mr-0.5">trending_up</span>+18.4%
+            </span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">vs semana previa</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col justify-between p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl relative overflow-hidden group">
+<div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-tertiary-container/10 blur-xl pointer-events-none"></div>
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="text-label-code-sm font-label-code-sm uppercase tracking-wider">Tasa de Finalización</span>
+<span class="p-2 rounded-lg bg-surface-container-high text-tertiary-fixed-dim">
+<span class="material-symbols-outlined text-lg">pie_chart</span>
+</span>
+</div>
+<div class="mt-4 flex flex-col">
+<span class="font-label-code-lg text-headline-xl text-tertiary-fixed font-bold tracking-tight">91.8%</span>
+<div class="flex items-center gap-2 mt-2">
+<span class="flex items-center text-label-code-sm font-label-code-sm px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary font-semibold">
+<span class="material-symbols-outlined text-xs mr-0.5">verified</span>Óptimo
+            </span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">44,330 finalizadas</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col justify-between p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl relative overflow-hidden group">
+<div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-secondary-container/15 blur-xl pointer-events-none"></div>
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="text-label-code-sm font-label-code-sm uppercase tracking-wider">Tiempo Promedio</span>
+<span class="p-2 rounded-lg bg-surface-container-high text-secondary">
+<span class="material-symbols-outlined text-lg">timer</span>
+</span>
+</div>
+<div class="mt-4 flex flex-col">
+<span class="font-label-code-lg text-headline-xl text-secondary-fixed font-bold tracking-tight">3m 42s</span>
+<div class="flex items-center gap-2 mt-2">
+<span class="flex items-center text-label-code-sm font-label-code-sm px-2 py-0.5 rounded-full bg-secondary-container/30 text-secondary-fixed font-semibold">
+<span class="material-symbols-outlined text-xs mr-0.5">speed</span>-24s
+            </span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">vs media histórica</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col justify-between p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl relative overflow-hidden group">
+<div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-primary-fixed/15 blur-xl pointer-events-none"></div>
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="text-label-code-sm font-label-code-sm uppercase tracking-wider">Índice Satisfacción CSAT</span>
+<span class="p-2 rounded-lg bg-surface-container-high text-primary-fixed-dim">
+<span class="material-symbols-outlined text-lg">star</span>
+</span>
+</div>
+<div class="mt-4 flex flex-col">
+<div class="flex items-baseline gap-1">
+<span class="font-label-code-lg text-headline-xl text-primary font-bold tracking-tight">4.7</span>
+<span class="font-label-code-md text-headline-md text-outline">/ 5.0</span>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="flex items-center text-label-code-sm font-label-code-sm px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary font-semibold">
+<span class="material-symbols-outlined text-xs mr-0.5">thumb_up</span>94% Positivo
+            </span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Muestra n=48k</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-8 flex flex-col p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-lg">insights</span>
+<span class="font-headline-sm text-headline-sm text-primary">Flujo de Respuestas en Tiempo Real</span>
+</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Monitor continuo por intervalos de 2 horas (Período: 24h recientes)</span>
+</div>
+<div class="flex items-center gap-2 p-1 rounded-lg bg-surface-container">
+<button class="px-3 py-1 rounded bg-surface-container-highest text-primary-container text-label-code-sm font-label-code-sm font-bold shadow-sm" type="button">24 Horas</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface text-label-code-sm font-label-code-sm" type="button">7 Días</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface text-label-code-sm font-label-code-sm" type="button">30 Días</button>
+</div>
+</div>
+<div class="w-full h-64 relative flex flex-col justify-end">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 700 200">
+<defs>
+<lineargradient id="neonGradient" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#00f2fe"></stop>
+<stop offset="50%" stop-color="#7c008e"></stop>
+<stop offset="100%" stop-color="#fbabff"></stop>
+</lineargradient>
+<lineargradient id="areaGlow" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#00f2fe" stop-opacity="0.35"></stop>
+<stop offset="70%" stop-color="#ae05c6" stop-opacity="0.08"></stop>
+<stop offset="100%" stop-color="#10131a" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<line class="text-outline-variant/30" stroke="currentColor" stroke-dasharray="4" x1="0" x2="700" y1="40" y2="40"></line>
+<line class="text-outline-variant/30" stroke="currentColor" stroke-dasharray="4" x1="0" x2="700" y1="90" y2="90"></line>
+<line class="text-outline-variant/30" stroke="currentColor" stroke-dasharray="4" x1="0" x2="700" y1="140" y2="140"></line>
+<path d="M 0,160 Q 60,140 120,150 T 240,110 T 360,70 T 480,95 T 600,45 T 700,30 L 700,200 L 0,200 Z" fill="url(#areaGlow)"></path>
+<path d="M 0,160 Q 60,140 120,150 T 240,110 T 360,70 T 480,95 T 600,45 T 700,30" fill="none" stroke="url(#neonGradient)" stroke-linecap="round" stroke-width="3"></path>
+<circle class="animate-ping" cx="360" cy="70" fill="#00f2fe" opacity="0.75" r="4"></circle>
+<circle cx="360" cy="70" fill="#00f2fe" r="4"></circle>
+<circle cx="700" cy="30" fill="#fbabff" r="5"></circle>
+</svg>
+<div class="flex justify-between items-center pt-3 text-label-code-sm font-label-code-sm text-outline">
+<span>00:00</span>
+<span>04:00</span>
+<span>08:00</span>
+<span>12:00</span>
+<span>16:00</span>
+<span>20:00</span>
+<span>23:59 (Ahora)</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 pt-2">
+<div class="p-3 rounded-lg bg-surface-container flex flex-col">
+<span class="text-label-code-sm font-label-code-sm text-on-surface-variant">Pico Horario</span>
+<span class="text-headline-sm font-headline-sm text-primary font-bold mt-1">19:45 hrs</span>
+<span class="text-body-sm font-body-sm text-tertiary">+3,410 registros/hr</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container flex flex-col">
+<span class="text-label-code-sm font-label-code-sm text-on-surface-variant">Tasa de Deserción</span>
+<span class="text-headline-sm font-headline-sm text-secondary font-bold mt-1">8.2%</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Pregunta #7 (Ingresos)</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container flex flex-col">
+<span class="text-label-code-sm font-label-code-sm text-on-surface-variant">Dispositivo Dominante</span>
+<span class="text-headline-sm font-headline-sm text-tertiary font-bold mt-1">Móvil (82%)</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Android Chrome v121</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 flex flex-col p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg">donut_small</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Tipo de Conexión</span>
+</div>
+<span class="text-label-code-sm font-label-code-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">N=48,290</span>
+</div>
+<div class="flex items-center justify-center relative py-4">
+<svg class="w-48 h-48 -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="transparent" r="38" stroke="currentColor" stroke-width="12"></circle>
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#00f2fe" stroke-dasharray="238.76" stroke-dashoffset="74" stroke-linecap="round" stroke-width="12"></circle>
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#ae05c6" stroke-dasharray="238.76" stroke-dashoffset="180" stroke-linecap="round" stroke-width="12"></circle>
+<circle cx="50" cy="50" fill="transparent" r="38" stroke="#4edea3" stroke-dasharray="238.76" stroke-dashoffset="216" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute flex flex-col items-center justify-center">
+<span class="font-label-code-lg text-headline-lg font-bold text-primary">69%</span>
+<span class="text-label-code-sm font-label-code-sm text-on-surface-variant uppercase tracking-wider">4G / 5G Cel</span>
+</div>
+</div>
+<div class="flex flex-col space-y-3">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="text-on-surface">Red Móvil (4G/5G LTE)</span>
+</div>
+<span class="font-label-code-md text-label-code-md font-bold text-primary">69% (33,320)</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary-container"></span>
+<span class="text-on-surface">Fibra Óptica Hogar</span>
+</div>
+<span class="font-label-code-md text-label-code-md font-bold text-secondary">22% (10,623)</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-tertiary-fixed-dim"></span>
+<span class="text-on-surface">Red Pública / Satelital</span>
+</div>
+<span class="font-label-code-md text-label-code-md font-bold text-tertiary-fixed">9% (4,347)</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-7 flex flex-col p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-lg">map</span>
+<span class="font-headline-sm text-headline-sm text-primary">Distribución Geográfica Perú • UBIGEO Cascada</span>
+</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Topografía por departamento, provincia y distrito muestral</span>
+</div>
+<span class="text-label-code-sm font-label-code-sm px-2.5 py-1 rounded-full bg-surface-container text-tertiary-fixed">Cobertura: 24/24 Dptos</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+<div class="flex flex-col space-y-4">
+<div class="flex flex-col space-y-1">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="font-medium text-on-surface">Lima Metropolitana & Prov.</span>
+<span class="font-label-code-md text-label-code-md text-primary font-bold">42% (20,281)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 42%;"></div>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="font-medium text-on-surface">Arequipa</span>
+<span class="font-label-code-md text-label-code-md text-primary font-bold">16% (7,726)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-primary-fixed-dim rounded-full" style="width: 16%;"></div>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="font-medium text-on-surface">La Libertad</span>
+<span class="font-label-code-md text-label-code-md text-primary font-bold">12% (5,794)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 12%;"></div>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="font-medium text-on-surface">Cusco</span>
+<span class="font-label-code-md text-label-code-md text-primary font-bold">10% (4,829)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-tertiary-fixed-dim rounded-full" style="width: 10%;"></div>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="font-medium text-on-surface">Piura</span>
+<span class="font-label-code-md text-label-code-md text-primary font-bold">8% (3,863)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-surface-tint rounded-full" style="width: 8%;"></div>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="font-medium text-on-surface">Otras 19 Regiones</span>
+<span class="font-label-code-md text-label-code-md text-on-surface-variant font-bold">12% (5,797)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-outline rounded-full" style="width: 12%;"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col rounded-lg bg-surface-container p-4 space-y-3">
+<div class="flex items-center justify-between pb-2">
+<span class="text-label-code-sm font-label-code-sm uppercase tracking-wider text-on-surface-variant">Explorador UBIGEO Cascada</span>
+<span class="material-symbols-outlined text-outline text-sm">account_tree</span>
+</div>
+<div class="flex flex-col space-y-2">
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-high cursor-pointer hover:bg-surface-variant transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-sm">expand_more</span>
+<span class="text-body-sm font-body-sm font-semibold text-primary">Lima [UBI-15]</span>
+</div>
+<span class="text-label-code-sm font-label-code-sm px-2 py-0.5 rounded bg-primary-container/20 text-primary-fixed">20,281</span>
+</div>
+<div class="ml-4 pl-3 flex flex-col space-y-1.5">
+<div class="flex items-center justify-between p-1.5 rounded bg-surface-container-lowest/60 text-body-sm font-body-sm">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-xs text-outline">subdirectory_arrow_right</span>
+<span>Prov. Lima • Miraflores</span>
+</div>
+<span class="text-label-code-sm font-label-code-sm text-on-surface-variant">4,912</span>
+</div>
+<div class="flex items-center justify-between p-1.5 rounded bg-surface-container-lowest/60 text-body-sm font-body-sm">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-xs text-outline">subdirectory_arrow_right</span>
+<span>Prov. Lima • San Isidro</span>
+</div>
+<span class="text-label-code-sm font-label-code-sm text-on-surface-variant">3,840</span>
+</div>
+<div class="flex items-center justify-between p-1.5 rounded bg-surface-container-lowest/60 text-body-sm font-body-sm">
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-xs text-outline">subdirectory_arrow_right</span>
+<span>Prov. Lima • Santiago de Surco</span>
+</div>
+<span class="text-label-code-sm font-label-code-sm text-on-surface-variant">4,120</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-high/60 cursor-pointer hover:bg-surface-variant transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm">chevron_right</span>
+<span class="text-body-sm font-body-sm text-on-surface">Arequipa [UBI-04]</span>
+</div>
+<span class="text-label-code-sm font-label-code-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">7,726</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-high/60 cursor-pointer hover:bg-surface-variant transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm">chevron_right</span>
+<span class="text-body-sm font-body-sm text-on-surface">Cusco [UBI-08]</span>
+</div>
+<span class="text-label-code-sm font-label-code-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">4,829</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-5 flex flex-col p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-lg">tune</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Calidad del Servicio</span>
+</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Puntaje por ítem evaluado (Escala 1 a 5)</span>
+</div>
+<span class="material-symbols-outlined text-outline">analytics</span>
+</div>
+<div class="flex flex-col space-y-4">
+<div class="flex flex-col space-y-1.5">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="text-on-surface">Velocidad de Respuesta e Interfaz</span>
+<span class="font-label-code-md text-label-code-md text-primary font-bold">4.9 / 5.0</span>
+</div>
+<div class="w-full h-3 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 98%;"></div>
+</div>
+</div>
+<div class="flex flex-col space-y-1.5">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="text-on-surface">Claridad de Preguntas y Opciones</span>
+<span class="font-label-code-md text-label-code-md text-tertiary-fixed-dim font-bold">4.7 / 5.0</span>
+</div>
+<div class="w-full h-3 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-tertiary-fixed-dim h-full rounded-full" style="width: 94%;"></div>
+</div>
+</div>
+<div class="flex flex-col space-y-1.5">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="text-on-surface">Experiencia Visual y Ergonomía</span>
+<span class="font-label-code-md text-label-code-md text-secondary font-bold">4.6 / 5.0</span>
+</div>
+<div class="w-full h-3 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 92%;"></div>
+</div>
+</div>
+<div class="flex flex-col space-y-1.5">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="text-on-surface">Estabilidad en Cobertura Débil</span>
+<span class="font-label-code-md text-label-code-md text-primary-fixed-dim font-bold">4.2 / 5.0</span>
+</div>
+<div class="w-full h-3 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-surface-tint h-full rounded-full" style="width: 84%;"></div>
+</div>
+</div>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container/70 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded bg-tertiary-container/20 text-tertiary">
+<span class="material-symbols-outlined text-lg">shield</span>
+</div>
+<div class="flex flex-col">
+<span class="text-body-sm font-body-sm font-medium text-on-surface">Margen de Error muestral: ± 0.44%</span>
+<span class="text-label-code-sm font-label-code-sm text-on-surface-variant">Nivel de Confianza Estadístico: 95.5%</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-lg">info</span>
+</div>
+</div>
+<div class="col-span-12 flex flex-col p-6 rounded-xl bg-surface-container-low backdrop-blur-xl shadow-xl space-y-4">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-surface-container-high text-primary-container">
+<span class="material-symbols-outlined text-lg">database</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-primary">Feed de Respuestas Recientes en Vivo</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary text-label-code-sm font-label-code-sm font-semibold">MySQL Cluster Sincronizado</span>
+</div>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Transacciones entrantes en tiempo real validadas criptográficamente</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-label-code-sm font-label-code-sm text-on-surface-variant">
+<span class="inline-block w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
+<span>Actualizando cada 3s</span>
+</div>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container/60 text-label-code-sm font-label-code-sm text-on-surface-variant uppercase tracking-wider">
+<th class="py-3 px-4 rounded-l-lg">ID Transacción</th>
+<th class="py-3 px-4">Marca Temporal</th>
+<th class="py-3 px-4">Jerarquía UBIGEO</th>
+<th class="py-3 px-4">Puntaje CSAT</th>
+<th class="py-3 px-4">Latencia / Ping</th>
+<th class="py-3 px-4 rounded-r-lg">Estado de Persistencia</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-transparent text-body-sm font-body-sm">
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3.5 px-4 font-label-code-md text-label-code-md font-semibold text-primary">#OP-94821</td>
+<td class="py-3.5 px-4 text-on-surface-variant font-label-code-sm text-label-code-sm">2025-05-18 14:32:04</td>
+<td class="py-3.5 px-4">
+<span class="text-on-surface font-medium">Perú • Lima • Miraflores</span>
+<span class="text-outline text-label-code-sm font-label-code-sm ml-1.5">[150122]</span>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-code-md text-label-code-md font-bold">5.0</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-label-code-sm text-label-code-sm text-on-surface-variant">12 ms</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-container/20 text-tertiary font-label-code-sm text-label-code-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                  Validado en MySQL
+                </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3.5 px-4 font-label-code-md text-label-code-md font-semibold text-primary">#OP-94820</td>
+<td class="py-3.5 px-4 text-on-surface-variant font-label-code-sm text-label-code-sm">2025-05-18 14:31:58</td>
+<td class="py-3.5 px-4">
+<span class="text-on-surface font-medium">Perú • Arequipa • Yanahuara</span>
+<span class="text-outline text-label-code-sm font-label-code-sm ml-1.5">[040126]</span>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-code-md text-label-code-md font-bold">4.8</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-label-code-sm text-label-code-sm text-on-surface-variant">18 ms</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-container/20 text-tertiary font-label-code-sm text-label-code-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                  Validado en MySQL
+                </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3.5 px-4 font-label-code-md text-label-code-md font-semibold text-primary">#OP-94819</td>
+<td class="py-3.5 px-4 text-on-surface-variant font-label-code-sm text-label-code-sm">2025-05-18 14:31:41</td>
+<td class="py-3.5 px-4">
+<span class="text-on-surface font-medium">Perú • Cusco • Wanchaq</span>
+<span class="text-outline text-label-code-sm font-label-code-sm ml-1.5">[080108]</span>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-code-md text-label-code-md font-bold">4.5</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-label-code-sm text-label-code-sm text-on-surface-variant">24 ms</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-container/20 text-tertiary font-label-code-sm text-label-code-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                  Validado en MySQL
+                </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3.5 px-4 font-label-code-md text-label-code-md font-semibold text-primary">#OP-94818</td>
+<td class="py-3.5 px-4 text-on-surface-variant font-label-code-sm text-label-code-sm">2025-05-18 14:31:12</td>
+<td class="py-3.5 px-4">
+<span class="text-on-surface font-medium">Perú • La Libertad • Trujillo</span>
+<span class="text-outline text-label-code-sm font-label-code-sm ml-1.5">[130101]</span>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-code-md text-label-code-md font-bold">5.0</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-label-code-sm text-label-code-sm text-on-surface-variant">15 ms</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-container/20 text-tertiary font-label-code-sm text-label-code-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                  Validado en MySQL
+                </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/40 transition-colors">
+<td class="py-3.5 px-4 font-label-code-md text-label-code-md font-semibold text-primary">#OP-94817</td>
+<td class="py-3.5 px-4 text-on-surface-variant font-label-code-sm text-label-code-sm">2025-05-18 14:30:50</td>
+<td class="py-3.5 px-4">
+<span class="text-on-surface font-medium">Perú • Piura • Sullana</span>
+<span class="text-outline text-label-code-sm font-label-code-sm ml-1.5">[200601]</span>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-code-md text-label-code-md font-bold">4.0</span>
+</div>
+</td>
+<td class="py-3.5 px-4 font-label-code-sm text-label-code-sm text-on-surface-variant">21 ms</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-container/20 text-tertiary font-label-code-sm text-label-code-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                  Validado en MySQL
+                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const tableBody = document.querySelector('tbody');
+    if (!tableBody) return;
+    setInterval(() => {
+      const firstRow = tableBody.querySelector('tr');
+      if (firstRow) {
+        firstRow.classList.add('bg-primary-container/10');
+        setTimeout(() => {
+          firstRow.classList.remove('bg-primary-container/10');
+        }, 1200);
+      }
+    }, 4000);
+  })();
+</script></main></div></body></html>

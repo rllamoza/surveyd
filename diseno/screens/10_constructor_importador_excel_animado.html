@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/><style>
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    overscroll-behavior: none;
+  }
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Micro-interacciones & Animaciones Neón Fluidas */
+@keyframes neonBorderPulse {
+  0%, 100% {
+    border-color: rgba(0, 242, 254, 0.4);
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.15), inset 0 0 15px rgba(174, 5, 198, 0.1);
+  }
+  50% {
+    border-color: rgba(251, 171, 255, 0.65);
+    box-shadow: 0 0 25px rgba(0, 242, 254, 0.35), 0 0 35px rgba(174, 5, 198, 0.25), inset 0 0 20px rgba(0, 242, 254, 0.15);
+  }
+}
+
+@keyframes dropzoneFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes laserScan {
+  0% {
+    top: -20%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.75;
+  }
+  85% {
+    opacity: 0.75;
+  }
+  100% {
+    top: 110%;
+    opacity: 0;
+  }
+}
+
+@keyframes shimmerSlide {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+@keyframes greenGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(78, 222, 163, 0.25);
+    border-color: rgba(78, 222, 163, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(78, 222, 163, 0.65), 0 0 24px rgba(103, 244, 183, 0.3);
+    border-color: rgba(111, 251, 190, 0.8);
+  }
+}
+
+@keyframes activePillBeat {
+  0%, 100% {
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(0, 242, 254, 0.6), 0 0 30px rgba(0, 242, 254, 0.25);
+  }
+  50% {
+    transform: scale(1.09);
+    box-shadow: 0 0 26px rgba(0, 242, 254, 0.85), 0 0 45px rgba(0, 220, 230, 0.45);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.anim-neon-dropzone {
+  animation: neonBorderPulse 4s ease-in-out infinite;
+  border: 1.5px dashed rgba(0, 242, 254, 0.4);
+}
+
+.anim-dropzone-icon {
+  animation: dropzoneFloat 3.5s ease-in-out infinite;
+}
+
+.anim-green-pulse {
+  animation: greenGlowPulse 2.8s ease-in-out infinite;
+}
+
+.anim-active-likert {
+  animation: activePillBeat 2.4s ease-in-out infinite;
+}
+
+/* Shimmer Button Effect */
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: translateX(-150%) skewX(-20deg);
+  animation: shimmerSlide 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Card hover lift & glow */
+.interactive-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.interactive-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.75), 0 0 24px -4px rgba(0, 242, 254, 0.22);
+  border-color: rgba(0, 242, 254, 0.35) !important;
+}
+
+/* Laser scan console */
+.laser-console {
+  position: relative;
+  overflow: hidden;
+}
+.laser-console::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.8), rgba(251, 171, 255, 0.9), transparent);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.85);
+  animation: laserScan 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-neon-dropzone,
+  .anim-dropzone-icon,
+  .anim-green-pulse,
+  .anim-active-likert,
+  .shimmer-btn::after,
+  .laser-console::before {
+    animation: none !important;
+  }
+  .interactive-card:hover {
+    transform: none !important;
+  }
+}
+</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-primary-fixed":"#002022","surface-container-lowest":"#0b0e14","error-container":"#93000a","on-primary-container":"#006a70","on-background":"#e0e2eb","surface-container-high":"#272a31","tertiary-container":"#67f4b7","secondary-fixed-dim":"#fbabff","error":"#ffb4ab","on-tertiary-fixed-variant":"#005236","on-surface-variant":"#b9cacb","tertiary":"#e1ffec","primary":"#e0fdff","on-tertiary-fixed":"#002113","on-error":"#690005","outline":"#849495","tertiary-fixed-dim":"#4edea3","inverse-primary":"#00696f","secondary-fixed":"#ffd6fd","inverse-surface":"#e0e2eb","surface-variant":"#32353c","surface-tint":"#00dce6","background":"#10131a","surface-container-highest":"#32353c","surface":"#10131a","primary-fixed-dim":"#00dce6","on-secondary-fixed-variant":"#7c008e","on-tertiary-container":"#006e4b","primary-fixed":"#6ff6ff","on-tertiary":"#003824","on-error-container":"#ffdad6","secondary-container":"#ae05c6","primary-container":"#00f2fe","on-secondary-container":"#ffd8fd","on-primary":"#00373a","on-secondary-fixed":"#36003e","on-primary-fixed-variant":"#004f53","on-surface":"#e0e2eb","surface-dim":"#10131a","inverse-on-surface":"#2d3037","surface-bright":"#363940","on-secondary":"#580065","surface-container":"#1d2026","surface-container-low":"#191c22","secondary":"#fbabff","tertiary-fixed":"#6ffbbe","outline-variant":"#3a494b"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-sm":"0.5rem","gutter-desktop":"1.5rem","gutter":"1.25rem","margin":"1rem","space-xs":"0.25rem","margin-desktop":"3rem","space-xl":"2.5rem","margin-tablet":"2rem","space-lg":"1.5rem","space-md":"1rem"},"fontFamily":{"label-code-md":["JetBrains Mono"],"body-md":["Inter"],"label-code-sm":["JetBrains Mono"],"headline-lg":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"display-hero":["Plus Jakarta Sans"],"body-lg":["Inter"],"display-hero-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"label-code-lg":["JetBrains Mono"],"headline-sm":["Plus Jakarta Sans"],"body-sm":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"]},"fontSize":{"label-code-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"label-code-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"600"}],"headline-lg":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-xl":["40px",{"lineHeight":"48px","letterSpacing":"-0.025em","fontWeight":"700"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.03em","fontWeight":"800"}],"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"-0.005em","fontWeight":"400"}],"display-hero-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"800"}],"headline-md":["22px",{"lineHeight":"30px","letterSpacing":"-0.015em","fontWeight":"600"}],"label-code-lg":["14px",{"lineHeight":"20px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-sm":["18px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen relative overflow-x-hidden"><div class="fixed inset-0 pointer-events-none z-0 overflow-hidden"><div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-primary-container/10 blur-[120px]"></div><div class="absolute -bottom-40 right-0 w-[500px] h-[500px] rounded-full bg-secondary-container/10 blur-[140px]"></div></div><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest/80 backdrop-blur-xl border-r border-outline-variant/30 z-50 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)]"><div class="flex flex-col"><div class="h-20 px-space-lg flex items-center gap-space-sm border-b border-outline-variant/20"><img alt="OmniPoll Brand Logo" class="h-8 w-auto object-contain transition-transform duration-300 hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1UnYWc5xNfyzWNgaX0z3327r5l9VKR0X4FzyymHVjZcvpBaRYmeQUg90OZQEhyOb-FE0D6n3MTwpFqRL_bj72IJ2xUL7Jp60loVD6RiBmMvOomSHbOprLAxRYJJwqfVyTQBU3spIp0BGP6SNhTN8p5vThcxafdsbKusrfFX704NJzS61J23cyPh984hqFQQySIqa6ibLKt4AUc-X34LhGFrX8TnbzOeJbpmi-BQ9vmwtIuUZl_CLyPvcpI"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold tracking-tight text-primary">OmniPoll</span><span class="px-1.5 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed text-label-code-sm font-label-code-sm uppercase tracking-wider border border-primary-container/40 shadow-[0_0_10px_rgba(0,242,254,0.3)]">Spatial 3.0</span></div><span class="text-body-sm font-body-sm text-on-surface-variant">Data Intelligence Core</span></div></div><div class="px-space-md pt-space-lg pb-space-sm"><span class="px-space-sm text-label-code-sm font-label-code-sm text-outline uppercase tracking-widest">Navegación Cuántica</span></div><nav class="px-space-md flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary-container border-l-2 border-primary-container shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"><a aria-current="page" class="flex items-center gap-space-md px-space-md py-3 rounded-lg transition-all group bg-surface-container-high text-primary-container border-l-2 border-primary-container shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]" data-path="constructor-&amp;-excel" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">dataset</span><span class="font-body-md text-body-md">Constructor &amp; Excel</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="encuestas-activas" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">public</span><span class="font-body-md text-body-md">Encuestas Activas</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="bento-analytics" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">space_dashboard</span><span class="font-body-md text-body-md">Bento Analytics</span></a><a class="flex items-center gap-space-md px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="aprobacion-admin" href="#"><span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors">verified_user</span><span class="font-body-md text-body-md">Aprobación Admin</span></a></nav></div><div class="p-space-md border-t border-outline-variant/20 bg-surface-container-low/50"><div class="p-space-md rounded-xl bg-surface-container/60 border border-outline-variant/30 flex items-center justify-between"><div class="flex flex-col"><span class="text-label-code-sm font-label-code-sm text-tertiary-fixed">CLUSTER ACTIVO</span><span class="text-body-sm font-body-sm text-on-surface font-medium">LatAm South-1</span></div><span class="flex h-2.5 w-2.5 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-container opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-tertiary-fixed-dim"></span></span></div></div></aside><div class="pl-72 flex flex-col min-h-screen relative z-10"><header class="fixed top-0 left-72 right-0 h-20 bg-surface-container-lowest/75 backdrop-blur-xl border-b border-outline-variant/30 z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm px-space-md py-2 rounded-full bg-surface-container border border-outline-variant/40 hover:border-primary-container/40 transition-colors"><span class="material-symbols-outlined text-outline text-lg">terminal</span><span class="font-label-code-md text-label-code-md text-on-surface-variant">v3.4-PRO / SPATIAL_SURVEY</span></div></div><div class="flex items-center gap-space-lg"><button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all text-body-sm font-body-sm active:scale-95" type="button"><span class="material-symbols-outlined text-primary-fixed-dim text-lg">lightbulb</span><span>Día/Noche</span><span class="h-2 w-2 rounded-full bg-primary-container shadow-[0_0_8px_#00f2fe]"></span></button><button class="shimmer-btn flex items-center gap-space-sm px-space-lg py-2.5 rounded-lg bg-gradient-to-r from-primary-container to-surface-tint text-on-primary-fixed font-headline-sm text-body-sm font-bold tracking-tight shadow-[0_4px_20px_-2px_rgba(0,242,254,0.4)] hover:shadow-[0_4px_28px_rgba(0,242,254,0.65)] hover:brightness-110 active:scale-[0.98] transition-all" type="button"><span class="material-symbols-outlined text-on-primary-fixed text-lg">upload_file</span><span>+ Importar .XLSX</span></button><div class="relative flex items-center"><button class="p-2 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface-variant hover:text-on-surface transition-colors relative hover:scale-105" type="button"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_#fbabff]"></span></button></div><div class="h-8 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-md pl-space-xs cursor-pointer group"><div class="relative flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-container/40 group-hover:ring-primary-container transition-all group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1UuxqznkqO6CzFoYdk36SnfHsAj6IAriE47eUtCFFEr2uQxjzWYDE-jigXH4H5gH0qianfSOAIn5cAtfazo2h8SbutYAXabvLrYZiqn1EnKRD4ujovtis8hNQg2-6VNgqGC59b6x5pkMz-c6dnUh7e_MU4d9oiOcCDXZ9V0gYaA2QnkRnryhSQHCjJHf--bzsylj3pp9dbWT6fHJzzzADarxNTXKogfd998RT9dFJyzta31uoknsg2UuEQ"/><span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-tertiary-fixed-dim ring-2 ring-surface"></span></div><div class="flex flex-col text-left"><span class="font-headline-sm text-body-sm font-bold text-on-surface tracking-tight group-hover:text-primary transition-colors">Ing. Valdivia</span><span class="text-label-code-sm font-label-code-sm text-primary-fixed-dim">SuperAdmin</span></div><span class="material-symbols-outlined text-outline text-lg group-hover:translate-y-0.5 transition-transform">expand_more</span></div></div></header><main class="w-full pt-20 bg-transparent flex-1 px-gutter-desktop"><div class="flex flex-col w-full pb-space-xl">
+<!-- Dynamic Atmospheric Glows -->
+<div class="relative w-full">
+<div class="absolute -top-12 left-1/4 w-96 h-32 bg-primary-container/15 rounded-full blur-[90px] pointer-events-none"></div>
+<div class="absolute top-24 right-10 w-80 h-32 bg-secondary-container/15 rounded-full blur-[100px] pointer-events-none"></div>
+<!-- Header Panel / Survey Studio Status Bar -->
+<div class="w-full bg-surface-container/70 backdrop-blur-xl rounded-xl border border-outline-variant/20 shadow-xl p-space-lg mb-space-lg flex flex-col xl:flex-row items-start xl:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-1.5">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="font-headline-lg text-headline-lg text-primary tracking-tight font-bold">Survey Studio &amp; Importador XLSX</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-primary-fixed text-label-code-sm font-label-code-sm shadow-sm flex items-center gap-1.5 border border-primary-container/30 hover:border-primary-container/60 transition-colors">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
+            PHP/MySQL Engine v3.4
+          </span>
+<span class="anim-green-pulse px-2.5 py-1 rounded-full bg-tertiary-container/15 text-tertiary-fixed text-label-code-sm font-label-code-sm flex items-center gap-1 border border-tertiary-fixed/30">
+<span class="material-symbols-outlined text-sm text-tertiary-fixed-dim">verified</span>
+            Schema Synced
+          </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2">
+<span>Diseñador dinámico con validación de tipos e ingestión masiva de tablas relacionales.</span>
+<span class="hidden md:inline text-outline-variant">•</span>
+<span class="hidden md:inline font-label-code-sm text-label-code-sm text-outline">ENC_UUID: #8f92-omni-2024</span>
+</p>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm w-full xl:w-auto justify-start xl:justify-end">
+<!-- Draft Selector Pill -->
+<div class="flex items-center gap-2 bg-surface-container-lowest/80 backdrop-blur-md px-3 py-2 rounded-lg border border-outline-variant/30 shadow-inner hover:border-secondary/50 transition-colors">
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#fbabff]"></span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface uppercase tracking-wider">Estado:</span>
+<select class="bg-transparent font-headline-sm text-body-sm text-secondary font-semibold focus:outline-none cursor-pointer pr-1">
+<option class="bg-surface-container-highest text-on-surface" value="draft">Borrador activo</option>
+<option class="bg-surface-container-highest text-on-surface" value="review">En Revisión Metodológica</option>
+<option class="bg-surface-container-highest text-on-surface" value="frozen">Congelado para Pruebas</option>
+</select>
+</div>
+<!-- Secondary Button: Live Preview -->
+<button class="flex items-center gap-2 px-space-md py-2.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-headline-sm text-body-sm font-semibold shadow-md hover:shadow-lg border border-outline-variant/30 hover:border-primary-container/40 transition-all active:scale-[0.98] group" id="btn-live-preview" type="button">
+<span class="material-symbols-outlined text-primary-fixed-dim text-lg group-hover:scale-110 transition-transform">visibility</span>
+<span>Vista Previa en Vivo</span>
+</button>
+<!-- Primary Button: Publish Survey -->
+<button class="shimmer-btn flex items-center gap-2 px-space-lg py-2.5 rounded-lg bg-gradient-to-r from-primary-container to-surface-tint text-on-primary-fixed font-headline-sm text-body-sm font-bold tracking-tight shadow-[0_4px_24px_-4px_rgba(0,242,254,0.5)] hover:shadow-[0_6px_32px_rgba(0,242,254,0.7)] hover:brightness-110 active:scale-[0.98] transition-all" type="button">
+<span class="material-symbols-outlined text-lg">rocket_launch</span>
+<span>Publicar Encuesta</span>
+</button>
+</div>
+</div>
+<!-- 12-Column Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-space-lg w-full">
+<!-- BENTO CARD 1: Zona de Carga Excel & XLSX Schema Validation (Col 12 / Large Desktop 5) -->
+<section class="col-span-12 xl:col-span-5 flex flex-col gap-space-md bg-surface-container-low/80 backdrop-blur-xl rounded-xl border border-outline-variant/30 p-space-lg shadow-xl relative overflow-hidden interactive-card">
+<!-- Accent Glow Accent -->
+<div class="absolute top-0 right-0 w-48 h-48 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="p-2 rounded-lg bg-primary-container/15 text-primary-fixed flex items-center justify-center shadow-[0_0_12px_rgba(0,242,254,0.2)]">
+<span class="material-symbols-outlined text-xl">table_view</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Ingestor Excel .XLSX</h2>
+<p class="font-label-code-sm text-label-code-sm text-on-surface-variant">Parser PHPSpreadsheet + Ubigeo Mapper</p>
+</div>
+</div>
+<a class="shimmer-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high/80 border border-primary-container/30 text-label-code-sm font-label-code-sm text-primary-fixed-dim hover:text-primary hover:border-primary-container hover:shadow-[0_0_14px_rgba(0,242,254,0.35)] transition-all" href="#">
+<span class="material-symbols-outlined text-sm">download</span>
+<span>Descargar Plantilla (.xlsx)</span>
+</a>
+</div>
+<!-- Interactive Drag & Drop Zone -->
+<div class="anim-neon-dropzone relative group cursor-pointer bg-surface-container-lowest/60 hover:bg-surface-container-lowest/90 rounded-xl p-space-lg transition-all shadow-inner flex flex-col items-center justify-center text-center" id="dropzone">
+<div class="anim-dropzone-icon w-14 h-14 rounded-full bg-surface-container-high group-hover:bg-primary-container/25 text-primary-fixed flex items-center justify-center mb-space-sm shadow-[0_0_20px_rgba(0,242,254,0.35)] transition-all">
+<span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">cloud_upload</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors font-semibold">Arrastra tu matriz de preguntas aquí</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-1">Soporta libros estructurados .xlsx, .xlsm o tablas delimitadas .csv UTF-8</span>
+<div class="mt-space-md flex flex-wrap items-center justify-center gap-2">
+<span class="px-2.5 py-1 rounded bg-surface-container-high text-on-surface text-label-code-sm font-label-code-sm border border-outline-variant/20 hover:border-primary-container/40 transition-colors">Máx. 50,000 celdas</span>
+<span class="px-2.5 py-1 rounded bg-surface-container-high text-tertiary-fixed text-label-code-sm font-label-code-sm border border-tertiary-container/30 hover:border-tertiary-fixed transition-colors">Auto-detección UBIGEO</span>
+<span class="px-2.5 py-1 rounded bg-surface-container-high text-secondary text-label-code-sm font-label-code-sm border border-secondary/30 hover:border-secondary transition-colors">Encoding UTF-8</span>
+</div>
+</div>
+<!-- Detected Columns Meta Indicator -->
+<div class="bg-surface-container/60 rounded-lg p-space-md border border-outline-variant/20">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-code-sm text-label-code-sm uppercase tracking-wider text-outline">Columnas detectadas en buffer</span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary-fixed-dim font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+              6/6 Mapeadas
+            </span>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container-highest text-primary-fixed font-label-code-sm text-label-code-sm border border-primary-container/20 transition-colors">ID_Pregunta</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container-highest text-primary-fixed font-label-code-sm text-label-code-sm border border-primary-container/20 transition-colors">Tipo</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container-highest text-primary-fixed font-label-code-sm text-label-code-sm border border-primary-container/20 transition-colors">Texto</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container-highest text-primary-fixed font-label-code-sm text-label-code-sm border border-primary-container/20 transition-colors">Opciones</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container-highest text-secondary font-label-code-sm text-label-code-sm border border-secondary/30 transition-colors">Ubigeo_Condicional</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container-highest text-primary-fixed font-label-code-sm text-label-code-sm border border-primary-container/20 transition-colors">Obligatorio</span>
+</div>
+</div>
+<!-- Mini Preview Table (3 Live Previews) -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-on-surface uppercase font-bold tracking-wider">Preview de 3 Filas Validadas</span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary-fixed flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim animate-ping"></span>
+              Validación Neón OK
+            </span>
+</div>
+<div class="overflow-x-auto bg-surface-container-lowest/90 rounded-lg p-2 shadow-inner border border-outline-variant/20">
+<table class="w-full text-left">
+<thead>
+<tr class="text-label-code-sm font-label-code-sm text-outline border-none">
+<th class="py-1 px-2">ID</th>
+<th class="py-1 px-2">Tipo</th>
+<th class="py-1 px-2">Etiqueta Resumida</th>
+<th class="py-1 px-2">Regla Ubigeo</th>
+<th class="py-1 px-2 text-right">Estado</th>
+</tr>
+</thead>
+<tbody class="font-label-code-sm text-label-code-sm divide-none">
+<tr class="hover:bg-surface-container-high/60 transition-colors group">
+<td class="py-2 px-2 text-primary-fixed font-bold group-hover:text-primary">P_01</td>
+<td class="py-2 px-2 text-on-surface-variant font-mono text-[11px]">CASCADE_GEO</td>
+<td class="py-2 px-2 text-on-surface truncate max-w-[120px]">Ubigeo Perú (Nacional)</td>
+<td class="py-2 px-2 text-secondary font-bold font-mono text-[11px]">PE-UBIGEO-2024</td>
+<td class="py-2 px-2 text-right">
+<span class="anim-green-pulse inline-block px-1.5 py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed text-label-code-sm font-label-code-sm font-bold border border-tertiary-fixed/40">VÁLIDO</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/60 transition-colors group">
+<td class="py-2 px-2 text-primary-fixed font-bold group-hover:text-primary">P_02</td>
+<td class="py-2 px-2 text-on-surface-variant font-mono text-[11px]">LIKERT_SCALE</td>
+<td class="py-2 px-2 text-on-surface truncate max-w-[120px]">Satisfacción Infraestructura</td>
+<td class="py-2 px-2 text-outline font-mono text-[11px]">N/A</td>
+<td class="py-2 px-2 text-right">
+<span class="anim-green-pulse inline-block px-1.5 py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed text-label-code-sm font-label-code-sm font-bold border border-tertiary-fixed/40">VÁLIDO</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/60 transition-colors group">
+<td class="py-2 px-2 text-primary-fixed font-bold group-hover:text-primary">P_03</td>
+<td class="py-2 px-2 text-on-surface-variant font-mono text-[11px]">FILE_ATTACH</td>
+<td class="py-2 px-2 text-on-surface truncate max-w-[120px]">Evidencia Fotográfica + Comentarios</td>
+<td class="py-2 px-2 text-outline font-mono text-[11px]">N/A</td>
+<td class="py-2 px-2 text-right">
+<span class="anim-green-pulse inline-block px-1.5 py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed text-label-code-sm font-label-code-sm font-bold border border-tertiary-fixed/40">VÁLIDO</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Ingestion Stats & PHP Engine Trigger -->
+<div class="mt-auto pt-space-sm flex items-center justify-between bg-surface-container/40 p-space-sm rounded-lg border border-outline-variant/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed-dim text-lg">sync_saved_locally</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">Memoria asignada: 256MB PHP-CLI</span>
+</div>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-primary font-headline-sm text-body-sm font-bold transition-all flex items-center gap-1 hover:shadow-[0_0_12px_rgba(0,242,254,0.3)] active:scale-95 group" type="button">
+<span>Re-analizar Hoja</span>
+<span class="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform duration-500">refresh</span>
+</button>
+</div>
+</section>
+<!-- BENTO CARD 2: Dynamic Live Question Canvas (Col 12 / Large Desktop 7) -->
+<section class="col-span-12 xl:col-span-7 flex flex-col gap-space-lg relative">
+<div class="bg-surface-container-low/80 backdrop-blur-xl rounded-xl border border-outline-variant/30 p-space-lg shadow-xl flex flex-col gap-space-lg">
+<!-- Section Heading -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-sm">
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary-fixed font-label-code-sm text-label-code-sm font-bold border border-primary-container/30">Lienzo Reactivo</span>
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Constructor de Preguntas en Vivo</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Jerarquía visual estructurada con validación en tiempo real</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-code-sm text-label-code-sm text-outline">Auto-guardado:</span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary-fixed flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+              hace 4 segundos
+            </span>
+</div>
+</div>
+<!-- Dynamic Question 1: Cascading Conditional Selector / UBIGEO Perú -->
+<div class="interactive-card bg-surface-container/70 rounded-xl p-space-md shadow-lg border border-outline-variant/20">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-7 h-7 rounded-lg bg-primary-container text-on-primary-fixed font-headline-sm text-body-sm font-bold shadow-[0_0_10px_rgba(0,242,254,0.4)]">01</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-bold">Ubicación Geográfica en Cascada</h3>
+<span class="font-label-code-sm text-label-code-sm text-outline">TYPE: UBIGEO_PERU_4TIER / REQUIRED</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-1 rounded text-outline-variant hover:text-on-surface transition-colors cursor-pointer hover:bg-surface-bright">
+<span class="material-symbols-outlined text-sm">drag_indicator</span>
+<span class="material-symbols-outlined text-sm">more_vert</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              Seleccione la demarcación política territorial para clasificar la muestra censal:
+            </p>
+<!-- Cascading 4-Pill Trigger Matrix -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-sm mb-space-md">
+<!-- Country: Perú -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-lg bg-surface-container-lowest/80 shadow-inner border border-outline-variant/20 hover:border-primary-container/40 transition-all">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-outline uppercase font-semibold">1. País</span>
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse shadow-[0_0_6px_#00f2fe]"></span>
+</div>
+<div class="flex items-center justify-between font-headline-sm text-body-sm font-bold text-on-surface">
+<span class="flex items-center gap-1.5">
+<span class="text-base">🇵🇪</span> Perú
+                  </span>
+<span class="material-symbols-outlined text-outline text-sm">lock</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-primary-fixed-dim">ISO 3166-2: PE</span>
+</div>
+<!-- Department: Lima -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-lg bg-surface-container-high/70 shadow-sm hover:bg-surface-container-high transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,242,254,0.15)] border border-transparent hover:border-primary-container/40 cursor-pointer group">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-primary-fixed uppercase font-semibold">2. Departamento</span>
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+</div>
+<div class="flex items-center justify-between font-headline-sm text-body-sm font-bold text-primary">
+<span>Lima</span>
+<span class="material-symbols-outlined text-primary-fixed-dim text-sm group-hover:translate-y-0.5 transition-transform">expand_more</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">10 Provincias</span>
+</div>
+<!-- Province: Lima Metropolitana -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-lg bg-surface-container-high/70 shadow-sm hover:bg-surface-container-high transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,242,254,0.15)] border border-transparent hover:border-primary-container/40 cursor-pointer group">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-primary-fixed uppercase font-semibold">3. Provincia</span>
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+</div>
+<div class="flex items-center justify-between font-headline-sm text-body-sm font-bold text-primary truncate">
+<span class="truncate">Lima Metrop.</span>
+<span class="material-symbols-outlined text-primary-fixed-dim text-sm group-hover:translate-y-0.5 transition-transform">expand_more</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">43 Distritos</span>
+</div>
+<!-- District: Miraflores -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-lg bg-surface-container-high/90 shadow-sm hover:bg-surface-bright transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(251,171,255,0.2)] cursor-pointer ring-1 ring-primary-container/40 group">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-tertiary-fixed uppercase font-semibold">4. Distrito</span>
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#fbabff]"></span>
+</div>
+<div class="flex items-center justify-between font-headline-sm text-body-sm font-bold text-on-surface">
+<span class="text-tertiary font-bold">Miraflores</span>
+<span class="material-symbols-outlined text-primary-fixed-dim text-sm group-hover:translate-y-0.5 transition-transform">expand_more</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-secondary font-semibold">UBIGEO: 150122</span>
+</div>
+</div>
+<!-- Conditional Rule Reactive Badge -->
+<div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-lg bg-surface-container-lowest/90 border border-outline-variant/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-base">account_tree</span>
+<span class="font-label-code-sm text-label-code-sm text-secondary font-medium">Lógica condicional activa:</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant font-mono">IF Pais == 'Peru' THEN Mostrar(Departamentos) -&gt; Cascade(Prov, Dist)</span>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container text-tertiary-fixed text-label-code-sm font-label-code-sm font-bold border border-tertiary-container/30 shadow-[0_0_8px_rgba(103,244,183,0.25)]">Condición Cumplida</span>
+</div>
+</div>
+<!-- Dynamic Question 2: Likert Scale 1-10 Infrastructure Satisfaction -->
+<div class="interactive-card bg-surface-container/70 rounded-xl p-space-md shadow-lg border border-outline-variant/20">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-7 h-7 rounded-lg bg-primary-container text-on-primary-fixed font-headline-sm text-body-sm font-bold shadow-[0_0_10px_rgba(0,242,254,0.4)]">02</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-bold">Nivel de Satisfacción del Servicio de Infraestructura</h3>
+<span class="font-label-code-sm text-label-code-sm text-outline">TYPE: LIKERT_METRIC / RANGE: 1-10</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-1 rounded text-outline-variant hover:text-on-surface transition-colors cursor-pointer hover:bg-surface-bright">
+<span class="material-symbols-outlined text-sm">drag_indicator</span>
+<span class="material-symbols-outlined text-sm">more_vert</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              En una escala del 1 (Totalmente Inadecuada) al 10 (Óptima y Resiliente), ¿cómo califica el estado de las vías y suministro eléctrico?
+            </p>
+<!-- Likert 1-10 Glass Button Bar -->
+<div class="grid grid-cols-5 sm:grid-cols-10 gap-2 mb-space-sm">
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>1</span>
+</button>
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>2</span>
+</button>
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>3</span>
+</button>
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>4</span>
+</button>
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>5</span>
+</button>
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>6</span>
+</button>
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>7</span>
+</button>
+<!-- Selected state example (Pill 8) con animación palpitante neón -->
+<button class="likert-btn anim-active-likert flex flex-col items-center justify-center py-3 rounded-lg bg-primary-container text-on-primary-fixed font-headline-sm text-headline-sm font-bold transition-all duration-200 active:scale-95" type="button">
+<span>8</span>
+</button>
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>9</span>
+</button>
+<button class="likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95" type="button">
+<span>10</span>
+</button>
+</div>
+<div class="flex items-center justify-between font-label-code-sm text-label-code-sm text-outline px-1">
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                1: Crítico / Deficiente
+              </span>
+<span class="flex items-center gap-1 text-primary-fixed">
+                8: Favorable (Seleccionado)
+              </span>
+<span class="flex items-center gap-1">
+                10: Excelencia Mundial
+                <span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+</span>
+</div>
+</div>
+<!-- Dynamic Question 3: Additional Comments & Photo Evidence Upload -->
+<div class="interactive-card bg-surface-container/70 rounded-xl p-space-md shadow-lg border border-outline-variant/20">
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="flex items-center justify-center w-7 h-7 rounded-lg bg-primary-container text-on-primary-fixed font-headline-sm text-body-sm font-bold shadow-[0_0_10px_rgba(0,242,254,0.4)]">03</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-bold">Comentarios Adicionales y Evidencia Fotográfica</h3>
+<span class="font-label-code-sm text-label-code-sm text-outline">TYPE: MULTIPART_EVIDENCE / OPTIONAL</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-1 rounded text-outline-variant hover:text-on-surface transition-colors cursor-pointer hover:bg-surface-bright">
+<span class="material-symbols-outlined text-sm">drag_indicator</span>
+<span class="material-symbols-outlined text-sm">more_vert</span>
+</div>
+</div>
+<!-- Textfield prompt -->
+<div class="mb-space-md">
+<label class="block font-label-code-sm text-label-code-sm text-on-surface-variant uppercase mb-1.5">Detalle cualitativo del entrevistado</label>
+<textarea class="w-full bg-surface-container-lowest/80 text-on-surface font-body-md text-body-md rounded-lg p-space-sm focus:outline-none focus:ring-1 focus:ring-primary-container/60 focus:bg-surface-container-lowest shadow-inner border border-outline-variant/20 transition-all" placeholder="Ingrese comentarios pertinentes sobre el estado real observado en campo..." rows="2"></textarea>
+</div>
+<!-- Photogrammetric Glass Dropzone -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest/60 hover:bg-surface-container-lowest/90 transition-all duration-300 border border-dashed border-outline-variant/40 hover:border-secondary/60 flex flex-col sm:flex-row items-center justify-between gap-space-md cursor-pointer group hover:shadow-[0_0_20px_rgba(174,5,198,0.2)]">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high group-hover:bg-secondary-container/20 text-secondary flex items-center justify-center transition-all group-hover:scale-105 shadow-[0_0_12px_rgba(174,5,198,0.2)]">
+<span class="material-symbols-outlined text-2xl">add_a_photo</span>
+</div>
+<div>
+<span class="font-headline-sm text-body-sm font-bold text-on-surface group-hover:text-primary transition-colors block">Adjuntar fotogrametría o actas escaneadas</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant block">Formatos permitidos: JPG, PNG, WEBP georreferenciados (Máx. 15MB)</span>
+</div>
+</div>
+<span class="shimmer-btn px-space-md py-2 rounded-lg bg-surface-container-high text-primary-fixed font-headline-sm text-body-sm font-semibold shadow-sm group-hover:bg-primary-container group-hover:text-on-primary-fixed transition-all border border-outline-variant/30">Examinar Archivo</span>
+</div>
+</div>
+</div>
+<!-- Floating Survey Builder Tool Dock (Positioned at right edge on desktop) -->
+<div class="flex flex-wrap items-center justify-between gap-2 p-space-sm rounded-xl bg-surface-container-lowest/80 backdrop-blur-xl border border-outline-variant/30 shadow-xl">
+<span class="font-label-code-sm text-label-code-sm text-outline uppercase pl-2 font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary-fixed-dim">add_circle</span>
+            Añadir Pregunta:
+          </span>
+<div class="flex flex-wrap items-center gap-1.5">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-sm border border-outline-variant/20 hover:border-primary-container/40 transition-all hover:-translate-y-0.5" type="button">
+<span class="material-symbols-outlined text-sm text-primary-fixed-dim">short_text</span>
+<span>Texto</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-sm border border-outline-variant/20 hover:border-secondary/50 transition-all hover:-translate-y-0.5" type="button">
+<span class="material-symbols-outlined text-sm text-secondary">checklist</span>
+<span>Selección Múltiple</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-sm border border-outline-variant/20 hover:border-tertiary-fixed transition-all hover:-translate-y-0.5" type="button">
+<span class="material-symbols-outlined text-sm text-tertiary-fixed-dim">grid_view</span>
+<span>Matriz</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-primary-container/20 text-primary-fixed text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-sm font-bold border border-primary-container/40 shadow-[0_0_12px_rgba(0,242,254,0.3)] transition-all hover:-translate-y-0.5" type="button">
+<span class="material-symbols-outlined text-sm">hub</span>
+<span>UBIGEO Cascada</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-sm border border-outline-variant/20 hover:border-primary-container/40 transition-all hover:-translate-y-0.5" type="button">
+<span class="material-symbols-outlined text-sm text-primary-fixed-dim">star</span>
+<span>Rating</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container hover:bg-surface-bright text-on-surface text-label-code-sm font-label-code-sm flex items-center gap-1 shadow-sm border border-outline-variant/20 hover:border-secondary/50 transition-all hover:-translate-y-0.5" type="button">
+<span class="material-symbols-outlined text-sm text-secondary">draw</span>
+<span>Firma Digital</span>
+</button>
+</div>
+</div>
+</section>
+<!-- BENTO CARD 3: Configuración de Base de Datos MySQL & PHP Script Engine (Col 12 / Large Desktop 6) -->
+<section class="col-span-12 xl:col-span-6 bg-surface-container-low/80 backdrop-blur-xl rounded-xl border border-outline-variant/30 p-space-lg shadow-xl flex flex-col justify-between gap-space-md interactive-card">
+<div>
+<div class="flex items-center justify-between pb-space-sm mb-space-sm">
+<div class="flex items-center gap-2">
+<div class="p-2 rounded-lg bg-tertiary-container/15 text-tertiary-fixed flex items-center justify-center shadow-[0_0_10px_rgba(78,222,163,0.2)]">
+<span class="material-symbols-outlined text-xl">database</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Esquema MySQL &amp; Driver PHP</h3>
+<p class="font-label-code-sm text-label-code-sm text-on-surface-variant">Conexión activa mediante PDO_MYSQL / MariaDB Cluster</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="anim-green-pulse px-2.5 py-1 rounded-full bg-tertiary-container/15 text-tertiary-fixed font-label-code-sm text-label-code-sm font-bold flex items-center gap-1 border border-tertiary-fixed/30">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                Latencia: 12ms
+              </span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-primary-fixed font-label-code-sm text-label-code-sm flex items-center gap-1 border border-outline-variant/30">
+<span class="material-symbols-outlined text-xs">lock</span>
+                AES-256
+              </span>
+</div>
+</div>
+<!-- Relational Schema Representation -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm mb-space-md">
+<!-- Table 1: encuestas_master -->
+<div class="bg-surface-container-lowest/80 rounded-lg p-space-sm shadow-inner border border-outline-variant/20 hover:border-primary-container/40 transition-colors flex flex-col gap-1.5">
+<div class="flex items-center justify-between pb-1 border-b border-outline-variant/15">
+<span class="font-label-code-md text-label-code-md text-primary-fixed font-bold">encuestas_master</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">InnoDB / UTF8MB4</span>
+</div>
+<div class="font-label-code-sm text-label-code-sm text-on-surface-variant flex flex-col gap-1">
+<div class="flex justify-between"><span>id_encuesta</span> <span class="text-secondary font-mono">BIGINT PK AUTO</span></div>
+<div class="flex justify-between"><span>uuid_token</span> <span class="text-on-surface font-mono">CHAR(36) UNIQUE</span></div>
+<div class="flex justify-between"><span>fecha_registro</span> <span class="text-on-surface font-mono">DATETIME INDEX</span></div>
+<div class="flex justify-between"><span>hash_integridad</span> <span class="text-on-surface font-mono">VARCHAR(64) SHA2</span></div>
+</div>
+</div>
+<!-- Table 2: respuestas_ubigeo -->
+<div class="bg-surface-container-lowest/80 rounded-lg p-space-sm shadow-inner border border-outline-variant/20 hover:border-secondary/40 transition-colors flex flex-col gap-1.5">
+<div class="flex items-center justify-between pb-1 border-b border-outline-variant/15">
+<span class="font-label-code-md text-label-code-md text-secondary font-bold">respuestas_ubigeo</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">Partición Hash(ID)</span>
+</div>
+<div class="font-label-code-sm text-label-code-sm text-on-surface-variant flex flex-col gap-1">
+<div class="flex justify-between"><span>id_respuesta</span> <span class="text-secondary font-mono">BIGINT PK AUTO</span></div>
+<div class="flex justify-between"><span>fk_encuesta_id</span> <span class="text-primary-fixed font-mono">BIGINT FK</span></div>
+<div class="flex justify-between"><span>codigo_ubigeo</span> <span class="text-tertiary-fixed font-bold font-mono">CHAR(6) INDEX</span></div>
+<div class="flex justify-between"><span>payload_json</span> <span class="text-on-surface font-mono">JSON CHECK_VALID</span></div>
+</div>
+</div>
+</div>
+<!-- Live PHP Script Stream Preview con Laser Scan Effect -->
+<div class="laser-console bg-surface-container-lowest/95 rounded-lg p-space-sm font-label-code-sm text-label-code-sm text-on-surface-variant shadow-inner border border-outline-variant/30 overflow-hidden relative">
+<div class="flex items-center justify-between text-outline text-label-code-sm pb-1 mb-1 border-b border-outline-variant/20">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary-container">code</span>
+<span class="font-mono text-primary-fixed">/engine/v3.4/SpatialUbigeoParser.php</span>
+</span>
+<span class="text-tertiary-fixed font-bold font-mono">STRICT_TYPES=1</span>
+</div>
+<pre class="font-mono text-body-sm text-on-surface overflow-x-auto leading-5 relative z-10"><code><span class="text-primary-fixed-dim">$stmt</span> = <span class="text-primary-fixed-dim">$pdo</span>-&gt;prepare(<span class="text-tertiary">"INSERT INTO respuestas_ubigeo (fk_encuesta_id, codigo_ubigeo, payload_json) VALUES (?, ?, ?)"</span>);
+<span class="text-primary-fixed-dim">$stmt</span>-&gt;execute([<span class="text-secondary">$encuestaId</span>, <span class="text-secondary">$parsedUbigeo</span>, json_encode(<span class="text-secondary">$likertData</span>, JSON_UNESCAPED_UNICODE)]);
+<span class="text-outline">// AES-256 GCM salt applied before filesystem persistence</span></code></pre>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="font-label-code-sm text-label-code-sm text-outline">Pool de conexiones: 18 activas / 100 máx</span>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container hover:bg-surface-high text-on-surface font-headline-sm text-body-sm transition-all duration-200 border border-outline-variant/30 hover:border-tertiary-fixed hover:shadow-[0_0_12px_rgba(78,222,163,0.3)] flex items-center gap-1 active:scale-95 group" type="button">
+<span>Test de Integridad MySQL</span>
+<span class="material-symbols-outlined text-sm text-tertiary-fixed group-hover:scale-110 transition-transform">network_check</span>
+</button>
+</div>
+</section>
+<!-- BENTO CARD 4: Quick Responsive Simulator (Col 12 / Large Desktop 6) -->
+<section class="col-span-12 xl:col-span-6 bg-surface-container-low/80 backdrop-blur-xl rounded-xl border border-outline-variant/30 p-space-lg shadow-xl flex flex-col justify-between gap-space-md relative overflow-hidden interactive-card">
+<!-- Header / Viewport Selector -->
+<div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-sm mb-space-sm">
+<div class="flex items-center gap-2">
+<div class="p-2 rounded-lg bg-secondary-container/20 text-secondary flex items-center justify-center shadow-[0_0_10px_rgba(174,5,198,0.25)]">
+<span class="material-symbols-outlined text-xl">devices</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Simulador Responsive Rápido</h3>
+<p class="font-label-code-sm text-label-code-sm text-on-surface-variant">Prueba el comportamiento del render en tiempo de compilación</p>
+</div>
+</div>
+<!-- Viewport Toggle Buttons -->
+<div class="flex items-center bg-surface-container-lowest/90 p-1 rounded-lg border border-outline-variant/30 shadow-inner">
+<button class="px-3 py-1.5 rounded bg-surface-container-high text-primary-fixed font-headline-sm text-body-sm font-semibold flex items-center gap-1.5 transition-all shadow-sm" id="btn-view-desktop" type="button">
+<span class="material-symbols-outlined text-base">desktop_windows</span>
+<span>PC 1920px</span>
+</button>
+<button class="px-3 py-1.5 rounded text-outline-variant hover:text-on-surface font-headline-sm text-body-sm font-semibold flex items-center gap-1.5 transition-all" id="btn-view-mobile" type="button">
+<span class="material-symbols-outlined text-base">smartphone</span>
+<span>Mobile 390px</span>
+</button>
+</div>
+</div>
+<!-- Glass Mockup Preview Surface -->
+<div class="w-full bg-surface-container-lowest/90 rounded-xl p-space-md shadow-inner transition-all duration-300 border border-outline-variant/20 flex flex-col items-center justify-center min-h-[220px]" id="simulator-container">
+<!-- Desktop Layout Mockup View (Default) -->
+<div class="w-full max-w-xl bg-surface-container/70 rounded-lg p-space-sm shadow-md border border-outline-variant/30 flex flex-col gap-2 transition-all duration-300" id="mockup-desktop">
+<div class="flex items-center justify-between pb-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-error-container"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-surface-container-highest"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">https://omnipoll.pro/live/encuesta-infra-2024</span>
+<span class="material-symbols-outlined text-sm text-outline hover:text-primary transition-colors cursor-pointer">refresh</span>
+</div>
+<div class="p-3 bg-surface-container-low rounded flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="h-3 w-40 bg-surface-container-high rounded animate-pulse"></div>
+<div class="h-3 w-16 bg-primary-container/40 rounded"></div>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<div class="h-6 bg-surface-container-high rounded"></div>
+<div class="h-6 bg-surface-container-high rounded"></div>
+<div class="h-6 bg-surface-container-high rounded"></div>
+<div class="h-6 bg-primary-container/30 rounded"></div>
+</div>
+<div class="flex gap-1 justify-between pt-1">
+<div class="h-5 flex-1 bg-surface-container-high rounded"></div>
+<div class="h-5 flex-1 bg-surface-container-high rounded"></div>
+<div class="h-5 flex-1 bg-surface-container-high rounded"></div>
+<div class="h-5 flex-1 bg-surface-container-high rounded"></div>
+<div class="h-5 flex-1 bg-primary-container rounded shadow-[0_0_8px_rgba(0,242,254,0.4)]"></div>
+</div>
+</div>
+</div>
+<!-- Mobile Layout Mockup View (Initially hidden via class) -->
+<div class="hidden w-[220px] bg-surface-container/90 rounded-2xl p-2 shadow-xl border border-outline-variant/40 flex flex-col gap-2 transition-all duration-300" id="mockup-mobile">
+<div class="w-16 h-1 bg-outline-variant rounded-full mx-auto mt-1"></div>
+<div class="p-2 bg-surface-container-low rounded-xl flex flex-col gap-2">
+<div class="h-2.5 w-24 bg-surface-container-high rounded"></div>
+<div class="flex flex-col gap-1">
+<div class="h-4 bg-surface-container-high rounded text-label-code-sm px-1 text-outline">PE - Nacional</div>
+<div class="h-4 bg-surface-container-high rounded text-label-code-sm px-1 text-outline">Dep: Lima</div>
+<div class="h-4 bg-primary-container/30 rounded text-label-code-sm px-1 text-primary-fixed">Dist: Miraflores</div>
+</div>
+<div class="h-6 bg-primary-container rounded text-on-primary-fixed font-label-code-sm flex items-center justify-center font-bold shadow-[0_0_10px_rgba(0,242,254,0.4)]">Enviar Respuesta</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Simulator Diagnostics Meta -->
+<div class="flex items-center justify-between pt-space-xs font-label-code-sm text-label-code-sm text-outline">
+<span class="flex items-center gap-1 text-tertiary-fixed">
+<span class="material-symbols-outlined text-sm">speed</span>
+            Score de Render: 99/100 (Zero CLS)
+          </span>
+<span>Target CSS: Tailwind Fluid Bento</span>
+</div>
+</section>
+</div>
+</div>
+</div>
+<script>
+  // Quick Viewport Toggle Micro-interaction
+  const btnDesktop = document.getElementById('btn-view-desktop');
+  const btnMobile = document.getElementById('btn-view-mobile');
+  const mockupDesktop = document.getElementById('mockup-desktop');
+  const mockupMobile = document.getElementById('mockup-mobile');
+
+  if (btnDesktop && btnMobile && mockupDesktop && mockupMobile) {
+    btnDesktop.addEventListener('click', () => {
+      btnDesktop.className = 'px-3 py-1.5 rounded bg-surface-container-high text-primary-fixed font-headline-sm text-body-sm font-semibold flex items-center gap-1.5 transition-all shadow-sm';
+      btnMobile.className = 'px-3 py-1.5 rounded text-outline-variant hover:text-on-surface font-headline-sm text-body-sm font-semibold flex items-center gap-1.5 transition-all';
+      mockupDesktop.classList.remove('hidden');
+      mockupMobile.classList.add('hidden');
+    });
+
+    btnMobile.addEventListener('click', () => {
+      btnMobile.className = 'px-3 py-1.5 rounded bg-surface-container-high text-primary-fixed font-headline-sm text-body-sm font-semibold flex items-center gap-1.5 transition-all shadow-sm';
+      btnDesktop.className = 'px-3 py-1.5 rounded text-outline-variant hover:text-on-surface font-headline-sm text-body-sm font-semibold flex items-center gap-1.5 transition-all';
+      mockupDesktop.classList.add('hidden');
+      mockupMobile.classList.remove('hidden');
+    });
+  }
+
+  // Likert Interactive Active States con pulso halo
+  const likertButtons = document.querySelectorAll('.likert-btn');
+  likertButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      likertButtons.forEach(b => {
+        b.className = 'likert-btn flex flex-col items-center justify-center py-3 rounded-lg bg-surface-container-high/80 hover:bg-primary-container hover:text-on-primary-fixed text-on-surface font-headline-sm text-headline-sm font-bold transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_rgba(0,242,254,0.55)] border border-outline-variant/20 hover:border-transparent active:scale-95';
+        b.classList.remove('anim-active-likert');
+      });
+      btn.className = 'likert-btn anim-active-likert flex flex-col items-center justify-center py-3 rounded-lg bg-primary-container text-on-primary-fixed font-headline-sm text-headline-sm font-bold transition-all duration-200 active:scale-95';
+    });
+  });
+
+  // Dropzone drag micro-feedback
+  const dropzone = document.getElementById('dropzone');
+  if (dropzone) {
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('bg-primary-container/15', 'border-primary');
+    });
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('bg-primary-container/15', 'border-primary');
+    });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('bg-primary-container/15', 'border-primary');
+    });
+  }
+</script></main></div></body></html>

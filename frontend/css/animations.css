@@ -1,0 +1,216 @@
+/**
+ * OmniPoll - Animaciones, Efectos Ópticos y Microinteracciones Fluidas
+ * Spatial Data Intelligence Core - SondeoGlass Lumina
+ */
+
+/* ==========================================================================
+   KEYFRAMES DE AMBIENTE Y FLOTACIÓN DE LUZ
+   ========================================================================== */
+@keyframes ambientFloat1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(60px, 40px) scale(1.15);
+    opacity: 0.9;
+  }
+}
+
+@keyframes ambientFloat2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: translate(-50px, -35px) scale(1.12);
+    opacity: 0.85;
+  }
+}
+
+@keyframes ambientFloat3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(40px, -45px) scale(1.2);
+    opacity: 0.75;
+  }
+}
+
+@keyframes ambientFloat4 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-30px, 50px) scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+/* ==========================================================================
+   EFECTO REFLEJO DE CRISTAL (GLASS SHEEN SWEEP)
+   ========================================================================== */
+@keyframes glassSheen {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+/* ==========================================================================
+   TRANSICIONES Y ENTRADAS
+   ========================================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(0, 242, 254, 0.55), 0 0 15px rgba(217, 70, 239, 0.35);
+  }
+}
+
+@keyframes radarPing {
+  0% { transform: scale(1); opacity: 0.85; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bounceMicro {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  70% { transform: scale(0.95); }
+}
+
+/* Clases de Animación */
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-glow {
+  animation: glowPulse 3s infinite ease-in-out;
+}
+
+.pulse-radar {
+  position: relative;
+}
+
+.pulse-radar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--tertiary-fixed-dim);
+  animation: radarPing 2.2s infinite cubic-bezier(0, 0, 0.2, 1);
+}
+
+.shimmer-bar {
+  background: linear-gradient(90deg, 
+    var(--primary-container) 0%, 
+    var(--surface-tint) 50%, 
+    var(--secondary-fixed-dim) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3.5s infinite linear;
+}
+
+/* ==========================================================================
+   MICROINTERACCIONES Y EFECTOS TÁCTILES
+   ========================================================================== */
+.interactive-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.interactive-hover:hover {
+  transform: translateY(-2px);
+}
+
+.interactive-hover:active {
+  transform: scale(0.97);
+}
+
+/* Efecto de destello en tarjetas Glass al hacer Hover */
+.glass-panel-interactive {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-interactive::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 60%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.glass-panel-interactive:hover::after {
+  opacity: 1;
+  animation: glassSheen 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Micro-animación para estrellas de calificación */
+.rating-star {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, filter 0.2s ease;
+}
+
+.rating-star:hover {
+  transform: scale(1.3) rotate(6deg);
+  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8));
+}
+
+.rating-star:active {
+  transform: scale(0.9);
+}
+
+/* Micro-animación para escala NPS */
+.nps-btn {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nps-btn:hover {
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 8px 16px -4px rgba(2, 132, 199, 0.35);
+}
+
+.nps-btn:active {
+  transform: scale(0.92);
+}

@@ -1,0 +1,432 @@
+/**
+ * OmniPoll - SondeoGlass Lumina Design System
+ * Hyper-Glass Spatiality & High-Contrast Light Mode
+ * Comprehensive Glassmorphism Tokens and Refractive Light Models
+ */
+
+/* ==========================================================================
+   TEMA OSCURO (SPATIAL DARK ABYSS)
+   ========================================================================== */
+html.dark {
+  /* Fondos y Superficies Glass Oscuras */
+  --surface: #0b0e14;
+  --surface-dim: #080a0f;
+  --surface-bright: #1c2230;
+  --surface-container-lowest: #06080c;
+  --surface-container-low: #10141d;
+  --surface-container: #161c28;
+  --surface-container-high: #1e2638;
+  --surface-container-highest: #28334a;
+
+  /* Texto Luminoso Alto Contraste */
+  --on-surface: #f1f5f9;
+  --on-surface-variant: #cbd5e1;
+  --inverse-surface: #f1f5f9;
+  --inverse-on-surface: #0f172a;
+
+  /* Bordes Vidrio Espacial */
+  --outline: #64748b;
+  --outline-variant: rgba(100, 116, 139, 0.35);
+  --outline-glow: rgba(0, 242, 254, 0.4);
+
+  /* Acento Cian Eléctrico */
+  --primary: #6ff6ff;
+  --on-primary: #002022;
+  --primary-container: #00f2fe;
+  --on-primary-container: #00373a;
+  --surface-tint: #00dce6;
+  --primary-fixed: #6ff6ff;
+  --primary-fixed-dim: #00dce6;
+
+  /* Acento Violeta */
+  --secondary: #fbabff;
+  --on-secondary: #36003e;
+  --secondary-container: #ae05c6;
+  --on-secondary-container: #ffd8fd;
+  --secondary-fixed: #ffd6fd;
+  --secondary-fixed-dim: #fbabff;
+
+  /* Acento Esmeralda */
+  --tertiary: #6ffbbe;
+  --on-tertiary: #002113;
+  --tertiary-container: #10b981;
+  --on-tertiary-container: #003824;
+  --tertiary-fixed: #6ffbbe;
+  --tertiary-fixed-dim: #4edea3;
+
+  /* Error / Alerta */
+  --error: #ffb4ab;
+  --on-error: #690005;
+  --error-container: #93000a;
+
+  /* Configuración Glassmorphism Oscuro */
+  --glass-bg: rgba(11, 14, 20, 0.78);
+  --glass-card: rgba(18, 24, 38, 0.72);
+  --glass-subcard: rgba(26, 34, 52, 0.65);
+  --glass-card-border: rgba(255, 255, 255, 0.08);
+  --glass-card-border-top: rgba(0, 242, 254, 0.45);
+  --glass-blur: blur(24px) saturate(180%);
+  --glow-accent: 0 0 25px rgba(0, 242, 254, 0.3);
+  --shadow-spatial: 0 25px 60px -15px rgba(0, 0, 0, 0.85);
+  --shadow-glass-inset: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+
+  /* Badge Glass */
+  --badge-glass-bg: rgba(0, 242, 254, 0.12);
+  --badge-glass-border: rgba(0, 242, 254, 0.35);
+  --badge-glass-text: #6ff6ff;
+
+  /* Ambient Orbs Dark Mode */
+  --orb-cyan: rgba(0, 242, 254, 0.15);
+  --orb-violet: rgba(217, 70, 239, 0.14);
+  --orb-emerald: rgba(16, 185, 129, 0.12);
+  --orb-amber: rgba(245, 158, 11, 0.10);
+}
+
+/* ==========================================================================
+   TEMA CLARO (LUXURY FROSTED CRYSTAL GLASS - ALTO CONTRASTE - DEFAULT)
+   ========================================================================== */
+:root, html:not(.dark), body.light-theme {
+  /* Fondos y Superficies Cristalinas */
+  --surface: #edf3f8;
+  --surface-dim: #e2e8f0;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f8fafc;
+  --surface-container: #f1f5f9;
+  --surface-container-high: #e2e8f0;
+  --surface-container-highest: #cbd5e1;
+
+  /* Texto 100% Nítido y Legible (WCAG AAA - Ultra Contraste) */
+  --on-surface: #0a1120;           /* Negro azulado ultra nítido (#0a1120) */
+  --on-surface-variant: #283347;   /* Slate oscuro nítido (#283347) */
+  --inverse-surface: #0a1120;
+  --inverse-on-surface: #ffffff;
+
+  /* Bordes Refractivos de Cristal */
+  --outline: #475569;
+  --outline-variant: rgba(148, 163, 184, 0.45);
+  --outline-glow: rgba(2, 132, 199, 0.25);
+
+  /* Acento Azul Zafiro Cristal */
+  --primary: #0284c7;              /* Azul zafiro nítido */
+  --on-primary: #ffffff;
+  --primary-container: #0284c7;
+  --on-primary-container: #ffffff;
+  --surface-tint: #0284c7;
+  --primary-fixed: #0369a1;
+  --primary-fixed-dim: #0284c7;
+
+  /* Acento Violeta */
+  --secondary: #7e22ce;
+  --on-secondary: #ffffff;
+  --secondary-container: rgba(243, 232, 255, 0.9);
+  --on-secondary-container: #581c87;
+  --secondary-fixed: #7e22ce;
+  --secondary-fixed-dim: #9333ea;
+
+  /* Acento Esmeralda */
+  --tertiary: #047857;
+  --on-tertiary: #ffffff;
+  --tertiary-container: rgba(209, 250, 229, 0.9);
+  --on-tertiary-container: #064e3b;
+  --tertiary-fixed: #047857;
+  --tertiary-fixed-dim: #059669;
+
+  /* Error */
+  --error: #b91c1c;
+  --on-error: #ffffff;
+  --error-container: rgba(254, 226, 226, 0.9);
+
+  /* Configuración Glassmorphism Claro Cristalino */
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-card: rgba(255, 255, 255, 0.74);
+  --glass-subcard: rgba(255, 255, 255, 0.58);
+  --glass-card-border: rgba(255, 255, 255, 0.85);
+  --glass-card-border-top: #ffffff;
+  --glass-blur: blur(28px) saturate(200%);
+  --glow-accent: 0 0 25px rgba(2, 132, 199, 0.22);
+  --shadow-spatial: 0 20px 45px -12px rgba(15, 23, 42, 0.09), 0 8px 18px -4px rgba(15, 23, 42, 0.04);
+  --shadow-glass-inset: inset 0 1.5px 2px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(15, 23, 42, 0.03);
+
+  /* Badge Glass */
+  --badge-glass-bg: rgba(2, 132, 199, 0.10);
+  --badge-glass-border: rgba(2, 132, 199, 0.35);
+  --badge-glass-text: #0284c7;
+
+  /* Ambient Orbs Light Mode */
+  --orb-cyan: rgba(56, 189, 248, 0.32);
+  --orb-violet: rgba(192, 132, 252, 0.28);
+  --orb-emerald: rgba(52, 211, 153, 0.25);
+  --orb-amber: rgba(251, 191, 36, 0.22);
+}
+
+/* ==========================================================================
+   FONDO CON MESH GRADIENT Y ATMÓSFERA DE COLOR
+   ========================================================================== */
+html:not(.dark) body {
+  background-color: #edf3f8;
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(219, 234, 254, 0.9) 0px, transparent 50%),
+    radial-gradient(at 90% 15%, rgba(243, 232, 255, 0.9) 0px, transparent 50%),
+    radial-gradient(at 85% 85%, rgba(207, 250, 254, 0.8) 0px, transparent 55%),
+    radial-gradient(at 15% 90%, rgba(254, 243, 199, 0.7) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(240, 253, 244, 0.5) 0px, transparent 65%);
+  background-attachment: fixed;
+  color: var(--on-surface);
+}
+
+html.dark body {
+  background-color: var(--surface);
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(0, 242, 254, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(217, 70, 239, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.04) 0%, transparent 55%);
+  background-attachment: fixed;
+  color: var(--on-surface);
+}
+
+/* ==========================================================================
+   ORBES DE LUZ AMBIENTAL EN MOVIMIENTO
+   ========================================================================== */
+.ambient-orb {
+  position: fixed;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(85px);
+  will-change: transform, opacity;
+}
+
+.ambient-orb-1 {
+  top: -120px;
+  left: 15%;
+  width: 550px;
+  height: 450px;
+  background: var(--orb-cyan);
+  animation: ambientFloat1 18s ease-in-out infinite;
+}
+
+.ambient-orb-2 {
+  bottom: -150px;
+  right: 5%;
+  width: 600px;
+  height: 520px;
+  background: var(--orb-violet);
+  animation: ambientFloat2 22s ease-in-out infinite;
+}
+
+.ambient-orb-3 {
+  top: 35%;
+  right: 25%;
+  width: 480px;
+  height: 400px;
+  background: var(--orb-emerald);
+  animation: ambientFloat3 20s ease-in-out infinite;
+}
+
+.ambient-orb-4 {
+  bottom: 20%;
+  left: 5%;
+  width: 420px;
+  height: 380px;
+  background: var(--orb-amber);
+  animation: ambientFloat4 25s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   CRISTALERÍA GLASSMORPHISM UNIVERSAL
+   ========================================================================== */
+.glass-panel {
+  background: var(--glass-card) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-card-border) !important;
+  border-top: 1.5px solid var(--glass-card-border-top) !important;
+  box-shadow: var(--shadow-spatial), var(--shadow-glass-inset) !important;
+  border-radius: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel:hover {
+  border-color: var(--primary) !important;
+  box-shadow: var(--shadow-spatial), var(--glow-accent), var(--shadow-glass-inset) !important;
+  transform: translateY(-2px);
+}
+
+/* Subtarjeta / Módulo Interno Glass */
+.glass-subcard {
+  background: var(--glass-subcard) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid var(--glass-card-border) !important;
+  border-top: 1.5px solid var(--glass-card-border-top) !important;
+  box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.06), var(--shadow-glass-inset) !important;
+  border-radius: 1rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-subcard:hover {
+  border-color: var(--primary) !important;
+  box-shadow: 0 12px 28px -6px rgba(2, 132, 199, 0.2), var(--shadow-glass-inset) !important;
+  transform: translateY(-2px);
+}
+
+/* Specular Shimmer en Bordes Glass */
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Sidebar Glass */
+.app-sidebar {
+  background: var(--glass-card) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border-right: 1px solid var(--glass-card-border) !important;
+  box-shadow: 4px 0 35px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Header Glass */
+.app-header {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border-bottom: 1px solid var(--glass-card-border) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Badges & Chips Glass */
+.badge-glass {
+  background: var(--badge-glass-bg) !important;
+  border: 1px solid var(--badge-glass-border) !important;
+  color: var(--badge-glass-text) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-radius: 9999px;
+  padding: 0.25rem 0.65rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+/* Badges con Estado Oficial */
+.badge-approved {
+  background: rgba(16, 185, 129, 0.14) !important;
+  color: #047857 !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  backdrop-filter: blur(10px) !important;
+  font-weight: 700 !important;
+}
+html.dark .badge-approved {
+  background: rgba(16, 185, 129, 0.18) !important;
+  color: #6ffbbe !important;
+  border: 1px solid rgba(16, 185, 129, 0.45) !important;
+}
+
+.badge-pending {
+  background: rgba(245, 158, 11, 0.14) !important;
+  color: #b45309 !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  backdrop-filter: blur(10px) !important;
+  font-weight: 700 !important;
+}
+html.dark .badge-pending {
+  background: rgba(245, 158, 11, 0.18) !important;
+  color: #fbbf24 !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+}
+
+.badge-rejected {
+  background: rgba(239, 68, 68, 0.14) !important;
+  color: #b91c1c !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  backdrop-filter: blur(10px) !important;
+  font-weight: 700 !important;
+}
+html.dark .badge-rejected {
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
+}
+
+/* Estructura de Inputs Glass */
+.input-glass {
+  background: var(--glass-subcard) !important;
+  border: 1px solid var(--outline-variant) !important;
+  border-top: 1px solid var(--glass-card-border-top) !important;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--on-surface) !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  outline: none;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  transition: all 0.2s ease;
+}
+
+.input-glass:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Modales Glass */
+.modal-dialog {
+  background: var(--glass-card) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-card-border) !important;
+  border-top: 1.5px solid var(--glass-card-border-top) !important;
+  border-radius: 1.5rem;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.25), var(--shadow-glass-inset) !important;
+  color: var(--on-surface) !important;
+}
+
+/* Pill de Telemetría Glass */
+.telemetry-pill {
+  background: var(--glass-subcard) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--glass-card-border) !important;
+  border-top: 1px solid var(--glass-card-border-top) !important;
+  border-radius: 0.75rem;
+  padding: 0.35rem 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--on-surface);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+/* Scrollbar Minimalista */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--outline-variant);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}

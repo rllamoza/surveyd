@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed-variant": "#004f53", "primary-container": "#00f2fe", "on-secondary-container": "#ffd8fd", "surface-container-lowest": "#0b0e14", "on-primary-fixed": "#002022", "on-surface": "#e0e2eb", "surface": "#10131a", "on-tertiary-container": "#006e4b", "surface-container-high": "#272a31", "on-tertiary-fixed": "#002113", "on-error-container": "#ffdad6", "surface-dim": "#10131a", "tertiary-fixed": "#6ffbbe", "on-primary": "#00373a", "surface-tint": "#00dce6", "on-secondary-fixed-variant": "#7c008e", "on-tertiary-fixed-variant": "#005236", "background": "#10131a", "tertiary-fixed-dim": "#4edea3", "surface-container-low": "#191c22", "surface-bright": "#363940", "on-error": "#690005", "secondary": "#fbabff", "secondary-fixed": "#ffd6fd", "on-tertiary": "#003824", "surface-variant": "#32353c", "secondary-container": "#ae05c6", "tertiary-container": "#67f4b7", "on-primary-container": "#006a70", "surface-container-highest": "#32353c", "tertiary": "#e1ffec", "on-background": "#e0e2eb", "primary-fixed": "#6ff6ff", "on-secondary": "#580065", "inverse-primary": "#00696f", "on-secondary-fixed": "#36003e", "on-surface-variant": "#b9cacb", "primary": "#e0fdff", "inverse-surface": "#e0e2eb", "inverse-on-surface": "#2d3037", "outline-variant": "#3a494b", "primary-fixed-dim": "#00dce6", "surface-container": "#1d2026", "secondary-fixed-dim": "#fbabff", "error-container": "#93000a", "outline": "#849495", "error": "#ffb4ab" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "gutter": "1.25rem", "space-md": "1rem", "space-xl": "2.5rem", "gutter-desktop": "1.5rem", "space-sm": "0.5rem", "margin": "1rem", "space-xs": "0.25rem", "margin-tablet": "2rem", "margin-desktop": "3rem" }, "fontFamily": { "body-md": ["Inter"], "headline-md": ["Plus Jakarta Sans"], "body-sm": ["Inter"], "headline-sm": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"], "display-hero-mobile": ["Plus Jakarta Sans"], "label-code-lg": ["JetBrains Mono"], "headline-lg": ["Plus Jakarta Sans"], "label-code-md": ["JetBrains Mono"], "body-lg": ["Inter"], "label-code-sm": ["JetBrains Mono"], "display-hero": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"] }, "fontSize": { "body-md": ["14px", {"lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400"}], "headline-md": ["22px", {"lineHeight": "30px", "letterSpacing": "-0.015em", "fontWeight": "600"}], "body-sm": ["12px", {"lineHeight": "18px", "letterSpacing": "0.005em", "fontWeight": "400"}], "headline-sm": ["18px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600"}], "headline-xl-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "display-hero-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}], "label-code-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}], "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "label-code-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}], "body-lg": ["16px", {"lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "400"}], "label-code-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "600"}], "display-hero": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "800"}], "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "700"}] } } } };</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#10131a;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary"><header class="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/70 backdrop-blur-xl pt-safe shadow-[0_4px_24px_rgba(0,0,0,0.6)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="Sleek futuristic logo mark for OmniPoll, combining an abstract survey checkmark and dimensional neon glowing prism icon, cyan and violet electric gradients, modern tech brand.. Brand logo. - Primary color: #00f2fe
+- Font: plusJakartaSans
+- Mode: dark
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UnYWc5xNfyzWNgaX0z3327r5l9VKR0X4FzyymHVjZcvpBaRYmeQUg90OZQEhyOb-FE0D6n3MTwpFqRL_bj72IJ2xUL7Jp60loVD6RiBmMvOomSHbOprLAxRYJJwqfVyTQBU3spIp0BGP6SNhTN8p5vThcxafdsbKusrfFX704NJzS61J23cyPh984hqFQQySIqa6ibLKt4AUc-X34LhGFrX8TnbzOeJbpmi-BQ9vmwtIuUZl_CLyPvcpI"/><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">OmniPoll</span><span class="font-label-code-sm text-label-code-sm px-1.5 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed border border-primary-container/30 uppercase">Pro</span></div><span class="font-label-code-sm text-label-code-sm text-on-surface-variant flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse shadow-[0_0_8px_#00f2fe]"></span>LIVE SYNC</span></div></div><div class="flex items-center gap-space-sm"><button aria-label="Modo Día y Noche" class="w-11 h-11 rounded-full bg-surface-container/60 backdrop-blur-md flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-all active:scale-95"><span class="material-symbols-outlined text-[20px]">routine</span></button><div class="relative flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_0_12px_rgba(0,242,254,0.3)] ring-1 ring-primary-container/50" src="https://lh3.googleusercontent.com/aida/AEtjO1UuxqznkqO6CzFoYdk36SnfHsAj6IAriE47eUtCFFEr2uQxjzWYDE-jigXH4H5gH0qianfSOAIn5cAtfazo2h8SbutYAXabvLrYZiqn1EnKRD4ujovtis8hNQg2-6VNgqGC59b6x5pkMz-c6dnUh7e_MU4d9oiOcCDXZ9V0gYaA2QnkRnryhSQHCjJHf--bzsylj3pp9dbWT6fHJzzzADarxNTXKogfd998RT9dFJyzta31uoknsg2UuEQ"/><span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-tertiary-container border-2 border-surface"></span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-28 bg-surface"><div class="flex flex-col w-full text-on-surface">
+<!-- Sub-Header Técnico Móvil -->
+<section class="px-margin pt-space-md pb-space-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-high text-primary-fixed-dim font-label-code-sm text-label-code-sm shadow-sm">
+<span class="material-symbols-outlined text-[13px] text-primary-container">memory</span>
+          PHP/MySQL v3.4
+        </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary-container/15 text-tertiary-fixed font-label-code-sm text-label-code-sm shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-ping"></span>
+          SCHEMA SYNC
+        </span>
+</div>
+<!-- Quick Switch & Status -->
+<div class="flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-code-sm text-label-code-sm hover:text-primary transition-all flex items-center gap-1 shadow-sm" id="toggle-sim-mode">
+<span class="material-symbols-outlined text-[14px] text-secondary">tune</span>
+          PROD
+        </button>
+</div>
+</div>
+<!-- Título y Acción Primaria Neon -->
+<div class="flex items-center justify-between mt-1">
+<div>
+<h1 class="font-headline-md text-headline-md text-primary font-bold tracking-tight">Constructor &amp; Excel</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Matriz reactiva • Mapeo UBIGEO INEI</p>
+</div>
+<button class="relative px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary-container to-surface-tint text-on-primary font-headline-sm text-headline-sm font-semibold tracking-tight shadow-lg shadow-primary-container/30 active:scale-95 transition-transform flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+<span>Publicar</span>
+</button>
+</div>
+</section>
+<!-- 1. BENTO CARD: Ingestor Excel (.xlsx / .csv) -->
+<section class="px-margin mb-space-md">
+<div class="rounded-xl p-space-md bg-surface-container/70 backdrop-blur-xl shadow-xl shadow-surface-container-lowest/80 relative overflow-hidden">
+<!-- Ambient light decorative backings -->
+<div class="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-primary-container/10 blur-2xl pointer-events-none"></div>
+<div class="absolute -bottom-10 -left-10 w-28 h-28 rounded-full bg-secondary-container/20 blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between pb-space-xs mb-space-sm border-b border-surface-variant/40">
+<div class="flex items-center gap-2">
+<span class="p-1.5 rounded-lg bg-primary-container/15 text-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">table_chart_view</span>
+</span>
+<span class="font-headline-sm text-headline-sm text-primary">Ingesta Estructurada</span>
+</div>
+<a class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container-high/80 text-primary-fixed font-label-code-sm text-label-code-sm hover:bg-surface-bright transition-colors shadow-sm" href="#">
+<span class="material-symbols-outlined text-[14px]">download</span>
+          Plantilla .xlsx
+        </a>
+</div>
+<!-- Dropzone táctil -->
+<div class="relative group cursor-pointer rounded-lg p-space-md bg-surface-container-lowest/60 text-center transition-all duration-300" id="dropzone-box">
+<div class="w-12 h-12 mx-auto mb-2 rounded-full bg-surface-container flex items-center justify-center shadow-inner">
+<span class="material-symbols-outlined text-[26px] text-primary-container animate-bounce">cloud_upload</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-on-surface font-medium">Toca o arrastra matriz Excel</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Soporta <span class="font-label-code-sm text-primary-fixed">.xlsx / .csv</span> hasta 50,000 celdas</p>
+<!-- Tech Badges inside dropzone -->
+<div class="flex flex-wrap items-center justify-center gap-1.5 mt-space-sm">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high text-primary font-label-code-sm text-label-code-sm">
+<span class="material-symbols-outlined text-[12px] text-primary-container">pin_drop</span>
+            Auto-UBIGEO
+          </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface-variant font-label-code-sm text-label-code-sm">
+<span class="material-symbols-outlined text-[12px] text-tertiary-fixed-dim">verified</span>
+            UTF-8 RFC-4180
+          </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high text-secondary-fixed font-label-code-sm text-label-code-sm">
+<span class="material-symbols-outlined text-[12px] text-secondary">bolt</span>
+            Parser 4.2ms
+          </span>
+</div>
+</div>
+<!-- Columnas Mapeadas: Horizontal Scrolling Chips -->
+<div class="mt-space-md">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-code-sm text-label-code-sm uppercase tracking-wider text-on-surface-variant">Schema Mappings (6/6)</span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary-fixed flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+            100% Coincidencia
+          </span>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
+<div class="flex-shrink-0 px-2.5 py-1 rounded-md bg-surface-container-high text-primary-fixed font-label-code-sm text-label-code-sm flex items-center gap-1.5 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+            ID_Pregunta
+          </div>
+<div class="flex-shrink-0 px-2.5 py-1 rounded-md bg-surface-container-high text-primary-fixed font-label-code-sm text-label-code-sm flex items-center gap-1.5 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+            Tipo_Input
+          </div>
+<div class="flex-shrink-0 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-code-sm text-label-code-sm flex items-center gap-1.5 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Texto_Pregunta
+          </div>
+<div class="flex-shrink-0 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-code-sm text-label-code-sm flex items-center gap-1.5 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Opciones_JSON
+          </div>
+<div class="flex-shrink-0 px-2.5 py-1 rounded-md bg-surface-container-high text-tertiary-fixed font-label-code-sm text-label-code-sm flex items-center gap-1.5 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+            Ubigeo_Cond
+          </div>
+<div class="flex-shrink-0 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-code-sm text-label-code-sm flex items-center gap-1.5 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span>
+            Es_Obligatorio
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Preview de Filas Validadas (Acordeón Táctil) -->
+<section class="px-margin mb-space-md">
+<div class="rounded-xl bg-surface-container-low p-space-md shadow-lg shadow-surface-container-lowest/60">
+<div class="flex items-center justify-between cursor-pointer" id="btn-toggle-preview">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed text-[20px]">fact_check</span>
+<span class="font-headline-sm text-headline-sm text-primary">Pre-visualización Validada</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary-fixed font-label-code-sm text-label-code-sm">3 Filas OK</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px] transition-transform duration-200" id="preview-chevron">expand_more</span>
+</div>
+</div>
+<div class="mt-space-md flex flex-col gap-2.5" id="preview-content">
+<!-- Fila 1 -->
+<div class="p-2.5 rounded-lg bg-surface-container flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-primary-fixed">P_01 • CASCADE_GEO</span>
+<span class="px-1.5 py-0.2 rounded bg-tertiary-container/20 text-tertiary-fixed text-[10px] font-label-code-sm">Válido</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">Ubicación Geográfica en Cascada (UBIGEO Perú)</p>
+<div class="font-label-code-sm text-label-code-sm text-on-surface-variant flex items-center gap-2">
+<span>Niveles: Dpt &gt; Prov &gt; Dist</span>
+<span class="text-tertiary-fixed-dim">• INEI 2024</span>
+</div>
+</div>
+<!-- Fila 2 -->
+<div class="p-2.5 rounded-lg bg-surface-container flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-secondary-fixed">P_02 • LIKERT_SCALE</span>
+<span class="px-1.5 py-0.2 rounded bg-tertiary-container/20 text-tertiary-fixed text-[10px] font-label-code-sm">Válido</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">Nivel de Satisfacción del Servicio Municipal</p>
+<div class="font-label-code-sm text-label-code-sm text-on-surface-variant flex items-center gap-2">
+<span>Rango: [1 - 10]</span>
+<span class="text-secondary-fixed">• Step 1</span>
+</div>
+</div>
+<!-- Fila 3 -->
+<div class="p-2.5 rounded-lg bg-surface-container flex flex-col gap-1 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-primary">P_03 • FILE_ATTACH</span>
+<span class="px-1.5 py-0.2 rounded bg-tertiary-container/20 text-tertiary-fixed text-[10px] font-label-code-sm">Válido</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">Comentarios Adicionales y Evidencia Fotográfica</p>
+<div class="font-label-code-sm text-label-code-sm text-on-surface-variant flex items-center gap-2">
+<span>JPG/PNG/PDF ≤ 15MB</span>
+<span class="text-primary-fixed-dim">• EXIF GPS</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. CONSTRUCTOR DE PREGUNTAS EN VIVO -->
+<section class="px-margin mb-space-md flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-[0_0_8px_#00f2fe]"></span>
+<h2 class="font-headline-sm text-headline-sm text-primary font-semibold">Preguntas en Edición Activa</h2>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">3 Bloques</span>
+</div>
+<!-- TARJETA PREGUNTA 01: UBIGEO CASCADA -->
+<div class="rounded-xl p-space-md bg-surface-container/70 backdrop-blur-xl shadow-xl shadow-surface-container-lowest/70 flex flex-col gap-space-sm relative overflow-hidden">
+<!-- Glow ambient indicator -->
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary-container/10 rounded-bl-full pointer-events-none blur-xl"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-md bg-primary-container text-on-primary font-label-code-sm text-label-code-sm font-bold flex items-center justify-center">01</span>
+<span class="font-label-code-sm text-label-code-sm text-primary-fixed uppercase tracking-wider">UBIGEO 4 Niveles</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="p-1 rounded-md bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">drag_handle</span>
+</span>
+<span class="p-1 rounded-md bg-surface-container-high text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</span>
+</div>
+</div>
+<div>
+<label class="block font-headline-sm text-headline-sm text-primary font-semibold">Ubicación Geográfica en Cascada</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Filtrado condicional automatizado para codificación INEI</p>
+</div>
+<!-- Cuadrícula 2x2 Selector Táctil Ubigeo -->
+<div class="grid grid-cols-2 gap-2 mt-1">
+<!-- Nivel 1: País (Bloqueado) -->
+<div class="p-2.5 rounded-lg bg-surface-container-lowest/80 flex flex-col gap-1 opacity-80">
+<div class="flex items-center justify-between text-on-surface-variant">
+<span class="font-label-code-sm text-label-code-sm">Nivel 1 • País</span>
+<span class="material-symbols-outlined text-[14px]">lock</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-[16px]">🇵🇪</span>
+<span class="font-body-md text-body-md text-on-surface font-medium truncate">Perú (PE)</span>
+</div>
+</div>
+<!-- Nivel 2: Región/Departamento -->
+<button class="p-2.5 rounded-lg bg-surface-container-high text-left flex flex-col gap-1 active:scale-95 transition-all shadow-md">
+<div class="flex items-center justify-between text-primary-fixed">
+<span class="font-label-code-sm text-label-code-sm">Nivel 2 • Depto</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</div>
+<div class="flex items-center justify-between w-full">
+<span class="font-body-md text-body-md text-primary font-semibold">Lima (15)</span>
+<span class="material-symbols-outlined text-[16px] text-primary-container">arrow_drop_down</span>
+</div>
+</button>
+<!-- Nivel 3: Provincia -->
+<button class="p-2.5 rounded-lg bg-surface-container-high text-left flex flex-col gap-1 active:scale-95 transition-all shadow-md">
+<div class="flex items-center justify-between text-primary-fixed">
+<span class="font-label-code-sm text-label-code-sm">Nivel 3 • Prov</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</div>
+<div class="flex items-center justify-between w-full">
+<span class="font-body-md text-body-md text-primary font-semibold truncate">Lima Metrop.</span>
+<span class="material-symbols-outlined text-[16px] text-primary-container">arrow_drop_down</span>
+</div>
+</button>
+<!-- Nivel 4: Distrito -->
+<button class="p-2.5 rounded-lg bg-surface-container-high text-left flex flex-col gap-1 active:scale-95 transition-all shadow-md">
+<div class="flex items-center justify-between text-secondary">
+<span class="font-label-code-sm text-label-code-sm">Nivel 4 • Dist</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+</div>
+<div class="flex items-center justify-between w-full">
+<span class="font-body-md text-body-md text-secondary-fixed font-semibold truncate">Miraflores</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">arrow_drop_down</span>
+</div>
+</button>
+</div>
+<!-- UBIGEO Code Footer Result -->
+<div class="p-2 rounded-lg bg-surface-container-lowest flex items-center justify-between">
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">UBIGEO RESUELTO:</span>
+<span class="font-label-code-md text-label-code-md text-tertiary-fixed font-semibold tracking-wider">150122 • LIMA/LIMA/MIRAFLORES</span>
+</div>
+</div>
+<!-- TARJETA PREGUNTA 02: ESCALA LIKERT 1-10 -->
+<div class="rounded-xl p-space-md bg-surface-container/70 backdrop-blur-xl shadow-xl shadow-surface-container-lowest/70 flex flex-col gap-space-sm relative">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-md bg-secondary-container text-on-secondary font-label-code-sm text-label-code-sm font-bold flex items-center justify-center">02</span>
+<span class="font-label-code-sm text-label-code-sm text-secondary-fixed uppercase tracking-wider">Métrica Likert</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-primary-container/10 text-primary-fixed font-label-code-sm text-label-code-sm">Obligatoria</span>
+</div>
+<div>
+<label class="block font-headline-sm text-headline-sm text-primary font-semibold">Nivel de Satisfacción del Servicio</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Escala psicométrica de 1 (Muy Insatisfecho) a 10 (Excelente)</p>
+</div>
+<!-- Selector Táctil Numérico 1-10 Horizontal Scrollable -->
+<div class="flex items-center gap-1.5 overflow-x-auto py-2 scrollbar-none" id="likert-container">
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">1</button>
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">2</button>
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">3</button>
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">4</button>
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">5</button>
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">6</button>
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">7</button>
+<!-- Item 8 Resaltado en Cyan Neón Activo -->
+<button class="w-10 h-10 flex-shrink-0 rounded-full bg-primary-container text-on-primary font-label-code-lg text-label-code-lg font-bold shadow-[0_0_16px_#00f2fe] scale-105 transition-all">8</button>
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">9</button>
+<button class="w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all">10</button>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-code-sm text-label-code-sm px-1">
+<span>1: Deficiente</span>
+<span class="text-primary-container font-medium">8: Muy Favorable</span>
+<span>10: Sobresaliente</span>
+</div>
+</div>
+<!-- TARJETA PREGUNTA 03: COMENTARIOS Y EVIDENCIA FOTOGRÁFICA -->
+<div class="rounded-xl p-space-md bg-surface-container/70 backdrop-blur-xl shadow-xl shadow-surface-container-lowest/70 flex flex-col gap-space-sm relative">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-md bg-surface-container-high text-tertiary-fixed font-label-code-sm text-label-code-sm font-bold flex items-center justify-center">03</span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary-fixed uppercase tracking-wider">Adjunto &amp; Texto</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-code-sm text-label-code-sm">Opcional</span>
+</div>
+<div>
+<label class="block font-headline-sm text-headline-sm text-primary font-semibold">Comentarios Adicionales y Evidencia</label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Captura in-situ con metadatos de geolocalización</p>
+</div>
+<div class="w-full rounded-lg bg-surface-container-lowest p-2.5">
+<textarea class="w-full bg-transparent text-on-surface font-body-sm text-body-sm outline-none resize-none placeholder:text-on-surface-variant/60" placeholder="Describa incidentes o detalles del acta electoral..." rows="2"></textarea>
+</div>
+<!-- Botón móvil 'Adjuntar fotometría o actas' -->
+<button class="w-full py-2.5 px-3 rounded-lg bg-surface-container-high hover:bg-surface-bright text-primary flex items-center justify-center gap-2 active:scale-98 transition-all shadow-md">
+<span class="material-symbols-outlined text-primary-container text-[20px]">photo_camera</span>
+<span class="font-headline-sm text-headline-sm text-primary font-medium">Adjuntar fotometría o actas</span>
+</button>
+<!-- Mini Preview fotometría adjunta mock -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-lowest/60">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-tertiary-container">image</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface truncate">acta_mesa_04921.jpg (2.4 MB)</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] hover:text-error cursor-pointer">close</span>
+</div>
+</div>
+</section>
+<!-- 4. BOTONERA HORIZONTAL 'AÑADIR PREGUNTA' -->
+<section class="px-margin mb-space-md">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-code-sm text-label-code-sm uppercase tracking-wider text-on-surface-variant">Añadir Componente al Flujo</span>
+<span class="material-symbols-outlined text-[16px] text-primary-container">add_circle</span>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
+<button class="flex-shrink-0 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-label-code-sm text-label-code-sm flex items-center gap-1.5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-primary-container">short_text</span>
+        + Texto
+      </button>
+<button class="flex-shrink-0 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-label-code-sm text-label-code-sm flex items-center gap-1.5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-primary-container">check_box</span>
+        + Selección
+      </button>
+<button class="flex-shrink-0 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-label-code-sm text-label-code-sm flex items-center gap-1.5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary">grid_view</span>
+        + Matriz
+      </button>
+<button class="flex-shrink-0 px-3 py-2 rounded-xl bg-surface-container-high text-primary-fixed font-label-code-sm text-label-code-sm flex items-center gap-1.5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-primary-container">alt_route</span>
+        + UBIGEO
+      </button>
+<button class="flex-shrink-0 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-label-code-sm text-label-code-sm flex items-center gap-1.5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed">star_rate</span>
+        + Rating
+      </button>
+<button class="flex-shrink-0 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-label-code-sm text-label-code-sm flex items-center gap-1.5 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary-fixed">draw</span>
+        + Firma
+      </button>
+</div>
+</section>
+<!-- 5. DIAGNÓSTICO BACKEND & MYSQL (ACORDEÓN TÉCNICO) -->
+<section class="px-margin mb-space-lg">
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-2xl shadow-black/80">
+<div class="flex items-center justify-between cursor-pointer" id="btn-toggle-engine">
+<div class="flex items-center gap-2">
+<span class="p-1 rounded bg-surface-container text-primary-container">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</span>
+<div>
+<span class="font-headline-sm text-headline-sm text-primary">Engine PHP 8.3 • MariaDB Cluster</span>
+<p class="font-label-code-sm text-label-code-sm text-on-surface-variant">Conexiones: 18/100 máx • Latencia: 12ms</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px] transition-transform duration-200" id="engine-chevron">expand_more</span>
+</div>
+<!-- Panel Expandible de Código y Métricas -->
+<div class="mt-space-md flex flex-col gap-space-sm" id="engine-content">
+<!-- Métricas Rápidas -->
+<div class="grid grid-cols-3 gap-2">
+<div class="p-2 rounded-lg bg-surface-container text-center">
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant block">Partición</span>
+<span class="font-label-code-md text-label-code-md text-primary-fixed font-bold">Hash(ID)</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container text-center">
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant block">Cifrado</span>
+<span class="font-label-code-md text-label-code-md text-tertiary-fixed font-bold">AES-256</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container text-center">
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant block">Sync Pool</span>
+<span class="font-label-code-md text-label-code-md text-secondary-fixed font-bold">ACTIVE</span>
+</div>
+</div>
+<!-- Snippet PDO Seguro -->
+<div class="rounded-lg bg-surface-dim p-2.5 overflow-x-auto text-[11px] font-label-code-sm text-on-surface-variant leading-relaxed shadow-inner">
+<div class="flex items-center justify-between pb-1 border-b border-surface-variant/40 mb-1.5 text-primary-container">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">code</span>
+              OmniPoll\Engine\DataIngest.php
+            </span>
+<span class="text-tertiary-fixed">PDO::ATTR_EMULATE_PREPARES =&gt; false</span>
+</div>
+<code class="block text-on-surface">
+<span class="text-secondary">$stmt</span> = <span class="text-primary-fixed">$pdo</span>-&gt;prepare(<span class="text-tertiary">"INSERT INTO tbl_questions (survey_uid, ubigeo_code, meta_hash) VALUES (?, ?, ?)"</span>);<br/>
+<span class="text-secondary">$stmt</span>-&gt;execute([<span class="text-primary-fixed">$uid</span>, <span class="text-primary-fixed">$ubigeo</span>, <span class="text-primary-container">openssl_encrypt</span>(<span class="text-primary-fixed">$rawPayload</span>, <span class="text-tertiary">'aes-256-gcm'</span>, <span class="text-secondary">$key</span>)]);
+          </code>
+</div>
+</div>
+</div>
+</section>
+</div>
+<script>
+  // Micro-interacción: Toggle de acordeón para previsualización validada
+  const btnTogglePreview = document.getElementById('btn-toggle-preview');
+  const previewContent = document.getElementById('preview-content');
+  const previewChevron = document.getElementById('preview-chevron');
+
+  if (btnTogglePreview && previewContent && previewChevron) {
+    btnTogglePreview.addEventListener('click', () => {
+      const isHidden = previewContent.classList.contains('hidden');
+      if (isHidden) {
+        previewContent.classList.remove('hidden');
+        previewChevron.style.transform = 'rotate(0deg)';
+      } else {
+        previewContent.classList.add('hidden');
+        previewChevron.style.transform = 'rotate(-90deg)';
+      }
+    });
+  }
+
+  // Micro-interacción: Toggle de acordeón para motor PHP/MySQL
+  const btnToggleEngine = document.getElementById('btn-toggle-engine');
+  const engineContent = document.getElementById('engine-content');
+  const engineChevron = document.getElementById('engine-chevron');
+
+  if (btnToggleEngine && engineContent && engineChevron) {
+    btnToggleEngine.addEventListener('click', () => {
+      const isHidden = engineContent.classList.contains('hidden');
+      if (isHidden) {
+        engineContent.classList.remove('hidden');
+        engineChevron.style.transform = 'rotate(0deg)';
+      } else {
+        engineContent.classList.add('hidden');
+        engineChevron.style.transform = 'rotate(-90deg)';
+      }
+    });
+  }
+
+  // Micro-interacción: Selección táctil de Escala Likert
+  const likertContainer = document.getElementById('likert-container');
+  if (likertContainer) {
+    const buttons = likertContainer.querySelectorAll('button');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        buttons.forEach((b) => {
+          b.className = 'w-9 h-9 flex-shrink-0 rounded-full bg-surface-container-high text-on-surface font-label-code-md text-label-code-md font-semibold hover:bg-surface-bright active:scale-90 transition-all';
+        });
+        btn.className = 'w-10 h-10 flex-shrink-0 rounded-full bg-primary-container text-on-primary font-label-code-lg text-label-code-lg font-bold shadow-[0_0_16px_#00f2fe] scale-105 transition-all';
+      });
+    });
+  }
+
+  // Feedback táctil en dropzone
+  const dropzone = document.getElementById('dropzone-box');
+  if (dropzone) {
+    dropzone.addEventListener('click', () => {
+      dropzone.classList.add('bg-surface-container-high');
+      setTimeout(() => {
+        dropzone.classList.remove('bg-surface-container-high');
+      }, 200);
+    });
+  }
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-container-lowest/80 backdrop-blur-2xl shadow-[0_-8px_32px_rgba(0,0,0,0.8)]" data-active-classes="text-primary-container font-headline-sm"><div class="flex justify-around items-center h-16 px-space-xs"><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 w-16 h-12 transition-all active:scale-95 text-primary-container font-headline-sm" data-path="constructor" href="#"><span class="material-symbols-outlined text-[22px]">format_list_bulleted_add</span><span class="font-label-code-sm text-label-code-sm tracking-tight">Constructor</span></a><a class="flex flex-col items-center justify-center gap-0.5 w-16 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95" data-path="encuestas" href="#"><span class="material-symbols-outlined text-[22px]">dynamic_form</span><span class="font-label-code-sm text-label-code-sm tracking-tight">Encuestas</span></a><a class="flex flex-col items-center justify-center gap-0.5 w-16 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95" data-path="analytics" href="#"><span class="material-symbols-outlined text-[22px]">dashboard_customize</span><span class="font-label-code-sm text-label-code-sm tracking-tight">Analytics</span></a><a class="flex flex-col items-center justify-center gap-0.5 w-16 h-12 text-on-surface-variant hover:text-primary transition-all active:scale-95" data-path="superadmin" href="#"><span class="material-symbols-outlined text-[22px]">admin_panel_settings</span><span class="font-label-code-sm text-label-code-sm tracking-tight">Admin</span></a></div></nav></body></html>

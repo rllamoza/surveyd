@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>OmniPoll - Spatial Data Intelligence Core</title>
+  
+  <!-- Tipografías Oficiales Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface": "var(--surface)",
+            "surface-container-lowest": "var(--surface-container-lowest)",
+            "surface-container-low": "var(--surface-container-low)",
+            "surface-container": "var(--surface-container)",
+            "surface-container-high": "var(--surface-container-high)",
+            "surface-container-highest": "var(--surface-container-highest)",
+            "on-surface": "var(--on-surface)",
+            "on-surface-variant": "var(--on-surface-variant)",
+            "primary": "var(--primary)",
+            "primary-container": "var(--primary-container)",
+            "on-primary-container": "var(--on-primary-container)",
+            "surface-tint": "var(--surface-tint)",
+            "primary-fixed": "var(--primary-fixed)",
+            "primary-fixed-dim": "var(--primary-fixed-dim)",
+            "secondary": "var(--secondary)",
+            "secondary-container": "var(--secondary-container)",
+            "secondary-fixed": "var(--secondary-fixed)",
+            "secondary-fixed-dim": "var(--secondary-fixed-dim)",
+            "tertiary": "var(--tertiary)",
+            "tertiary-container": "var(--tertiary-container)",
+            "tertiary-fixed": "var(--tertiary-fixed)",
+            "tertiary-fixed-dim": "var(--tertiary-fixed-dim)",
+            "outline": "var(--outline)",
+            "outline-variant": "var(--outline-variant)",
+            "error": "var(--error)",
+            "error-container": "var(--error-container)"
+          },
+          fontFamily: {
+            "headline": ["Plus Jakarta Sans", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+            "code": ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- SheetJS para importación nativa de Excel (.xlsx, .csv) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Estilos del Sistema SondeoGlass Lumina -->
+  <link rel="stylesheet" href="css/theme.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+
+  <!-- Sincronización inmediata de tema: POR DEFECTO MODO DÍA / CLARO -->
+  <script>
+    (function() {
+      try {
+        const t = localStorage.getItem('omnipoll_theme');
+        if (t === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch(e) {}
+    })();
+  </script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen relative overflow-x-hidden font-body light-theme">
+
+  <!-- Ambient Light Orbs de Fondo Animados -->
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+  <div class="ambient-orb ambient-orb-4"></div>
+
+  <div class="app-container">
+
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="app-sidebar">
+      <div>
+        <!-- Logo de Marca OmniPoll -->
+        <div class="app-brand">
+          <div class="brand-icon">
+            <span class="material-symbols-outlined text-2xl font-bold">radar</span>
+          </div>
+          <div class="flex flex-col">
+            <div class="brand-title">
+              <span>OmniPoll</span>
+              <span class="brand-tag">Spatial 3.0</span>
+            </div>
+            <span class="text-xs text-on-surface-variant font-mono font-medium">Data Intelligence Core</span>
+          </div>
+        </div>
+
+        <!-- Navegación Cuántica -->
+        <div class="sidebar-nav">
+          <div class="nav-section-title">Navegación Cuántica</div>
+          
+          <a href="#" class="nav-item active" data-path="encuestas-activas" data-module="encuestas_activas" id="nav-encuestas-activas">
+            <span class="material-symbols-outlined text-lg">public</span>
+            <span>Encuestas Activas (UBIGEO)</span>
+          </a>
+
+          <a href="#" class="nav-item" data-path="constructor-excel" data-module="constructor_excel" id="nav-constructor-excel">
+            <span class="material-symbols-outlined text-lg">dataset</span>
+            <span>Constructor & Excel</span>
+          </a>
+
+          <a href="#" class="nav-item" data-path="bento-analytics" data-module="bento_analytics" id="nav-bento-analytics">
+            <span class="material-symbols-outlined text-lg">space_dashboard</span>
+            <span>Bento Analytics</span>
+          </a>
+
+          <a href="#" class="nav-item" data-path="aprobacion-admin" data-module="aprobacion_admin" id="nav-aprobacion-admin">
+            <span class="material-symbols-outlined text-lg">verified_user</span>
+            <span>Aprobación SuperAdmin</span>
+          </a>
+
+          <a href="#" class="nav-item" data-path="gestion-usuarios" data-module="gestion_usuarios" id="nav-gestion-usuarios">
+            <span class="material-symbols-outlined text-lg">manage_accounts</span>
+            <span>Gestión de Usuarios</span>
+          </a>
+        </div>
+
+        <!-- Telemetría en Vivo del Sistema & Base de Datos -->
+        <div class="px-3 pt-2 pb-1">
+          <div class="nav-section-title px-1 py-1">Infraestructura & Datos</div>
+          <div class="glass-subcard p-3 rounded-xl border border-glass-card-border space-y-2">
+            <div class="flex items-center justify-between pb-1.5 border-b border-outline-variant/30">
+              <span class="text-[10px] font-mono uppercase tracking-wider text-outline font-bold flex items-center gap-1.5">
+                <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981] animate-pulse"></span>
+                <span>MySQL Local</span>
+              </span>
+              <span class="badge text-[9px] bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 font-mono">127.0.0.1:3306</span>
+            </div>
+            <div class="space-y-1 text-[10px] font-mono">
+              <div class="flex justify-between text-on-surface-variant">
+                <span>Catálogo UBIGEO:</span>
+                <span class="text-on-surface font-semibold">25 Dep • 196 Prov</span>
+              </div>
+              <div class="flex justify-between text-on-surface-variant">
+                <span>Distritos INEI:</span>
+                <span class="text-primary font-bold">1,874 Cargados</span>
+              </div>
+              <div class="flex justify-between text-on-surface-variant">
+                <span>Gobernanza:</span>
+                <span class="text-secondary font-bold">RBAC Zero-Trust</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credencial de Sesión RBAC Activa -->
+        <div class="px-3 py-2">
+          <div class="glass-subcard p-2.5 rounded-xl border border-glass-card-border flex items-center justify-between">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="h-7 w-7 rounded-lg bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-base">verified_user</span>
+              </div>
+              <div class="flex flex-col min-w-0">
+                <span class="text-[11px] font-bold text-on-surface truncate" id="sidebar-user-name">Raúl Llamoza</span>
+                <span class="text-[9px] text-primary font-mono truncate" id="sidebar-user-role">SuperAdmin Root</span>
+              </div>
+            </div>
+            <button type="button" class="btn-icon h-7 w-7 p-0 shrink-0 text-secondary hover:text-on-surface" onclick="App.openModal('modal-roles-matrix')" title="Ver Matriz de Permisos (18)">
+              <span class="material-symbols-outlined text-base">security</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer de Sidebar: Telemetría de Nodo Glass -->
+      <div class="p-3 border-t border-glass-card-border mt-auto">
+        <div class="glass-subcard p-2.5 flex items-center justify-between">
+          <div class="flex flex-col">
+            <span class="text-[9px] font-mono text-primary font-bold uppercase tracking-wider">Cluster Activo</span>
+            <span class="text-xs text-on-surface font-bold" id="sidebar-cluster">LatAm South-1 (Perú)</span>
+          </div>
+          <span class="flex h-2.5 w-2.5 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Backdrop oscurecido para tablets y móviles cuando se abre el sidebar -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden" onclick="App.closeMobileSidebar()"></div>
+
+    <!-- CABECERA SUPERIOR (HEADER) -->
+    <header class="app-header">
+      <div class="flex items-center gap-3">
+        <!-- Botón Menú Móvil -->
+        <button class="lg:hidden btn-icon" id="btn-toggle-mobile-menu" aria-label="Abrir Menú">
+          <span class="material-symbols-outlined text-xl">menu</span>
+        </button>
+        
+        <div class="header-badge">
+          <span class="material-symbols-outlined text-sm text-primary-fixed-dim">terminal</span>
+          <span>v3.4-PRO / SPATIAL_SURVEY</span>
+        </div>
+      </div>
+
+        <!-- Switch Día/Noche con Alto Contraste (Modo Día por Defecto) -->
+        <button class="btn btn-secondary text-xs py-1.5 px-3 flex items-center gap-2" id="btn-toggle-theme" type="button" title="Alternar Modo Día / Noche">
+          <span class="material-symbols-outlined text-amber-500 text-base">light_mode</span>
+          <span class="hidden sm:inline font-semibold text-slate-800">Modo Día</span>
+          <span class="h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]"></span>
+        </button>
+
+        <!-- Botón Rápido Importar Excel -->
+        <button class="btn btn-primary text-xs py-1.5 px-3.5" onclick="App.navigateTo('constructor-excel')" type="button">
+          <span class="material-symbols-outlined text-base">upload_file</span>
+          <span class="hidden sm:inline">+ Importar .XLSX</span>
+        </button>
+
+        <!-- Botón & Drawer de Notificaciones -->
+        <div class="relative flex items-center">
+          <button class="btn-icon" id="btn-notifications" type="button" title="Notificaciones en tiempo real">
+            <span class="material-symbols-outlined text-lg">notifications</span>
+            <span id="notifications-badge-dot" class="absolute top-2 right-2 h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_#fbabff]"></span>
+          </button>
+
+          <!-- Drawer de Notificaciones -->
+          <div id="notifications-drawer" class="notifications-drawer">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-outline-variant/30">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-base">notifications_active</span>
+                <h4 class="font-headline text-xs font-bold text-on-surface">Notificaciones del Sistema</h4>
+              </div>
+              <button class="text-[10px] font-mono text-primary-fixed-dim hover:underline cursor-pointer" id="btn-clear-notifications">Marcar leídas</button>
+            </div>
+            <div id="notifications-list" class="flex flex-col gap-2 max-h-72 overflow-y-auto pr-1">
+              <div class="p-2.5 glass-subcard text-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-primary">Nueva Respuesta Registrada</span>
+                  <span class="text-[10px] font-mono text-outline">Hace 2 min</span>
+                </div>
+                <p class="text-on-surface-variant text-[11px]">Respuesta de encuesta recibida desde Miraflores, Lima (UBIGEO 150122).</p>
+              </div>
+              <div class="p-2.5 glass-subcard text-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-amber-500">Encuesta Pendiente de Firma</span>
+                  <span class="text-[10px] font-mono text-outline">Hace 15 min</span>
+                </div>
+                <p class="text-on-surface-variant text-[11px]">Instrumento POLL-TECH-2025-02 requiere resolución oficial de SuperAdmin.</p>
+              </div>
+              <div class="p-2.5 glass-subcard text-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-bold text-emerald-500">Base de Datos Sincronizada</span>
+                  <span class="text-[10px] font-mono text-outline">Hace 1 hora</span>
+                </div>
+                <p class="text-on-surface-variant text-[11px]">25 Departamentos, 196 Provincias y 1,874 Distritos verificados en MySQL.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divisor Vertical -->
+        <div class="h-6 w-px bg-outline-variant/40 hidden sm:block"></div>
+
+        <!-- Botón & Dropdown de Usuario -->
+        <div class="relative flex items-center">
+          <button class="user-profile-btn" id="btn-user-profile" type="button" title="Opciones de Usuario">
+            <div class="relative flex items-center justify-center">
+              <img id="header-user-avatar" alt="Avatar" class="w-7 h-7 rounded-full object-cover ring-2 ring-primary-container/40" src="../diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'"/>
+              <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-tertiary-fixed-dim ring-2 ring-surface"></span>
+            </div>
+            <div class="hidden md:flex flex-col text-left">
+              <span class="font-headline text-xs font-bold text-on-surface" id="header-user-name">Raúl Llamoza</span>
+              <span class="font-mono text-[9px] text-primary-fixed-dim" id="header-user-role">SuperAdmin Root</span>
+            </div>
+            <span class="material-symbols-outlined text-outline text-base">expand_more</span>
+          </button>
+
+          <!-- Menú Desplegable de Usuario -->
+          <div id="user-dropdown-menu" class="user-dropdown-menu">
+            <div class="flex items-center gap-3 pb-3 mb-3 border-b border-outline-variant/30">
+              <img id="dropdown-user-avatar" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container/40" src="../diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'"/>
+              <div class="flex flex-col min-w-0">
+                <span class="font-headline text-xs font-bold text-on-surface truncate" id="dropdown-user-name">Raúl Llamoza</span>
+                <span class="text-[10px] text-on-surface-variant truncate" id="dropdown-user-email">rllamoza@gmail.com</span>
+                <span class="badge badge-approved text-[9px] mt-1 w-max" id="dropdown-user-role">SuperAdmin Root</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <a class="dropdown-item" id="opt-user-profile">
+                <span class="material-symbols-outlined text-base text-primary-fixed-dim">badge</span>
+                <span>Mi Perfil & Credenciales</span>
+              </a>
+              <a class="dropdown-item" id="opt-switch-role">
+                <span class="material-symbols-outlined text-base text-secondary">swap_horiz</span>
+                <span>Cambiar Rol Activo</span>
+              </a>
+              <a class="dropdown-item" id="opt-manage-users">
+                <span class="material-symbols-outlined text-base text-primary">manage_accounts</span>
+                <span>Gestión de Usuarios</span>
+              </a>
+              <a class="dropdown-item" id="opt-roles-matrix">
+                <span class="material-symbols-outlined text-base text-secondary">security</span>
+                <span>Matriz de Roles & Permisos</span>
+              </a>
+              <a class="dropdown-item" id="opt-db-status">
+                <span class="material-symbols-outlined text-base text-emerald-500">database</span>
+                <span>Estado Base de Datos MySQL</span>
+              </a>
+              <div class="my-1 border-t border-outline-variant/30"></div>
+              <a class="dropdown-item text-error hover:text-error" id="opt-user-logout">
+                <span class="material-symbols-outlined text-base">logout</span>
+                <span>Cerrar Sesión</span>
+              </a>
+            </div>
+          </div>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL DE VISTAS (MAIN) -->
+    <main class="app-main">
+
+      <!-- ============================================================ -->
+      <!-- VISTA 1: ENCUESTAS ACTIVAS (ENCUESTA EN VIVO CON UBIGEO CASCADA) -->
+      <!-- ============================================================ -->
+      <section id="view-encuestas-activas" class="app-view">
+        <div class="w-full max-w-[1540px] mx-auto space-y-6">
+          
+          <!-- HUD de Telemetría Superior Glass -->
+          <div class="glass-panel p-4 border-t border-primary/30">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="h-9 w-9 rounded-xl glass-subcard flex items-center justify-center text-primary shadow-sm">
+                  <span class="material-symbols-outlined text-xl">stacked_bar_chart</span>
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-2">
+                    <span class="font-headline text-sm font-bold text-on-surface" id="telemetry-step-label">Paso 3 de 5</span>
+                    <span class="badge badge-approved text-[10px]" id="telemetry-pct-badge">60% COMPLETADO</span>
+                  </div>
+                  <span class="text-xs text-on-surface-variant font-medium">Sección 2 • Geometría y Ubicación Demográfica UBIGEO</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 self-end sm:self-auto">
+                <div class="telemetry-pill">
+                  <span class="material-symbols-outlined text-primary text-sm animate-pulse">timer</span>
+                  <span>2 MIN RESTANTES</span>
+                </div>
+                <div class="hidden md:flex telemetry-pill">
+                  <span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span class="text-emerald-600 dark:text-emerald-400">SESIÓN CIFRADA #4492</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Barra de Progreso Degradado Cyan -> Violeta -->
+            <div class="w-full h-2.5 rounded-full glass-subcard overflow-hidden p-0.5 border border-glass-card-border">
+              <div id="telemetry-progress-bar" class="h-full rounded-full shimmer-bar w-3/5 transition-all duration-700 shadow-[0_0_15px_rgba(2,132,199,0.5)]"></div>
+            </div>
+          </div>
+
+          <!-- Cuadrícula 12 Columnas: Cuestionario Principal + Panel de Inspección Geoespacial -->
+          <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+            <!-- Columna Izquierda: Cuestionario Principal (8 cols en desktop / 12 cols en tablet) -->
+            <div class="xl:col-span-8">
+              <article class="glass-panel p-6 sm:p-8">
+          <!-- Selector Dinámico de Encuestas Activas desde MySQL -->
+          <div class="mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 glass-subcard">
+            <label class="text-xs text-on-surface font-semibold font-mono flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-base">ballot</span>
+              <span>Instrumento Activo:</span>
+            </label>
+            <select id="select-active-survey" class="input-glass text-xs py-1.5 px-3 max-w-lg cursor-pointer font-semibold text-primary">
+              <option value="1">CENSO-PE-2025-Q1 - Censo Nacional de Conectividad 2025</option>
+            </select>
+          </div>
+
+          <!-- Cabecera Oficial -->
+          <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 pb-6 border-b border-glass-card-border">
+            <div class="flex flex-col gap-1.5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="badge badge-approved text-xs">
+                  <span class="material-symbols-outlined text-xs">verified</span>
+                  Oficial • Verificada
+                </span>
+                <span class="badge badge-glass text-xs" id="runner-survey-code">ID: CENSO-PE-2025-Q1</span>
+                <span class="badge badge-glass text-primary text-xs">UBIGEO 6-DIGIT CORE</span>
+              </div>
+              <h1 class="font-headline text-2xl sm:text-3xl font-extrabold text-primary tracking-tight mt-1" id="runner-survey-title">
+                Censo Nacional de Conectividad & Servicios Digitales 2025
+              </h1>
+              <p class="text-xs sm:text-sm text-on-surface-variant font-medium" id="runner-survey-desc">
+                Instrumento de recolección georreferenciado para el diseño de infraestructura de telecomunicaciones e inclusión digital.
+              </p>
+            </div>
+            <div class="flex md:flex-col items-center md:items-end justify-between gap-1 shrink-0">
+              <span class="font-mono text-[10px] text-outline uppercase tracking-wider font-semibold">Norma Técnica</span>
+              <span class="badge badge-glass text-xs font-mono font-bold text-on-surface" id="runner-survey-norma">DS-024-INEI-PE</span>
+            </div>
+          </div>
+
+          <!-- SECCIÓN DE UBIGEO EN CASCADA (PASO ACTIVO 03) -->
+          <section class="mt-6 flex flex-col gap-6">
+            <div class="flex items-start gap-4">
+              <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-600 text-white font-headline text-lg font-bold flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(2,132,199,0.35)]">
+                03
+              </div>
+              <div class="flex flex-col">
+                <span class="font-mono text-xs text-primary uppercase font-bold tracking-wider">Pregunta Condicional de Cobertura</span>
+                <h2 class="font-headline text-lg sm:text-xl text-on-surface font-bold mt-0.5">
+                  Indique su ubicación de residencia actual para segmentación regional:
+                </h2>
+              </div>
+            </div>
+
+            <!-- CASCADA TÁCTIL DE 4 FASES (País, Departamento, Provincia, Distrito) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              
+              <!-- FASE 01: PAÍS -->
+              <div class="glass-subcard p-4 flex flex-col justify-between border-emerald-500/40">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono text-[10px] text-on-surface-variant font-bold">PASO 01 / PAÍS</span>
+                  <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-lg">check_circle</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="peru-flag-badge">
+                    <svg viewBox="0 0 3 2" class="w-full h-full">
+                      <rect width="1" height="2" fill="#D91023"/>
+                      <rect width="1" height="2" x="1" fill="#FFFFFF"/>
+                      <rect width="1" height="2" x="2" fill="#D91023"/>
+                    </svg>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="font-headline text-sm font-bold text-on-surface">Perú</span>
+                    <span class="font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">UBI: 00-00-00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FASE 02: DEPARTAMENTO -->
+              <div class="glass-subcard p-4 flex flex-col justify-between" id="card-departamento">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-mono text-[10px] text-primary font-bold">PASO 02 / DEPARTAMENTO</span>
+                  <span class="badge badge-glass text-[9px]" id="departamento-code-badge">UBI: 150000</span>
+                </div>
+                <div>
+                  <label class="text-[10px] text-on-surface-variant font-semibold block mb-1">Seleccionar Región:</label>
+                  <select id="select-departamento" class="input-glass text-xs py-1.5 px-2 cursor-pointer font-medium">
+                    <option value="15" selected>Lima (15)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- FASE 03: PROVINCIA -->
+              <div class="glass-subcard p-4 flex flex-col justify-between" id="card-provincia">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-mono text-[10px] text-primary font-bold">PASO 03 / PROVINCIA</span>
+                  <span class="badge badge-glass text-[9px]" id="provincia-code-badge">UBI: 1501</span>
+                </div>
+                <div>
+                  <label class="text-[10px] text-on-surface-variant font-semibold block mb-1">Seleccionar Provincia:</label>
+                  <select id="select-provincia" class="input-glass text-xs py-1.5 px-2 cursor-pointer font-medium">
+                    <option value="1501" selected>Lima Metropolitana</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- FASE 04: DISTRITO -->
+              <div class="glass-subcard p-4 flex flex-col justify-between border-purple-500/40" id="card-distrito">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-mono text-[10px] text-secondary font-bold">PASO 04 / DISTRITO</span>
+                  <span class="badge badge-glass text-[9px] text-secondary border-purple-400/40" id="distrito-code-badge">UBI: 150122</span>
+                </div>
+                <div>
+                  <label class="text-[10px] text-on-surface-variant font-semibold block mb-1">Seleccionar Distrito:</label>
+                  <select id="select-distrito" class="input-glass text-xs py-1.5 px-2 cursor-pointer font-medium">
+                    <option value="150122" selected>Miraflores</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- PREGUNTAS COMPLEMENTARIAS: CALIFICACIÓN & NPS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4 pt-6 border-t border-glass-card-border">
+              
+              <!-- Calificación con Estrellas Lumina -->
+              <div class="glass-subcard p-5">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="badge badge-pending text-[10px]">PREGUNTA 04</span>
+                  <span class="text-xs text-on-surface font-bold">Estabilidad de Señal</span>
+                </div>
+                <p class="text-xs text-on-surface-variant font-medium mb-3">En una escala de 1 a 5 estrellas, ¿cómo califica la estabilidad de su señal?</p>
+                <div class="flex items-center gap-2" id="star-rating-container">
+                  <button type="button" class="rating-star text-amber-400 hover:scale-125 transition-transform" data-value="1"><span class="material-symbols-outlined text-2xl">star</span></button>
+                  <button type="button" class="rating-star text-amber-400 hover:scale-125 transition-transform" data-value="2"><span class="material-symbols-outlined text-2xl">star</span></button>
+                  <button type="button" class="rating-star text-amber-400 hover:scale-125 transition-transform" data-value="3"><span class="material-symbols-outlined text-2xl">star</span></button>
+                  <button type="button" class="rating-star text-amber-400 hover:scale-125 transition-transform" data-value="4"><span class="material-symbols-outlined text-2xl">star</span></button>
+                  <button type="button" class="rating-star text-amber-400 hover:scale-125 transition-transform" data-value="5"><span class="material-symbols-outlined text-2xl">star</span></button>
+                </div>
+              </div>
+
+              <!-- Escala NPS -->
+              <div class="glass-subcard p-5">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="badge badge-approved text-[10px]">PREGUNTA 05</span>
+                  <span class="text-xs text-on-surface font-bold">Índice NPS Recomendación</span>
+                </div>
+                <p class="text-xs text-on-surface-variant font-medium mb-3">¿Con qué probabilidad recomendaría su proveedor actual? (0 al 10)</p>
+                <div class="flex items-center justify-between gap-1 overflow-x-auto pb-1">
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="0">0</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="1">1</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="2">2</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="3">3</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="4">4</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="5">5</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="6">6</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="7">7</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="8">8</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold border-primary text-primary" data-nps="9">9</button>
+                  <button type="button" class="nps-btn px-2.5 py-1.5 rounded-lg glass-subcard text-xs font-mono font-bold" data-nps="10">10</button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Botones de Navegación del Flujo -->
+            <div class="flex items-center justify-between pt-6 border-t border-glass-card-border mt-2">
+              <button type="button" class="btn btn-secondary" id="btn-prev-step">
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                <span>Paso Anterior</span>
+              </button>
+
+              <div class="flex items-center gap-3">
+                <button type="button" class="btn btn-primary" id="btn-next-step">
+                  <span>Completar Encuesta</span>
+                  <span class="material-symbols-outlined text-lg">check</span>
+                </button>
+              </div>
+            </div>
+
+          </section>
+        </article>
+      </div>
+
+      <!-- Columna Derecha: Panel de Inspección Geoespacial en Vivo (4 cols en desktop / 12 cols en tablet) -->
+      <div class="xl:col-span-4 space-y-5">
+        
+        <!-- Tarjeta Coordenadas de Referencia INEI -->
+        <div class="glass-panel p-5 border-t border-primary/40">
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-outline-variant/30">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-xl">satellite_alt</span>
+              <h3 class="font-headline text-sm font-bold text-on-surface">Inspección Geoespacial</h3>
+            </div>
+            <span class="badge text-[9px] bg-emerald-500/15 text-emerald-400 font-mono">INEI GPS LIVE</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs font-mono">
+            <div class="p-2.5 rounded-xl bg-surface-container/70 border border-outline-variant/30 flex justify-between items-center">
+              <span class="text-outline">Región Activa:</span>
+              <span class="text-on-surface font-bold">15 - Lima</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-surface-container/70 border border-outline-variant/30 flex justify-between items-center">
+              <span class="text-outline">Coordenadas Centroide:</span>
+              <span class="text-primary font-bold">12°07′16″S 77°01′55″O</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-surface-container/70 border border-outline-variant/30 flex justify-between items-center">
+              <span class="text-outline">Altitud Media:</span>
+              <span class="text-tertiary-fixed font-bold">79 m s. n. m.</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-surface-container/70 border border-outline-variant/30 flex justify-between items-center">
+              <span class="text-outline">Estrato Socioeconómico:</span>
+              <span class="text-emerald-400 font-bold">Urbano Consolidado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen de Cifrado y Sello Criptográfico -->
+        <div class="glass-panel p-5">
+          <div class="flex items-center gap-2 pb-3 mb-3 border-b border-outline-variant/30">
+            <span class="material-symbols-outlined text-secondary text-xl">shield_lock</span>
+            <h3 class="font-headline text-sm font-bold text-on-surface">Gobernanza Criptográfica</h3>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between items-center text-on-surface-variant font-mono text-[11px]">
+              <span>Algoritmo de Firma:</span>
+              <span class="text-primary font-bold">SHA-256</span>
+            </div>
+            <div class="flex justify-between items-center text-on-surface-variant font-mono text-[11px]">
+              <span>Canal de Transmisión:</span>
+              <span class="text-emerald-400 font-semibold">TLS 1.3 Seguro</span>
+            </div>
+            <div class="flex justify-between items-center text-on-surface-variant font-mono text-[11px]">
+              <span>Protección de Datos:</span>
+              <span class="text-on-surface font-semibold">Ley 29733 Perú</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-surface-container/50 border border-outline-variant/30 text-[10px] font-mono text-outline mt-2">
+              Hash de sesión verificado: <span class="text-primary-fixed-dim">0x8f92a1...bc40</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ficha Rápida del Operador -->
+        <div class="glass-panel p-5">
+          <div class="flex items-center gap-2 mb-2 text-xs font-bold text-on-surface">
+            <span class="material-symbols-outlined text-primary text-base">support_agent</span>
+            <span>Guía del Encuestador de Campo</span>
+          </div>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Confirme la veracidad de la ubicación geográfica antes de consignar las respuestas de percepción y satisfacción de conectividad.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+      <!-- ============================================================ -->
+      <!-- VISTA 2: CONSTRUCTOR & IMPORTADOR EXCEL -->
+      <!-- ============================================================ -->
+      <section id="view-constructor-excel" class="app-view hidden">
+        <div class="w-full max-w-[1540px] mx-auto space-y-6">
+          <!-- Header del Constructor -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-outline-variant/30">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge badge-approved text-xs" id="builder-mode-badge">NUEVA ENCUESTA</span>
+                <span class="badge bg-surface-container text-primary-fixed-dim text-xs" id="builder-total-questions">0 PREGUNTAS</span>
+              </div>
+              <h1 class="font-headline text-2xl sm:text-3xl font-bold text-primary">Constructor & Importador Excel</h1>
+              <p class="text-xs sm:text-sm text-on-surface-variant">Cree encuestas dinámicas desde cero, edite existentes o importe cuestionarios masivos desde archivos .XLSX/.CSV.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button class="btn btn-secondary text-xs py-2 px-3.5" id="btn-save-draft" type="button" title="Guardar como borrador para revisión posterior">
+                <span class="material-symbols-outlined text-base">save</span>
+                <span>Guardar Borrador</span>
+              </button>
+              <button class="btn bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold text-xs py-2 px-4 shadow-[0_0_20px_rgba(16,185,129,0.35)] flex items-center gap-2 transition-all hover:scale-105" id="btn-publish-survey" type="button" title="Publicar encuesta oficialmente y generar dirección funcional">
+                <span class="material-symbols-outlined text-lg">rocket_launch</span>
+                <span>Publicar Encuesta</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Selector de Modo de Construcción: Nueva Encuesta en Blanco vs Editar Existente -->
+          <div class="glass-panel p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-l-4 border-l-primary">
+            <div class="flex items-center gap-3">
+              <div class="h-9 w-9 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-xl">edit_document</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-mono uppercase text-outline font-bold tracking-wider block">Modo del Constructor</span>
+                <span class="font-headline text-sm font-bold text-on-surface" id="builder-mode-label">✨ Creando Nueva Encuesta en Blanco</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <label class="text-xs font-semibold text-on-surface-variant font-mono">Seleccionar:</label>
+              <select id="builder-survey-selector" class="input-glass text-xs py-1.5 px-3 font-semibold text-primary max-w-xs cursor-pointer">
+                <option value="new" selected>✨ + Nueva Encuesta en Blanco</option>
+              </select>
+              <button type="button" class="btn btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5" id="btn-builder-reset-new" title="Crear nueva encuesta vacía desde cero">
+                <span class="material-symbols-outlined text-sm">add_circle</span>
+                <span>Nueva Vacía</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Cuadrícula 12 Columnas: Lienzo de Construcción + Panel de Herramientas y Metadatos -->
+          <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+            <!-- Columna Izquierda: Lienzo de Importación & Preguntas (8 cols en desktop / 12 cols en tablet) -->
+            <div class="xl:col-span-8 space-y-6">
+              
+              <!-- Zona de Carga Arrastrar y Soltar Excel -->
+              <div id="excel-drop-zone" class="glass-panel p-6 text-center border-2 border-dashed border-outline-variant/50 hover:border-primary-container rounded-2xl cursor-pointer transition-all">
+                <input type="file" id="excel-file-input" class="hidden" accept=".xlsx,.xls,.csv"/>
+                <div class="flex flex-col items-center justify-center">
+                  <div class="h-14 w-14 rounded-2xl bg-primary-container/10 border border-primary-container/30 flex items-center justify-center text-primary-container mb-2.5 shadow-[0_0_20px_rgba(0,242,254,0.2)]">
+                    <span class="material-symbols-outlined text-3xl">upload_file</span>
+                  </div>
+                  <h3 class="font-headline text-base font-bold text-on-surface mb-1">Arrastre su archivo Excel (.xlsx, .xls) o CSV aquí</h3>
+                  <p class="text-xs text-on-surface-variant max-w-md mb-3">
+                    El motor cuántico procesará columnas de preguntas, tipos de respuesta y opciones estructurándolas al instante con SheetJS.
+                  </p>
+                  <div class="flex items-center gap-3">
+                    <button type="button" class="btn btn-secondary text-xs" onclick="document.getElementById('excel-file-input').click()">
+                      <span class="material-symbols-outlined text-base">folder_open</span>
+                      <span>Seleccionar Archivo Local</span>
+                    </button>
+                  </div>
+                  <div id="excel-import-status" class="mt-3 text-xs font-mono"></div>
+                </div>
+              </div>
+
+              <!-- Formulario Rápido de Nueva Pregunta -->
+              <div class="glass-panel p-5">
+                <h3 class="font-headline text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary-fixed-dim text-base">add_circle</span>
+                  <span>Añadir Pregunta Manualmente al Instrumento</span>
+                </h3>
+                <div class="space-y-3">
+                  <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="new-question-text" class="input-glass flex-1 text-sm font-semibold" placeholder="Escriba aquí la pregunta con letra grande y clara..."/>
+                    <select id="new-question-type" class="input-glass sm:w-56 text-xs bg-surface-container font-semibold text-primary">
+                      <option value="opcion_unica">🔘 Opción Única</option>
+                      <option value="opcion_multiple">☑️ Opción Múltiple</option>
+                      <option value="ubigeo_cascada">🗺️ UBIGEO Cascada (INEI)</option>
+                      <option value="calificacion">⭐ Calificación Estrellas (1-5)</option>
+                      <option value="escala_nps">📊 Escala NPS (0-10)</option>
+                      <option value="texto">✍️ Texto Libre</option>
+                    </select>
+                    <button class="btn btn-primary text-xs shrink-0" id="btn-add-question" type="button">
+                      <span class="material-symbols-outlined text-base">add</span>
+                      <span>Añadir Pregunta</span>
+                    </button>
+                  </div>
+                  <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <input type="text" id="new-question-help" class="input-glass flex-1 text-xs py-1.5 px-3" placeholder="Texto de ayuda o instrucción para el encuestado (opcional)..."/>
+                    <label class="flex items-center gap-1.5 cursor-pointer text-xs font-medium text-on-surface select-none">
+                      <input type="checkbox" id="new-question-required" checked class="h-4 w-4 accent-emerald-500 rounded"/>
+                      <span>¿Respuesta obligatoria?</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Contenedor Dinámico de Preguntas de la Encuesta -->
+              <div id="builder-questions-container" class="space-y-4">
+                <!-- Renderizado dinámico desde survey-builder.js -->
+              </div>
+
+              <!-- Barra de Finalización y Publicación Oficial al Terminar la Encuesta -->
+              <div class="glass-panel p-6 rounded-2xl border-t-2 border-t-emerald-500/70 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 shadow-[0_4px_30px_rgba(16,185,129,0.15)]">
+                <div class="flex items-center gap-3.5">
+                  <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.35)] shrink-0">
+                    <span class="material-symbols-outlined text-2xl">rocket_launch</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2 mb-0.5">
+                      <span class="badge badge-approved text-[9px] uppercase">GUARDAR O PUBLICAR</span>
+                      <h4 class="font-headline text-base font-bold text-on-surface">¿Listo para registrar esta encuesta?</h4>
+                    </div>
+                    <p class="text-xs text-on-surface-variant font-mono">Guarde el borrador para continuar luego o publíquela para generar su código (5 letras + 3 dígitos de ID) y dirección web.</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
+                  <button class="btn btn-secondary text-xs py-2.5 px-4" id="btn-save-draft-bottom" type="button" title="Guardar borrador para continuar después">
+                    <span class="material-symbols-outlined text-base">save</span>
+                    <span>Guardar Borrador</span>
+                  </button>
+                  <button class="btn bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold text-xs py-2.5 px-5 shadow-[0_0_20px_rgba(16,185,129,0.35)] flex items-center gap-2 transition-all hover:scale-105" id="btn-publish-survey-bottom" type="button" title="Publicar encuesta y generar dirección funcional">
+                    <span class="material-symbols-outlined text-lg">rocket_launch</span>
+                    <span>Publicar Encuesta</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Metadatos & Herramientas de Pregunta (4 cols en desktop / 12 cols en tablet) -->
+            <div class="xl:col-span-4 space-y-5">
+              
+              <!-- Metadatos de la Encuesta -->
+              <div class="glass-panel p-5 border-t border-primary/40">
+                <h3 class="font-headline text-sm font-semibold text-on-surface mb-3 flex items-center gap-2 pb-2 border-b border-outline-variant/30">
+                  <span class="material-symbols-outlined text-primary-fixed-dim text-base">edit_note</span>
+                  <span>Datos Generales del Instrumento</span>
+                </h3>
+                <div class="space-y-3">
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Título de la Encuesta:</label>
+                    <input type="text" id="survey-title-input" class="input-glass text-xs font-semibold" value="" placeholder="Ej: Encuesta de Conectividad y Acceso Digital 2026"/>
+                  </div>
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Categoría Técnica:</label>
+                    <input type="text" id="survey-cat-input" class="input-glass text-xs" value="" placeholder="Ej: Telecomunicaciones, Salud, Servicios..."/>
+                  </div>
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Norma de Acreditación:</label>
+                    <input type="text" id="survey-norma-input" class="input-glass text-xs font-mono" value="" placeholder="Ej: DS-024-INEI-PE o OMNI-STD-2026"/>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Paleta de Componentes Rápidos -->
+              <div class="glass-panel p-5">
+                <div class="flex items-center gap-2 pb-3 mb-3 border-b border-outline-variant/30">
+                  <span class="material-symbols-outlined text-secondary text-xl">widgets</span>
+                  <h3 class="font-headline text-sm font-bold text-on-surface">Paleta de Preguntas</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  <button type="button" class="p-2.5 rounded-xl bg-surface-container/60 hover:bg-primary/10 border border-outline-variant/40 hover:border-primary transition-all text-left flex items-center gap-2" onclick="document.getElementById('new-question-type').value='opcion_unica'; document.getElementById('new-question-text').focus();">
+                    <span class="material-symbols-outlined text-primary text-base">radio_button_checked</span>
+                    <span class="font-medium text-on-surface">Opción Única</span>
+                  </button>
+                  <button type="button" class="p-2.5 rounded-xl bg-surface-container/60 hover:bg-primary/10 border border-outline-variant/40 hover:border-primary transition-all text-left flex items-center gap-2" onclick="document.getElementById('new-question-type').value='opcion_multiple'; document.getElementById('new-question-text').focus();">
+                    <span class="material-symbols-outlined text-secondary text-base">check_box</span>
+                    <span class="font-medium text-on-surface">Opción Múltiple</span>
+                  </button>
+                  <button type="button" class="p-2.5 rounded-xl bg-surface-container/60 hover:bg-primary/10 border border-outline-variant/40 hover:border-primary transition-all text-left flex items-center gap-2" onclick="document.getElementById('new-question-type').value='ubigeo_cascada'; document.getElementById('new-question-text').focus();">
+                    <span class="material-symbols-outlined text-emerald-400 text-base">map</span>
+                    <span class="font-medium text-on-surface">UBIGEO INEI</span>
+                  </button>
+                  <button type="button" class="p-2.5 rounded-xl bg-surface-container/60 hover:bg-primary/10 border border-outline-variant/40 hover:border-primary transition-all text-left flex items-center gap-2" onclick="document.getElementById('new-question-type').value='calificacion'; document.getElementById('new-question-text').focus();">
+                    <span class="material-symbols-outlined text-amber-400 text-base">star</span>
+                    <span class="font-medium text-on-surface">Calificación</span>
+                  </button>
+                  <button type="button" class="p-2.5 rounded-xl bg-surface-container/60 hover:bg-primary/10 border border-outline-variant/40 hover:border-primary transition-all text-left flex items-center gap-2" onclick="document.getElementById('new-question-type').value='escala_nps'; document.getElementById('new-question-text').focus();">
+                    <span class="material-symbols-outlined text-primary text-base">speed</span>
+                    <span class="font-medium text-on-surface">Escala NPS</span>
+                  </button>
+                  <button type="button" class="p-2.5 rounded-xl bg-surface-container/60 hover:bg-primary/10 border border-outline-variant/40 hover:border-primary transition-all text-left flex items-center gap-2" onclick="document.getElementById('new-question-type').value='texto'; document.getElementById('new-question-text').focus();">
+                    <span class="material-symbols-outlined text-tertiary-fixed text-base">short_text</span>
+                    <span class="font-medium text-on-surface">Texto Libre</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Checklist de Validación Técnica -->
+              <div class="glass-panel p-5">
+                <div class="flex items-center justify-between pb-2 mb-2 border-b border-outline-variant/30">
+                  <span class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-emerald-400 text-base">task_alt</span>
+                    <span>Validación Pre-Aprobación</span>
+                  </span>
+                  <span class="badge text-[9px] bg-emerald-500/15 text-emerald-400 font-mono">100% OK</span>
+                </div>
+                <div class="space-y-1.5 text-[11px] text-on-surface-variant font-mono">
+                  <div class="flex items-center gap-2 text-emerald-400">
+                    <span class="material-symbols-outlined text-sm">check</span>
+                    <span>Estructura JSON válida para motor REST</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-emerald-400">
+                    <span class="material-symbols-outlined text-sm">check</span>
+                    <span>Soporte UBIGEO 6 dígitos activo</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-emerald-400">
+                    <span class="material-symbols-outlined text-sm">check</span>
+                    <span>Compatibilidad SheetJS verificada</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tarjeta de Lanzamiento Oficial en Columna Lateral -->
+              <div class="glass-panel p-5 border-t-2 border-t-emerald-500/80 space-y-3">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-emerald-400 text-xl">publish</span>
+                  <h4 class="font-headline text-sm font-bold text-on-surface">Lanzamiento Oficial</h4>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  Una vez añadidas las preguntas, publique la encuesta para generar su código (5 letras + 3 dígitos de ID) y su dirección web funcional.
+                </p>
+                <button class="btn bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold text-xs py-2.5 px-4 w-full shadow-[0_0_20px_rgba(16,185,129,0.35)] flex items-center justify-center gap-2 transition-all hover:scale-102" id="btn-publish-survey-side" type="button" title="Publicar encuesta oficialmente">
+                  <span class="material-symbols-outlined text-base">rocket_launch</span>
+                  <span>Publicar Encuesta</span>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- VISTA 3: BENTO ANALYTICS & DASHBOARDS -->
+      <!-- ============================================================ -->
+      <section id="view-bento-analytics" class="app-view hidden">
+        <div class="w-full max-w-[1540px] mx-auto space-y-6">
+          <!-- Header Bento -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-outline-variant/30">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge badge-approved text-xs">TELEMETRÍA EN TIEMPO REAL</span>
+                <span class="badge bg-surface-container text-tertiary-fixed text-xs" id="bento-cluster-name">LatAm South-1</span>
+              </div>
+              <h1 class="font-headline text-2xl sm:text-3xl font-bold text-primary">Bento Analytics & Telemetría Geoespacial</h1>
+              <p class="text-xs sm:text-sm text-on-surface-variant">Métricas consolidadas de campo, tasa de completitud y concentración regional por UBIGEO.</p>
+            </div>
+            <button class="btn btn-secondary text-xs" id="btn-export-analytics" type="button">
+              <span class="material-symbols-outlined text-base">download</span>
+              <span>Exportar Reporte CSV</span>
+            </button>
+          </div>
+
+          <!-- Selector de Encuesta & Control de Acceso RBAC -->
+          <div class="glass-panel p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-primary/30 bg-primary/5">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-2xl">insights</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <label for="bento-survey-selector" class="text-xs font-bold text-on-surface">Encuesta en Análisis:</label>
+                  <span id="bento-survey-role-tag" class="badge text-[9px] bg-primary/20 text-primary border border-primary/30">Filtro RBAC Activo</span>
+                </div>
+                <p class="text-[11px] text-on-surface-variant" id="bento-survey-subtitle">Cargando métricas de la encuesta...</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 w-full md:w-auto">
+              <div class="relative w-full md:w-96">
+                <select id="bento-survey-selector" class="w-full text-xs font-semibold bg-surface border border-primary/40 rounded-xl px-3 py-2 text-on-surface focus:outline-none focus:border-primary shadow-sm cursor-pointer pr-8 truncate">
+                  <option value="" disabled selected>Cargando encuestas autorizadas...</option>
+                </select>
+              </div>
+              <button class="btn btn-secondary text-xs py-2 px-3 shrink-0 flex items-center gap-1.5" id="btn-refresh-analytics" type="button" title="Refrescar métricas">
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                <span class="hidden sm:inline">Refrescar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- BENTO GRID -->
+          <div class="bento-grid">
+            
+            <!-- KPI 1: Total Respuestas -->
+            <div class="col-span-3 glass-panel p-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-on-surface-variant font-mono">TOTAL RESPUESTAS</span>
+                <span class="material-symbols-outlined text-primary-container text-lg">database</span>
+              </div>
+              <div class="font-headline text-3xl font-extrabold text-primary mb-1" id="bento-total-respuestas">0</div>
+              <div class="text-[10px] text-tertiary-fixed flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">trending_up</span>
+                <span>Respuestas validadas en BD</span>
+              </div>
+            </div>
+
+            <!-- KPI 2: Tasa de Completitud -->
+            <div class="col-span-3 glass-panel p-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-on-surface-variant font-mono">COMPLETITUD</span>
+                <span class="material-symbols-outlined text-tertiary-fixed text-lg">verified</span>
+              </div>
+              <div class="font-headline text-3xl font-extrabold text-tertiary-fixed mb-1" id="bento-completitud">0%</div>
+              <div class="text-[10px] text-on-surface-variant">Validado con hashes de sesión</div>
+            </div>
+
+            <!-- KPI 3: Tiempo Promedio -->
+            <div class="col-span-3 glass-panel p-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-on-surface-variant font-mono">TIEMPO PROMEDIO</span>
+                <span class="material-symbols-outlined text-secondary text-lg">timer</span>
+              </div>
+              <div class="font-headline text-3xl font-extrabold text-secondary mb-1" id="bento-tiempo-promedio">0 min</div>
+              <div class="text-[10px] text-on-surface-variant">Ritmo de respuesta por informante</div>
+            </div>
+
+            <!-- KPI 4: NPS Score -->
+            <div class="col-span-3 glass-panel p-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-on-surface-variant font-mono">ÍNDICE NPS PROMEDIO</span>
+                <span class="material-symbols-outlined text-primary-fixed-dim text-lg">thumb_up</span>
+              </div>
+              <div class="font-headline text-3xl font-extrabold text-primary-fixed-dim mb-1" id="bento-nps-score">+0</div>
+              <div class="text-[10px] text-tertiary-fixed font-semibold">Nivel de Satisfacción / Adhesión</div>
+            </div>
+
+            <!-- Tarjeta Bento Grande: Gráfico de Velocidad Temporal -->
+            <div class="col-span-8 glass-panel p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-headline text-sm font-bold text-on-surface">Curva de Respuestas por Hora (Encuesta Seleccionada)</h3>
+                  <p class="text-xs text-on-surface-variant">Flujo de recepción sincronizado desde dispositivos móviles y web.</p>
+                </div>
+                <span class="badge badge-approved text-[10px]">EN VIVO</span>
+              </div>
+              <div id="bento-timeline-svg" class="w-full h-44"></div>
+            </div>
+
+            <!-- Tarjeta Bento Lateral: Conectividad y Segmentos -->
+            <div class="col-span-4 glass-panel p-6">
+              <h3 class="font-headline text-sm font-bold text-on-surface mb-1">Tecnología de Conexión</h3>
+              <p class="text-xs text-on-surface-variant mb-4">Distribución porcentual según declaración del encuestado.</p>
+              <div id="bento-connectivity-container"></div>
+            </div>
+
+            <!-- Tarjeta Bento: Desglose por UBIGEO Regional -->
+            <div class="col-span-6 glass-panel p-6">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-headline text-sm font-bold text-on-surface">Concentración por Departamento</h3>
+                <span class="text-xs font-mono text-outline">TOP REGIONES</span>
+              </div>
+              <div id="bento-geo-bars"></div>
+            </div>
+
+            <!-- Tarjeta Bento: Dispositivos de Captura -->
+            <div class="col-span-6 glass-panel p-6">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-headline text-sm font-bold text-on-surface">Dispositivos Predominantes</h3>
+                <span class="text-xs font-mono text-outline">HARDWARE DEMOGRÁFICO</span>
+              </div>
+              <div id="bento-devices-container"></div>
+            </div>
+
+            <!-- Fila Inferior: Registro de Telemetría en Vivo & Cumplimiento Normativo -->
+            <div class="col-span-7 glass-panel p-5">
+              <div class="flex items-center justify-between pb-3 mb-3 border-b border-outline-variant/30">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <h3 class="font-headline text-xs font-bold text-on-surface">Flujo de Pings Geoespaciales en Vivo</h3>
+                </div>
+                <span class="badge text-[9px] font-mono bg-surface-container text-primary">SYNC OK</span>
+              </div>
+              <div id="bento-recent-pings" class="space-y-2 text-xs font-mono">
+                <!-- Poblado dinámicamente -->
+              </div>
+            </div>
+
+            <div class="col-span-5 glass-panel p-5">
+              <div class="flex items-center justify-between pb-3 mb-3 border-b border-outline-variant/30">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary text-base">policy</span>
+                  <h3 class="font-headline text-xs font-bold text-on-surface">Gobernanza & Certificación INEI</h3>
+                </div>
+                <span class="badge badge-approved text-[9px]">DS-024-INEI</span>
+              </div>
+              <div class="space-y-2 text-xs text-on-surface-variant font-mono">
+                <div class="flex justify-between">
+                  <span>Anonimización de Datos:</span>
+                  <span class="text-emerald-400 font-bold">Activa (Ley 29733)</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Cifrado de Microdatos:</span>
+                  <span class="text-on-surface font-bold">AES-256 + TLS 1.3</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Integridad de Bloques:</span>
+                  <span class="text-primary font-bold">SHA-256 Immutable</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Destino de Consolidación:</span>
+                  <span class="text-tertiary-fixed font-bold">MySQL Local 3306</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- DESGLOSE DETALLADO POR PREGUNTA DE LA ENCUESTA SELECCIONADA -->
+          <div class="glass-panel p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/30">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">ballot</span>
+                <div>
+                  <h3 class="font-headline text-base font-bold text-on-surface">Distribución de Respuestas por Pregunta</h3>
+                  <p class="text-xs text-on-surface-variant">Métricas y porcentajes desagregados por alternativa para la encuesta seleccionada.</p>
+                </div>
+              </div>
+              <span id="bento-questions-counter" class="badge bg-surface-container text-primary font-mono text-xs">Cargando preguntas...</span>
+            </div>
+
+            <div id="bento-questions-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Renderizado dinámico desde bento-analytics.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- VISTA 4: PANEL DE APROBACIÓN SUPERADMIN -->
+      <!-- ============================================================ -->
+      <section id="view-aprobacion-admin" class="app-view hidden">
+        <div class="w-full max-w-[1540px] mx-auto space-y-6">
+          <!-- Header del Panel SuperAdmin -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-outline-variant/30">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge badge-approved text-xs">AUDITORÍA METODOLÓGICA</span>
+                <span class="badge bg-surface-container text-primary-fixed-dim text-xs">SUPERADMIN ROOT</span>
+              </div>
+              <h1 class="font-headline text-2xl sm:text-3xl font-bold text-primary">Panel de Aprobación SuperAdmin</h1>
+              <p class="text-xs sm:text-sm text-on-surface-variant">Revisión de instrumentos técnicos, emisión de resoluciones oficiales y bitácora de auditoría.</p>
+            </div>
+            
+            <!-- Resumen de Contadores -->
+            <div class="flex items-center gap-2">
+              <span class="badge bg-surface-container text-xs">Total: <strong id="kpi-total" class="text-primary ml-1">4</strong></span>
+              <span class="badge badge-pending text-xs">Pendientes: <strong id="kpi-pendientes" class="ml-1">1</strong></span>
+              <span class="badge badge-approved text-xs">Aprobadas: <strong id="kpi-aprobadas" class="ml-1">2</strong></span>
+              <span class="badge badge-rejected text-xs">Rechazadas: <strong id="kpi-rechazadas" class="ml-1">1</strong></span>
+            </div>
+          </div>
+
+          <!-- Filtros de Estado -->
+          <div class="flex items-center gap-2 mb-5 border-b border-outline-variant/30 pb-3 overflow-x-auto">
+            <button class="filter-tab active btn text-xs py-1.5 px-4 bg-surface-container-high text-primary-container" data-filter="todos">Todas las Encuestas</button>
+            <button class="filter-tab btn text-xs py-1.5 px-4 text-on-surface-variant hover:text-on-surface" data-filter="pendiente">Pendientes de Revisión</button>
+            <button class="filter-tab btn text-xs py-1.5 px-4 text-on-surface-variant hover:text-on-surface" data-filter="aprobada">Aprobadas Oficiales</button>
+            <button class="filter-tab btn text-xs py-1.5 px-4 text-on-surface-variant hover:text-on-surface" data-filter="rechazada">Con Observaciones</button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Tabla de Encuestas -->
+            <div class="lg:col-span-2 glass-panel p-0 overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="border-b border-outline-variant/30 bg-surface-container-low/70 text-xs text-on-surface-variant font-mono">
+                      <th class="p-4">Instrumento</th>
+                      <th class="p-4">Norma</th>
+                      <th class="p-4">Categoría</th>
+                      <th class="p-4">Estado</th>
+                      <th class="p-4">Resp.</th>
+                      <th class="p-4 text-right">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="approval-table-body" class="text-xs">
+                    <!-- Renderizado dinámico desde admin-approval.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Bitácora de Auditoría en Tiempo Real -->
+            <div class="glass-panel p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-headline text-sm font-bold text-on-surface">Bitácora de Auditoría</h3>
+                <span class="badge bg-surface-container text-xs font-mono">LOG SHA-256</span>
+              </div>
+              <div id="audit-timeline-container" class="mt-2">
+                <!-- Renderizado dinámico desde admin-approval.js -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- VISTA 5: GESTIÓN DE USUARIOS & ROLES RBAC -->
+      <section id="view-gestion-usuarios" class="app-view hidden">
+        <div class="w-full max-w-[1540px] mx-auto space-y-6">
+          <!-- Encabezado de Vista -->
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-outline-variant/30">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge badge-approved text-xs">SEGURIDAD & GOBERNANZA RBAC</span>
+                <span class="text-xs font-mono text-outline">POLÍTICA ZERO-TRUST</span>
+              </div>
+              <h1 class="font-headline text-2xl sm:text-3xl font-bold text-primary">Gestión de Usuarios & Control de Acceso</h1>
+              <p class="text-xs sm:text-sm text-on-surface-variant">Administración centralizada de identidades, asignación de roles y permisos por módulo.</p>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+              <button class="btn btn-secondary text-xs" id="btn-open-matrix" type="button">
+                <span class="material-symbols-outlined text-base text-secondary">security</span>
+                <span>Matriz de Permisos (18)</span>
+              </button>
+              <button class="btn btn-primary text-xs" id="btn-toggle-new-user" type="button">
+                <span class="material-symbols-outlined text-base">person_add</span>
+                <span>+ Nuevo Usuario</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Métricas Resumen RBAC -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-card p-4 flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary-container">
+                <span class="material-symbols-outlined text-2xl">group</span>
+              </div>
+              <div>
+                <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Usuarios Registrados</span>
+                <span class="text-xl font-headline font-bold text-on-surface" id="stat-total-users">4</span>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-secondary/20 border border-secondary/40 flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-2xl">admin_panel_settings</span>
+              </div>
+              <div>
+                <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">SuperAdmins</span>
+                <span class="text-xl font-headline font-bold text-on-surface" id="stat-superadmin-users">2</span>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-tertiary-fixed/20 border border-tertiary-fixed/40 flex items-center justify-center text-tertiary-fixed">
+                <span class="material-symbols-outlined text-2xl">verified_user</span>
+              </div>
+              <div>
+                <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Auditores & Operadores</span>
+                <span class="text-xl font-headline font-bold text-on-surface" id="stat-audit-users">2</span>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                <span class="material-symbols-outlined text-2xl">key</span>
+              </div>
+              <div>
+                <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Permisos Granulares</span>
+                <span class="text-xl font-headline font-bold text-emerald-400">18 Activos</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel de Creación de Usuario (Colapsable) -->
+          <div id="panel-new-user" class="glass-panel p-5 hidden animate-fade-in border-2 border-primary/30">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">person_add</span>
+                <h3 class="font-headline text-base font-bold text-on-surface">Registrar Nuevo Usuario del Sistema</h3>
+              </div>
+              <button class="text-xs text-outline hover:text-on-surface" id="btn-cancel-new-user" type="button">Cancelar</button>
+            </div>
+
+            <form id="form-create-user" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label class="text-xs text-on-surface-variant block mb-1">Nombre Completo:</label>
+                  <input type="text" id="new-user-nombre" class="input-glass text-xs w-full" placeholder="Ej. Dr. Mario Vargas" required />
+                </div>
+                <div>
+                  <label class="text-xs text-on-surface-variant block mb-1">Correo Electrónico:</label>
+                  <input type="email" id="new-user-email" class="input-glass text-xs w-full" placeholder="usuario@omnipoll.pe" required />
+                </div>
+                <div>
+                  <label class="text-xs text-on-surface-variant block mb-1">Contraseña Inicial:</label>
+                  <input type="password" id="new-user-password" class="input-glass text-xs w-full" placeholder="Mínimo 6 caracteres" required />
+                </div>
+                <div>
+                  <label class="text-xs text-on-surface-variant block mb-1">Cargo / Especialidad:</label>
+                  <input type="text" id="new-user-cargo" class="input-glass text-xs w-full" placeholder="Ej. Analista Estadístico" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-xs text-on-surface-variant block mb-1">Rol RBAC Asignado:</label>
+                  <select id="new-user-rol" class="input-glass text-xs w-full bg-surface-container">
+                    <option value="superadmin">SuperAdmin (Acceso Total & Configuración)</option>
+                    <option value="admin">Administrador (Gestión & Aprobaciones)</option>
+                    <option value="auditor">Auditor INEI (Revisión & Dictamen)</option>
+                    <option value="encuestador" selected>Encuestador (Toma de Datos & Campo)</option>
+                    <option value="cliente">Cliente (Visualizador de Reportes Asignados)</option>
+                  </select>
+                </div>
+                <div class="flex items-end justify-end gap-2">
+                  <button type="submit" class="btn btn-primary text-xs py-2 px-5">
+                    <span class="material-symbols-outlined text-base">save</span>
+                    <span>Guardar y Habilitar Usuario</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Selector de Encuestas Asignadas al Usuario -->
+              <div id="new-user-surveys-box" class="p-3 rounded-xl bg-surface-container/40 border border-primary/20 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm text-primary">assignment_turned_in</span>
+                    <span>Asignar Reportes / Encuestas Autorizadas:</span>
+                  </span>
+                  <span class="text-[10px] text-outline font-mono">Los clientes solo podrán ver y analizar las encuestas marcadas</span>
+                </div>
+                <div id="new-user-surveys-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-40 overflow-y-auto pr-1">
+                  <!-- Checkboxes generados dinámicamente desde App.loadUsersTable -->
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Directorio de Usuarios -->
+          <div class="glass-panel p-5">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">contacts</span>
+                <h3 class="font-headline text-base font-bold text-on-surface">Directorio de Usuarios Activos</h3>
+              </div>
+              <button class="btn btn-secondary text-xs py-1 px-3" id="btn-refresh-users" type="button">
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                <span>Actualizar Lista</span>
+              </button>
+            </div>
+
+            <!-- Tabla Glass Responsive -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-outline-variant/30 text-outline uppercase font-mono text-[10px]">
+                    <th class="py-3 px-3">Usuario / Identidad</th>
+                    <th class="py-3 px-3">Cargo / Dependencia</th>
+                    <th class="py-3 px-3">Rol RBAC</th>
+                    <th class="py-3 px-3">Permisos</th>
+                    <th class="py-3 px-3">Estado</th>
+                    <th class="py-3 px-3 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody" class="divide-y divide-outline-variant/20">
+                  <!-- Renderizado dinámico desde app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODALES DE LA APLICACIÓN -->
+  <!-- ============================================================ -->
+
+  <!-- Modal Recibo de Envío de Encuesta -->
+  <div id="receipt-modal" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="text-center">
+        <div class="h-16 w-16 mx-auto rounded-full bg-tertiary-container/20 border border-tertiary-container text-tertiary-fixed flex items-center justify-center mb-3">
+          <span class="material-symbols-outlined text-3xl">verified</span>
+        </div>
+        <h3 class="font-headline text-xl font-bold text-primary mb-1">Encuesta Sincronizada con Éxito</h3>
+        <p class="text-xs text-on-surface-variant max-w-sm mx-auto mb-4">
+          Su registro ha sido encriptado y transmitido al nodo geoespacial correspondiente con el desglose UBIGEO verificado.
+        </p>
+      </div>
+
+      <div class="p-4 rounded-xl bg-surface-container-lowest/80 border border-outline-variant/30 font-mono text-xs mb-4">
+        <div class="flex justify-between py-1 border-b border-outline-variant/20">
+          <span class="text-outline">Recibo Criptográfico:</span>
+          <span class="text-primary font-bold" id="receipt-hash-code">OMNI-HASH-9812A</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-outline-variant/20">
+          <span class="text-outline">Ubicación UBIGEO:</span>
+          <span class="text-on-surface" id="receipt-ubigeo-text">Lima > Lima Metropolitana > Miraflores (150122)</span>
+        </div>
+        <div class="flex justify-between py-1">
+          <span class="text-outline">Marca Temporal:</span>
+          <span class="text-tertiary-fixed font-semibold">2026-09-23 12:55:00 UTC-5</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button class="btn btn-secondary text-xs" onclick="document.getElementById('receipt-modal').classList.remove('active')">Cerrar</button>
+        <button class="btn btn-primary text-xs" onclick="document.getElementById('receipt-modal').classList.remove('active'); App.navigateTo('bento-analytics');">Ver en Bento Analytics</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Aprobar Encuesta -->
+  <div id="modal-approve" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">verified</span>
+        <h3 class="font-headline text-lg font-bold text-on-surface">Aprobar Encuesta Oficial</h3>
+      </div>
+      <p class="text-xs text-on-surface-variant mb-4">
+        Está autorizando el despliegue del instrumento: <strong id="approve-modal-survey-title" class="text-primary"></strong>.
+      </p>
+
+      <div class="mb-4">
+        <label class="text-xs text-on-surface-variant block mb-1">Número de Resolución Oficial:</label>
+        <input type="text" id="approve-resolution-input" class="input-glass text-xs font-mono" value="RES-DIR-088-2026/MTC"/>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button class="btn btn-secondary text-xs" onclick="AdminApproval.closeModal('modal-approve')">Cancelar</button>
+        <button class="btn btn-success text-xs" id="btn-confirm-approve">Emitir Resolución y Aprobar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Rechazar Encuesta -->
+  <div id="modal-reject" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="material-symbols-outlined text-error text-2xl">cancel</span>
+        <h3 class="font-headline text-lg font-bold text-on-surface">Observar / Rechazar Encuesta</h3>
+      </div>
+      <p class="text-xs text-on-surface-variant mb-4">
+        Indique el motivo técnico u observación metodológica para el instrumento: <strong id="reject-modal-survey-title" class="text-error"></strong>.
+      </p>
+
+      <div class="mb-4">
+        <label class="text-xs text-on-surface-variant block mb-1">Observaciones / Motivo de Rechazo:</label>
+        <textarea id="reject-reason-input" class="input-glass text-xs h-24" placeholder="Especifique los requerimientos normativos no satisfechos..."></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button class="btn btn-secondary text-xs" onclick="AdminApproval.closeModal('modal-reject')">Cancelar</button>
+        <button class="btn btn-danger text-xs" id="btn-confirm-reject">Registrar Rechazo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Perfil de Usuario & Credenciales -->
+  <div id="modal-user-profile" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="flex items-center gap-3 pb-3 mb-4 border-b border-outline-variant/30">
+        <img alt="Avatar" class="w-12 h-12 rounded-full object-cover ring-2 ring-primary-container/40" src="../diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'"/>
+        <div>
+          <h3 class="font-headline text-lg font-bold text-on-surface">Ing. Carlos Valdivia</h3>
+          <span class="text-xs text-on-surface-variant font-mono">carlos.valdivia@omnipoll.pe</span>
+          <span class="badge badge-approved text-[10px] ml-2">SUPERADMIN ROOT</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-4">
+        <div class="p-3 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline block text-[10px] uppercase font-mono">Cargo Institucional</span>
+          <span class="font-semibold text-on-surface">Director de Operaciones & Datos</span>
+        </div>
+        <div class="p-3 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline block text-[10px] uppercase font-mono">Sede Principal</span>
+          <span class="font-semibold text-on-surface">Lima Metropolitana (Sede Central)</span>
+        </div>
+        <div class="p-3 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline block text-[10px] uppercase font-mono">Llave de API Cuántica</span>
+          <span class="font-mono text-primary-fixed-dim text-[11px] truncate block">OMNI-KEY-8942-XF92-2026</span>
+        </div>
+        <div class="p-3 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline block text-[10px] uppercase font-mono">Nivel de Cifrado</span>
+          <span class="font-semibold text-tertiary-fixed">SHA-256 + TLS 1.3</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button class="btn btn-secondary text-xs" onclick="App.closeModal('modal-user-profile')">Cerrar</button>
+        <button class="btn btn-primary text-xs" onclick="App.closeModal('modal-user-profile'); App.showToast('Credenciales actualizadas correctamente', 'success');">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Estado Base de Datos MySQL Local -->
+  <div id="modal-db-status" class="modal-overlay">
+    <div class="modal-dialog">
+      <div class="flex items-center gap-3 pb-3 mb-4 border-b border-outline-variant/30">
+        <span class="material-symbols-outlined text-tertiary-fixed text-2xl">database</span>
+        <div>
+          <h3 class="font-headline text-lg font-bold text-on-surface">Base de Datos MySQL Local</h3>
+          <span class="text-xs text-on-surface-variant font-mono">Motor Relacional InnoDB • Charset UTF-8mb4</span>
+        </div>
+      </div>
+
+      <div class="space-y-2.5 text-xs font-mono mb-4">
+        <div class="flex justify-between p-2.5 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline">Servidor / Puerto:</span>
+          <span class="text-on-surface font-semibold">127.0.0.1:3306</span>
+        </div>
+        <div class="flex justify-between p-2.5 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline">Base de Datos:</span>
+          <span class="text-primary font-bold">app_encuestas</span>
+        </div>
+        <div class="flex justify-between p-2.5 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline">Usuario MySQL:</span>
+          <span class="text-on-surface font-semibold">root</span>
+        </div>
+        <div class="flex justify-between p-2.5 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline">UBIGEO Oficial Perú:</span>
+          <span class="text-tertiary-fixed font-bold">25 Departamentos, 196 Provincias, 1,874 Distritos</span>
+        </div>
+        <div class="flex justify-between p-2.5 rounded-lg bg-surface-container/70 border border-outline-variant/30">
+          <span class="text-outline">Estado del Nodo:</span>
+          <span class="badge badge-approved text-[9px]">EN LÍNEA • OPERATIVO</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button class="btn btn-secondary text-xs" onclick="App.closeModal('modal-db-status')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Autenticación y Login RBAC -->
+  <div id="modal-login" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 500px;">
+      <div class="flex flex-col items-center text-center pb-3 mb-4 border-b border-outline-variant/30">
+        <div class="h-14 w-14 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary-container mb-3 shadow-[0_0_24px_rgba(0,242,254,0.3)]">
+          <span class="material-symbols-outlined text-3xl">lock_open</span>
+        </div>
+        <h3 class="font-headline text-xl font-bold text-on-surface">Acceso Seguro OmniPoll</h3>
+        <p class="text-xs text-on-surface-variant font-mono mt-1">Control de Acceso Basado en Roles (RBAC) & Cifrado BCRYPT</p>
+      </div>
+
+      <!-- Alerta de Error de Login -->
+      <div id="login-error-alert" class="hidden p-3 mb-4 rounded-xl bg-error/15 border border-error/40 text-xs text-error flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">error</span>
+        <span id="login-error-text">Credenciales inválidas. Verifique usuario o contraseña.</span>
+      </div>
+
+      <!-- Formulario de Login -->
+      <form id="form-login" class="space-y-3.5 mb-5">
+        <div>
+          <label class="text-xs text-on-surface-variant block mb-1">Correo Electrónico:</label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3 text-outline text-base">mail</span>
+            <input type="email" id="login-email" class="input-glass text-xs w-full pl-9" placeholder="usuario@omnipoll.pe" required autocomplete="username" />
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs text-on-surface-variant block mb-1">Contraseña:</label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3 text-outline text-base">key</span>
+            <input type="password" id="login-password" class="input-glass text-xs w-full pl-9 pr-9" placeholder="Contraseña de acceso" required autocomplete="current-password" />
+            <button type="button" id="btn-toggle-login-pwd" class="absolute right-2.5 text-outline hover:text-on-surface cursor-pointer flex items-center" title="Mostrar/Ocultar Contraseña">
+              <span class="material-symbols-outlined text-base">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-login-submit" class="btn btn-primary w-full text-xs py-2.5 mt-2">
+          <span class="material-symbols-outlined text-base">login</span>
+          <span>Iniciar Sesión en el Núcleo</span>
+        </button>
+      </form>
+
+      <!-- Selector Rápido de Cuentas Demo -->
+      <div class="pt-3 border-t border-outline-variant/30">
+        <span class="text-[10px] font-mono uppercase text-outline block text-center mb-2.5">O Acceso Rápido con 1 Clic (Pass: Ra020976):</span>
+        <div class="grid grid-cols-2 gap-2 text-left">
+          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-primary-container/15 border border-outline-variant/40 hover:border-primary transition-all text-xs flex flex-col cursor-pointer" data-email="rllamoza@gmail.com">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Raúl Llamoza</span>
+              <span class="badge badge-approved text-[8px] py-0 px-1">ROOT</span>
+            </div>
+            <span class="text-[10px] text-primary-fixed-dim font-mono truncate">rllamoza@gmail.com</span>
+            <span class="text-[9px] text-outline">SuperAdmin (Acceso Total)</span>
+          </button>
+
+          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-primary-container/15 border border-outline-variant/40 hover:border-primary transition-all text-xs flex flex-col cursor-pointer" data-email="carlos.valdivia@omnipoll.pe">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Carlos Valdivia</span>
+              <span class="badge badge-approved text-[8px] py-0 px-1">SUPER</span>
+            </div>
+            <span class="text-[10px] text-primary-fixed-dim font-mono truncate">carlos.valdivia@omnipoll.pe</span>
+            <span class="text-[9px] text-outline">SuperAdmin Operaciones</span>
+          </button>
+
+          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-secondary/15 border border-outline-variant/40 hover:border-secondary transition-all text-xs flex flex-col cursor-pointer" data-email="elena.ramos@omnipoll.pe">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Elena Ramos</span>
+              <span class="badge text-[8px] py-0 px-1 bg-secondary/20 text-secondary border border-secondary/30">AUDITOR</span>
+            </div>
+            <span class="text-[10px] text-secondary font-mono truncate">elena.ramos@omnipoll.pe</span>
+            <span class="text-[9px] text-outline">Auditor INEI (Aprobaciones)</span>
+          </button>
+
+          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-amber-500/20 border border-outline-variant/40 hover:border-amber-500 transition-all text-xs flex flex-col cursor-pointer" data-email="marco.polo@omnipoll.pe">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Marco Polo</span>
+              <span class="badge text-[8px] py-0 px-1 bg-amber-500/20 text-amber-400 border border-amber-500/30">CAMPO</span>
+            </div>
+            <span class="text-[10px] text-amber-400 font-mono truncate">marco.polo@omnipoll.pe</span>
+            <span class="text-[9px] text-outline">Encuestador (Solo Encuestas)</span>
+          </button>
+
+          <!-- Cuenta Demo Cliente: Solo Reportes Asignados -->
+          <button type="button" class="btn-demo-account col-span-2 p-2 rounded-xl bg-surface-container/60 hover:bg-emerald-500/15 border border-outline-variant/40 hover:border-emerald-500 transition-all text-xs flex flex-col cursor-pointer" data-email="cliente@empresa.pe">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Cliente Corporativo</span>
+              <span class="badge text-[8px] py-0 px-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">CLIENTE (SOLO REPORTES)</span>
+            </div>
+            <span class="text-[10px] text-emerald-400 font-mono truncate">cliente@empresa.pe</span>
+            <span class="text-[9px] text-outline">Solo visualiza analíticas de encuestas asignadas (RBAC estricto)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-4">
+        <button class="btn btn-secondary text-xs" onclick="App.closeModal('modal-login')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Matriz RBAC de Roles y Permisos Granulares -->
+  <div id="modal-roles-matrix" class="modal-overlay">
+    <div class="modal-dialog modal-xl">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-secondary text-2xl">security</span>
+          <div>
+            <h3 class="font-headline text-lg font-bold text-on-surface">Matriz RBAC de Roles y Permisos Granulares</h3>
+            <span class="text-xs text-on-surface-variant font-mono">Políticas de Control de Acceso por Módulo y Función (18 Permisos Activos)</span>
+          </div>
+        </div>
+        <button class="btn-icon" onclick="App.closeModal('modal-roles-matrix')" title="Cerrar">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="overflow-x-auto max-h-[60vh] overflow-y-auto mb-4">
+        <table class="w-full text-left text-xs border-collapse font-sans">
+          <thead class="sticky top-0 bg-surface-container border-b border-outline-variant/40 z-10">
+            <tr class="text-outline uppercase font-mono text-[10px]">
+              <th class="py-2.5 px-3">Módulo Funcional</th>
+              <th class="py-2.5 px-3">Código de Permiso</th>
+              <th class="py-2.5 px-3">Descripción de Función</th>
+              <th class="py-2.5 px-3 text-center text-primary">SuperAdmin</th>
+              <th class="py-2.5 px-3 text-center text-cyan-400">Admin</th>
+              <th class="py-2.5 px-3 text-center text-secondary">Auditor INEI</th>
+              <th class="py-2.5 px-3 text-center text-amber-400">Encuestador</th>
+            </tr>
+          </thead>
+          <tbody id="matrix-tbody" class="divide-y divide-outline-variant/20 font-mono text-[11px]">
+            <!-- Renderizado dinámico desde app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-outline-variant/30 text-xs">
+        <div class="flex items-center gap-4 text-on-surface-variant font-mono text-[10px]">
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span> Permiso Concedido</span>
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-outline text-sm">remove</span> Acceso Denegado</span>
+        </div>
+        <button class="btn btn-secondary text-xs" onclick="App.closeModal('modal-roles-matrix')">Cerrar Matriz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Encuesta Publicada Exitosamente con Dirección Funcional -->
+  <div id="modal-survey-published" class="modal-overlay">
+    <div class="modal-dialog modal-md border border-emerald-500/40 text-center">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-400 text-xl">verified</span>
+          <span class="font-headline font-bold text-sm text-on-surface">Instrumento Publicado</span>
+        </div>
+        <button class="btn-icon" onclick="App.closeModal('modal-survey-published')" title="Cerrar">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Icono Central con Pulso Verde Esmeralda -->
+      <div class="h-16 w-16 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 border-2 border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto mb-3 shadow-[0_0_30px_rgba(16,185,129,0.3)] animate-pulse">
+        <span class="material-symbols-outlined text-3xl">rocket_launch</span>
+      </div>
+
+      <div class="mb-4">
+        <span class="badge badge-approved text-xs uppercase mb-1">PUBLICADA & OPERATIVA EN MYSQL</span>
+        <h3 class="font-headline text-xl font-bold text-on-surface" id="published-modal-title">Encuesta Publicada</h3>
+        <p class="text-xs text-on-surface-variant mt-1">
+          La encuesta se encuentra en estado <strong>Aprobada</strong> y lista para recibir respuestas ciudadanas.
+        </p>
+      </div>
+
+      <!-- Ficha de Datos Oficiales: Código y Regla -->
+      <div class="glass-subcard p-4 rounded-xl text-left space-y-2 mb-4 font-mono text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">Código Oficial Generado:</span>
+          <span class="badge bg-primary/20 text-primary border border-primary/40 text-xs font-bold" id="published-modal-code">CENSO005</span>
+        </div>
+        <div class="text-[10px] text-outline font-sans">
+          * Estructura del código: 5 primeras letras del nombre + 3 dígitos del ID numérico.
+        </div>
+      </div>
+
+      <!-- Dirección Funcional / Enlace Público Compartible -->
+      <div class="space-y-2 text-left mb-5">
+        <label class="text-xs font-semibold text-on-surface flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-primary text-base">link</span>
+          <span>Dirección Funcional para Responder la Encuesta:</span>
+        </label>
+        <div class="flex items-center gap-2">
+          <input type="text" id="published-survey-url" readonly class="input-glass font-mono text-xs text-primary font-bold flex-1 select-all cursor-pointer" value="" onclick="this.select()"/>
+          <button type="button" id="btn-copy-survey-url" class="btn btn-secondary text-xs shrink-0 py-2 px-3 flex items-center gap-1" title="Copiar enlace al portapapeles">
+            <span class="material-symbols-outlined text-base">content_copy</span>
+            <span id="btn-copy-label">Copiar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2 border-t border-outline-variant/30">
+        <a id="btn-open-public-survey" href="#" target="_blank" class="btn btn-primary text-xs w-full sm:w-auto py-2.5 px-4 flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(0,242,254,0.3)]">
+          <span class="material-symbols-outlined text-base">open_in_new</span>
+          <span>Abrir Dirección Funcional</span>
+        </a>
+        <button type="button" class="btn btn-secondary text-xs w-full sm:w-auto py-2.5 px-3.5 flex items-center justify-center gap-1.5" onclick="App.closeModal('modal-survey-published'); App.navigateTo('encuestas-activas');">
+          <span class="material-symbols-outlined text-base">ballot</span>
+          <span>Ver en Encuestas Activas</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Asignar Encuestas a Usuario -->
+  <div id="modal-assign-surveys" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+        <div class="flex items-center gap-2.5">
+          <div class="h-9 w-9 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-xl">assignment_turned_in</span>
+          </div>
+          <div>
+            <h3 class="font-headline text-base font-bold text-on-surface">Asignar Reportes de Encuestas</h3>
+            <p class="text-xs text-on-surface-variant" id="assign-survey-username">Usuario: ...</p>
+          </div>
+        </div>
+        <button class="btn-icon" onclick="App.closeModal('modal-assign-surveys')" title="Cerrar">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 mb-5">
+        <p class="text-xs text-on-surface-variant">
+          Marque las encuestas cuyos reportes y métricas Bento Analytics estarán autorizadas para este usuario:
+        </p>
+        <div id="assign-surveys-checklist" class="space-y-2 max-h-64 overflow-y-auto pr-1 p-3 rounded-xl border border-outline-variant/30 bg-surface-container/30">
+          <!-- Opciones cargadas dinámicamente -->
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-outline-variant/30">
+        <button class="btn btn-secondary text-xs" onclick="App.closeModal('modal-assign-surveys')">Cancelar</button>
+        <button class="btn btn-primary text-xs" id="btn-save-assigned-surveys">
+          <span class="material-symbols-outlined text-base">save</span>
+          <span>Guardar Asignaciones</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor de Alertas Toast -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts de la Aplicación -->
+  <script src="js/api.js"></script>
+  <script src="js/survey-runner.js"></script>
+  <script src="js/survey-builder.js"></script>
+  <script src="js/admin-approval.js"></script>
+  <script src="js/bento-analytics.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

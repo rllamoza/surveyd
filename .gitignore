@@ -1,0 +1,22 @@
+# OmniPoll / SurveyD - Git Ignore Rules
+
+# Base de datos y credenciales locales
+backend/config/db_credentials.json
+
+# Archivos de entorno y logs
+*.log
+.env
+.env.local
+
+# Sistemas operativos y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Node / dependencias temporales si aplican
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
