@@ -134,32 +134,41 @@ surveyd/
 ├── docs/                           # Documentación técnica extendida
 │   ├── API.md                      # Especificación de endpoints REST
 │   ├── EXCEL_FORMAT.md             # Guía de importación de archivos Excel
-│   ├── INSTALLATION.md             # Guía paso a paso de instalación
+│   ├── INSTALLATION.md             # Guía paso a paso de instalación local
+│   ├── PRODUCTION_DEPLOYMENT.md    # Guía oficial de despliegue en producción (VPS, cPanel, Docker)
 │   └── PUBLIC_SURVEYS_AND_BRANDING.md # Guía de encuestas públicas y branding exclusivo
+├── .env.example                    # Plantilla de variables de entorno
 ├── .gitignore
+├── .htaccess                       # Configuración Apache de producción y cabeceras
+├── Dockerfile                      # Imagen Docker de producción PHP 8.2 + Apache
+├── docker-compose.yml              # Orquestador multi-contenedor (App + MySQL 8.0)
+├── index.php                       # Redirección automática a interfaz web
 ├── LICENSE
 └── README.md
 ```
 
 ---
 
-## 🚀 Instalación Rápida
+## 🚀 Despliegue en Producción & Instalación Rápida
 
-### Requisitos Previos
-- Servidor Web (Apache / Nginx / XAMPP / WampServer)
-- **PHP 8.0** o superior con extensiones `pdo`, `pdo_mysql`, `json`
-- **MySQL 8.0** o MariaDB 10.4+
+Para instrucciones completas de puesta en marcha en servidores VPS (Ubuntu/Debian), hosting cPanel o contenedores Docker, consulta la **[Guía Oficial de Despliegue en Producción](docs/PRODUCTION_DEPLOYMENT.md)**.
 
-### Pasos de Instalación
+### Opción A: Despliegue Rápido con Docker (1 solo comando)
+```bash
+git clone https://github.com/rllamoza/surveyd.git
+cd surveyd
+docker-compose up -d --build
+docker exec -it surveyd_app php backend/install.php
+```
 
+### Opción B: Instalación en Servidor Web Tradicional (Apache / XAMPP)
 1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/rllamoza/surveyd.git
    cd surveyd
    ```
-
-2. **Configurar la Base de Datos:**
-   - Copiar el archivo de credenciales de ejemplo:
+2. **Configurar Credenciales de Base de Datos:**
+   - Copiar el archivo de credenciales de ejemplo o definir variables de entorno:
      ```bash
      cp backend/config/db_credentials.example.json backend/config/db_credentials.json
      ```
@@ -174,11 +183,11 @@ surveyd/
      }
      ```
 
-3. **Crear las Tablas y Cargar el Catálogo UBIGEO:**
-   - Puede ejecutar el instalador automatizado en su navegador:
-     ```
-     http://localhost/surveyd/backend/setup.php
-     ```
+3. **Ejecutar el instalador automatizado:**
+   ```bash
+   php backend/install.php
+   ```
+   *O desde el navegador abriendo:* `http://localhost/surveyd/backend/install.php`
    - O importar manualmente los archivos SQL en MySQL:
      ```bash
      mysql -u root -p app_encuestas < backend/database/schema.sql
