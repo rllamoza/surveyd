@@ -522,20 +522,12 @@ html.dark .notifications-drawer {
 
 .modal-dialog,
 .modal-card {
-  background: var(--glass-card) !important;
-  backdrop-filter: var(--glass-blur) !important;
-  -webkit-backdrop-filter: var(--glass-blur) !important;
-  border: 1px solid var(--glass-card-border) !important;
-  border-top: 1.5px solid var(--glass-card-border-top) !important;
-  border-radius: 1.5rem;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.25), var(--shadow-glass-inset) !important;
   width: 95%;
   max-width: 600px;
   padding: 2rem;
   position: relative;
   transform: scale(0.95);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  color: var(--on-surface) !important;
   max-height: 90vh;
   overflow-y: auto;
 }

@@ -385,16 +385,165 @@ html.dark .badge-rejected {
   box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
 }
 
-/* Modales Glass */
-.modal-dialog {
-  background: var(--glass-card) !important;
-  backdrop-filter: var(--glass-blur) !important;
-  -webkit-backdrop-filter: var(--glass-blur) !important;
-  border: 1px solid var(--glass-card-border) !important;
-  border-top: 1.5px solid var(--glass-card-border-top) !important;
+/* ==========================================================================
+   MODALES ADAPTATIVOS POR TEMA (DARK / LIGHT CONSISTENTES)
+   ========================================================================== */
+
+/* 1. TEMA CLARO (LIGHT MODE) */
+html:not(.dark) .modal-overlay,
+body.light-theme .modal-overlay,
+html:not(.dark) .modal-backdrop,
+body.light-theme .modal-backdrop {
+  background: rgba(15, 23, 42, 0.38) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+html:not(.dark) .modal-dialog,
+html:not(.dark) .modal-card,
+body.light-theme .modal-dialog,
+body.light-theme .modal-card {
+  background: #ffffff !important;
+  color: #0a1120 !important;
+  border: 1px solid rgba(203, 213, 225, 0.9) !important;
+  border-top: 3.5px solid #0284c7 !important;
   border-radius: 1.5rem;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.25), var(--shadow-glass-inset) !important;
-  color: var(--on-surface) !important;
+  box-shadow: 0 25px 60px -10px rgba(15, 23, 42, 0.3), 0 0 20px rgba(2, 132, 199, 0.08) !important;
+}
+
+html:not(.dark) .modal-dialog h2,
+html:not(.dark) .modal-dialog h3,
+html:not(.dark) .modal-dialog h4,
+body.light-theme .modal-dialog h2,
+body.light-theme .modal-dialog h3,
+body.light-theme .modal-dialog h4 {
+  color: #0a1120 !important;
+}
+
+html:not(.dark) .modal-dialog .text-on-surface,
+body.light-theme .modal-dialog .text-on-surface {
+  color: #0a1120 !important;
+}
+
+html:not(.dark) .modal-dialog .text-on-surface-variant,
+body.light-theme .modal-dialog .text-on-surface-variant {
+  color: #334155 !important;
+}
+
+html:not(.dark) .modal-dialog .bg-surface-container,
+html:not(.dark) .modal-dialog .bg-surface-container\/70,
+html:not(.dark) .modal-dialog .bg-surface-container\/50,
+html:not(.dark) .modal-dialog .bg-surface-container\/30,
+html:not(.dark) .modal-dialog .glass-subcard,
+body.light-theme .modal-dialog .bg-surface-container,
+body.light-theme .modal-dialog .bg-surface-container\/70,
+body.light-theme .modal-dialog .bg-surface-container\/50,
+body.light-theme .modal-dialog .bg-surface-container\/30,
+body.light-theme .modal-dialog .glass-subcard {
+  background-color: #f8fafc !important;
+  border-color: rgba(226, 232, 240, 0.95) !important;
+  color: #0a1120 !important;
+}
+
+html:not(.dark) .modal-dialog .border-outline-variant\/30,
+html:not(.dark) .modal-dialog .border-outline-variant\/40,
+html:not(.dark) .modal-dialog .border-glass-card-border,
+body.light-theme .modal-dialog .border-outline-variant\/30,
+body.light-theme .modal-dialog .border-outline-variant\/40,
+body.light-theme .modal-dialog .border-glass-card-border {
+  border-color: rgba(226, 232, 240, 0.95) !important;
+}
+
+html:not(.dark) .modal-dialog thead,
+body.light-theme .modal-dialog thead {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) .modal-dialog thead th,
+body.light-theme .modal-dialog thead th {
+  color: #334155 !important;
+}
+
+html:not(.dark) .modal-dialog tbody tr:hover,
+body.light-theme .modal-dialog tbody tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+html:not(.dark) .modal-dialog .input-glass,
+body.light-theme .modal-dialog .input-glass {
+  background: #ffffff !important;
+  color: #0a1120 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* 2. TEMA OSCURO (DARK MODE) */
+html.dark .modal-overlay,
+html.dark .modal-backdrop {
+  background: rgba(3, 7, 14, 0.8) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+html.dark .modal-dialog,
+html.dark .modal-card {
+  background: rgba(15, 23, 42, 0.96) !important;
+  color: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-top: 2.5px solid rgba(0, 242, 254, 0.6) !important;
+  border-radius: 1.5rem;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 242, 254, 0.18) !important;
+}
+
+html.dark .modal-dialog h2,
+html.dark .modal-dialog h3,
+html.dark .modal-dialog h4 {
+  color: #f8fafc !important;
+}
+
+html.dark .modal-dialog .text-on-surface {
+  color: #f1f5f9 !important;
+}
+
+html.dark .modal-dialog .text-on-surface-variant {
+  color: #cbd5e1 !important;
+}
+
+html.dark .modal-dialog .bg-surface-container,
+html.dark .modal-dialog .bg-surface-container\/70,
+html.dark .modal-dialog .bg-surface-container\/50,
+html.dark .modal-dialog .bg-surface-container\/30,
+html.dark .modal-dialog .glass-subcard {
+  background-color: rgba(30, 41, 59, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark .modal-dialog .border-outline-variant\/30,
+html.dark .modal-dialog .border-outline-variant\/40,
+html.dark .modal-dialog .border-glass-card-border {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark .modal-dialog thead {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+html.dark .modal-dialog thead th {
+  color: #94a3b8 !important;
+}
+
+html.dark .modal-dialog tbody tr:hover {
+  background-color: rgba(30, 41, 59, 0.5) !important;
+}
+
+html.dark .modal-dialog .input-glass {
+  background: rgba(15, 23, 42, 0.8) !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Pill de Telemetría Glass */

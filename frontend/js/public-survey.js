@@ -8,6 +8,7 @@ const PublicSurvey = (() => {
   let startTime = Date.now();
 
   let state = {
+    consentAccepted: false,
     departamento: '15',
     departamentoNombre: 'Lima',
     provincia: '1501',
@@ -220,7 +221,7 @@ const PublicSurvey = (() => {
     }
 
     container.innerHTML = preguntas.map((q, idx) => {
-      const numStr = String(idx + 1).padStart(2, '0');
+      const numStr = String(idx + 2).padStart(2, '0');
       return `
         <article class="glass-panel p-6 sm:p-8 rounded-2xl space-y-4 question-block shadow-sm" data-question-id="${q.id}">
           <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
@@ -585,9 +586,31 @@ const PublicSurvey = (() => {
     updateProgress();
   };
 
+  const onConsentChange = (isChecked) => {
+    state.consentAccepted = !!isChecked;
+    const consentBlock = document.getElementById('question-consent-block');
+    if (consentBlock) {
+      if (state.consentAccepted) {
+        consentBlock.classList.remove('border-primary/40', 'question-required-highlight');
+        consentBlock.classList.add('border-emerald-500/60');
+      } else {
+        consentBlock.classList.remove('border-emerald-500/60');
+        consentBlock.classList.add('border-primary/40');
+      }
+    }
+    updateProgress();
+  };
+
+  const resetToNewSurvey = () => {
+    // Abre una nueva pantalla en blanco de la misma encuesta
+    const currentUrl = new URL(window.location.href);
+    window.location.href = currentUrl.pathname + currentUrl.search;
+  };
+
   const updateProgress = () => {
-    const total = (surveyData && surveyData.preguntas) ? surveyData.preguntas.length : 1;
-    const answeredCount = state.answeredQuestions ? state.answeredQuestions.size : 0;
+    const questionsCount = (surveyData && surveyData.preguntas) ? surveyData.preguntas.length : 0;
+    const total = questionsCount + 1; // +1 por la Pregunta 01 de Consentimiento de Datos
+    const answeredCount = (state.answeredQuestions ? state.answeredQuestions.size : 0) + (state.consentAccepted ? 1 : 0);
     const pct = total > 0 ? Math.min(100, Math.round((answeredCount / total) * 100)) : 0;
 
     // Barra de cabecera
@@ -761,6 +784,19 @@ const PublicSurvey = (() => {
   const reviewAnswers = () => {
     if (!surveyData) return;
 
+    // 0. Validar Aceptación Obligatoria de Uso de Datos (Pregunta 01)
+    if (!state.consentAccepted) {
+      showToast('Debe aceptar el uso de sus datos con el check en la Pregunta 01 para proceder.', 'error');
+
+      const consentBlock = document.getElementById('question-consent-block');
+      if (consentBlock) {
+        consentBlock.classList.add('question-required-highlight');
+        consentBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => consentBlock.classList.remove('question-required-highlight'), 3500);
+      }
+      return;
+    }
+
     // 1. Validar que todas las preguntas obligatorias hayan sido respondidas
     const missingQuestions = [];
     (surveyData.preguntas || []).forEach((q, idx) => {
@@ -775,7 +811,7 @@ const PublicSurvey = (() => {
           const val = state.respuestas[`q_${q.id}`];
           const hasAnswer = val !== undefined && val !== null && (Array.isArray(val) ? val.length > 0 : String(val).trim() !== '');
           if (!hasAnswer) {
-            missingQuestions.push({ qid: q.id, index: idx + 1, enunciado: q.enunciado });
+            missingQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado });
           }
         }
       }
@@ -827,8 +863,30 @@ const PublicSurvey = (() => {
 
     if (!listContainer || !surveyData || !surveyData.preguntas) return;
 
-    listContainer.innerHTML = surveyData.preguntas.map((q, idx) => {
-      const numStr = String(idx + 1).padStart(2, '0');
+    const consentCard = `
+      <div class="glass-subcard p-4 sm:p-5 rounded-2xl border border-emerald-500/40 flex items-center justify-between gap-4">
+        <div class="space-y-1.5 flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="badge text-[10px] font-mono bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 font-bold">
+              P01 • CONSENTIMIENTO
+            </span>
+            <span class="text-[10px] font-mono text-emerald-500 font-bold">
+              ACEPTADO
+            </span>
+          </div>
+          <h3 class="text-xs sm:text-sm font-bold text-on-surface leading-snug">
+            Acepto el uso de mis datos para los fines de la encuesta y la institución que la hace
+          </h3>
+          <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold text-xs pt-1">
+            <span class="material-symbols-outlined text-sm">check_circle</span>
+            <span>Consentimiento otorgado válidamente (Ley N° 29733)</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    listContainer.innerHTML = consentCard + surveyData.preguntas.map((q, idx) => {
+      const numStr = String(idx + 2).padStart(2, '0');
       let answerDisplay = '';
 
       if (q.tipo === 'ubigeo_cascada') {
@@ -966,7 +1024,10 @@ const PublicSurvey = (() => {
         distrito: state.distritoNombre,
         codigo_distrito: state.distrito
       },
-      respuestas: state.respuestas
+      respuestas: {
+        ...state.respuestas,
+        consentimiento_datos: 'Aceptado expresamente (Ley N° 29733)'
+      }
     };
 
     try {
@@ -1096,6 +1157,8 @@ const PublicSurvey = (() => {
     confirmFinalSubmit,
     onAnswerChange,
     onCheckboxChange,
+    onConsentChange,
+    resetToNewSurvey,
     copyCurrentUrl
   };
 })();

@@ -277,6 +277,49 @@
 
       <!-- CONTENEDOR DINÁMICO DE PREGUNTAS -->
       <form id="public-survey-form" class="space-y-6" onsubmit="event.preventDefault(); PublicSurvey.submitSurvey(); return false;">
+        
+        <!-- PREGUNTA 1 OBLIGATORIA: ACEPTACIÓN DE USO DE DATOS -->
+        <article class="glass-panel p-6 sm:p-8 rounded-2xl space-y-4 question-block shadow-sm border-2 border-primary/40 transition-all" id="question-consent-block">
+          <div class="flex items-center justify-between pb-2 border-b border-glass-card-border">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono font-bold uppercase tracking-wider text-primary">Pregunta 01 • Consentimiento</span>
+              <span class="text-xs text-rose-500 font-semibold">* Requerido para proceder</span>
+            </div>
+            <span class="text-[11px] font-mono text-on-surface-variant flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm text-emerald-500">verified_user</span>
+              <span>Protección de Datos</span>
+            </span>
+          </div>
+
+          <div>
+            <h2 class="font-headline text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-50 leading-snug tracking-tight">
+              ¿Acepta el uso de sus datos para los fines de la encuesta y la institución que la hace?
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-normal mt-1 leading-relaxed">
+              Conforme a la Ley de Protección de Datos Personales (Ley N° 29733), la información proporcionada será utilizada exclusivamente para los propósitos estadísticos del estudio y de la entidad responsable.
+            </p>
+          </div>
+
+          <div class="pt-2">
+            <div class="relative">
+              <input type="checkbox" id="check-consent-data" name="consentimiento_datos" class="sr-only" onchange="PublicSurvey.onConsentChange(this.checked)" />
+              <label for="check-consent-data" class="option-card-label flex items-start gap-3.5 p-4 sm:p-5 rounded-xl cursor-pointer">
+                <div class="checkbox-custom-box h-5 w-5 rounded-md border-2 border-outline-variant flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+                  <span class="material-symbols-outlined checkbox-custom-icon text-sm text-white opacity-0 transition-opacity">check</span>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="font-bold text-xs sm:text-sm text-on-surface leading-snug">
+                    Acepto el uso de mis datos para los fines de la encuesta y la institución que la hace.
+                  </span>
+                  <span class="text-[11px] text-on-surface-variant mt-1 font-mono">
+                    Marque esta casilla con un check para proceder con la encuesta.
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+        </article>
+
         <div id="dynamic-questions-container" class="space-y-6">
           <!-- Renderizado dinámico de preguntas desde public-survey.js -->
         </div>
@@ -392,9 +435,9 @@
             <span class="material-symbols-outlined text-base">print</span>
             <span>Imprimir Comprobante</span>
           </button>
-          <button type="button" class="btn btn-primary text-xs w-full sm:w-auto flex items-center justify-center gap-2" onclick="window.close(); App ? window.location.href='about:blank' : null;">
-            <span class="material-symbols-outlined text-base">check</span>
-            <span>Finalizar y Salir</span>
+          <button type="button" class="btn btn-primary text-xs w-full sm:w-auto flex items-center justify-center gap-2 py-2.5 px-6 font-bold shadow-lg" onclick="PublicSurvey.resetToNewSurvey()">
+            <span class="material-symbols-outlined text-base">refresh</span>
+            <span>Finalizar</span>
           </button>
         </div>
 
@@ -448,9 +491,9 @@
           <span class="material-symbols-outlined text-base">print</span>
           <span>Imprimir Recibo</span>
         </button>
-        <button type="button" class="btn btn-primary text-xs w-full sm:w-auto" onclick="document.getElementById('modal-receipt').classList.remove('active')">
+        <button type="button" class="btn btn-primary text-xs w-full sm:w-auto" onclick="PublicSurvey.resetToNewSurvey()">
           <span class="material-symbols-outlined text-base">check</span>
-          <span>Aceptar</span>
+          <span>Finalizar</span>
         </button>
       </div>
     </div>
