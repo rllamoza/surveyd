@@ -90,6 +90,7 @@ CREATE TABLE `usuarios` (
   `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `rol` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'encuestador',
+  `rol_id` int DEFAULT NULL,
   `cargo` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `avatar_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT '1',

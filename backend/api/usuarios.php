@@ -24,15 +24,25 @@ try {
         throw new Exception("Error de conexión a la base de datos");
     }
 
+    $hasRolIdCol = false;
+    try {
+        $checkCol = $pdo->query("SHOW COLUMNS FROM `usuarios` LIKE 'rol_id'")->fetch();
+        $hasRolIdCol = !empty($checkCol);
+    } catch (Exception $e) {}
+
     switch ($method) {
         case 'GET':
             // Listar usuarios con sus roles y cantidad de permisos
             $stmt = $pdo->query("
-                SELECT u.id, u.nombre, u.email, u.rol, u.rol_id, u.cargo, u.avatar_url, u.activo, u.created_at, u.updated_at,
-                       r.codigo AS rol_codigo, r.nombre AS rol_nombre, r.badge_color,
-                       (SELECT COUNT(*) FROM rol_permisos rp WHERE rp.rol_id = r.id) AS total_permisos
+                SELECT u.id, u.nombre, u.email, u.rol, 
+                       COALESCE(r.id, 1) AS rol_id, 
+                       u.cargo, u.avatar_url, u.activo, u.created_at, u.updated_at,
+                       COALESCE(r.codigo, u.rol) AS rol_codigo, 
+                       COALESCE(r.nombre, u.rol) AS rol_nombre, 
+                       COALESCE(r.badge_color, 'primary') AS badge_color,
+                       COALESCE((SELECT COUNT(*) FROM rol_permisos rp WHERE rp.rol_id = r.id), 0) AS total_permisos
                 FROM `usuarios` u
-                LEFT JOIN `roles` r ON u.rol_id = r.id
+                LEFT JOIN `roles` r ON (u.rol = r.codigo)
                 ORDER BY u.id ASC
             ");
             $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -101,11 +111,19 @@ try {
 
             $passHash = password_hash($password, PASSWORD_BCRYPT);
 
-            $stmtIns = $pdo->prepare("
-                INSERT INTO `usuarios` (`nombre`, `email`, `password_hash`, `rol`, `rol_id`, `cargo`, `activo`)
-                VALUES (?, ?, ?, ?, ?, ?, 1)
-            ");
-            $stmtIns->execute([$nombre, $email, $passHash, $rolCodigo, $roleId, $cargo]);
+            if ($hasRolIdCol) {
+                $stmtIns = $pdo->prepare("
+                    INSERT INTO `usuarios` (`nombre`, `email`, `password_hash`, `rol`, `rol_id`, `cargo`, `activo`)
+                    VALUES (?, ?, ?, ?, ?, ?, 1)
+                ");
+                $stmtIns->execute([$nombre, $email, $passHash, $rolCodigo, $roleId, $cargo]);
+            } else {
+                $stmtIns = $pdo->prepare("
+                    INSERT INTO `usuarios` (`nombre`, `email`, `password_hash`, `rol`, `cargo`, `activo`)
+                    VALUES (?, ?, ?, ?, ?, 1)
+                ");
+                $stmtIns->execute([$nombre, $email, $passHash, $rolCodigo, $cargo]);
+            }
             $newId = (int)$pdo->lastInsertId();
 
             // Guardar encuestas asignadas si se proporcionaron
@@ -162,7 +180,7 @@ try {
 
             if (!empty($nombre)) { $updates[] = "`nombre` = ?"; $params[] = $nombre; }
             if (!empty($rolCodigo)) { $updates[] = "`rol` = ?"; $params[] = $rolCodigo; }
-            if ($roleId !== null) { $updates[] = "`rol_id` = ?"; $params[] = $roleId; }
+            if ($hasRolIdCol && $roleId !== null) { $updates[] = "`rol_id` = ?"; $params[] = $roleId; }
             if (!empty($cargo)) { $updates[] = "`cargo` = ?"; $params[] = $cargo; }
             if ($activo !== null) { $updates[] = "`activo` = ?"; $params[] = $activo; }
             if (!empty($password)) {
