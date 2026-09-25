@@ -3,8 +3,9 @@
 -- Plataforma Integral de Encuestas Dinámicas con UBIGEO Cascada
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS `app_encuestas` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `app_encuestas`;
+-- Si se ejecuta en servidor local con root, puede descomentar las siguientes 2 líneas:
+-- CREATE DATABASE IF NOT EXISTS `app_encuestas` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- USE `app_encuestas`;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `auditoria_aprobaciones`;

@@ -133,6 +133,7 @@ surveyd/
 ├── diseno/                         # Especificaciones de diseño, pantallas y mockups
 ├── docs/                           # Documentación técnica extendida
 │   ├── API.md                      # Especificación de endpoints REST
+│   ├── BANAHOSTING_CPANEL_GUIDE.md # Guía paso a paso para BanaHosting cPanel
 │   ├── EXCEL_FORMAT.md             # Guía de importación de archivos Excel
 │   ├── INSTALLATION.md             # Guía paso a paso de instalación local
 │   ├── PRODUCTION_DEPLOYMENT.md    # Guía oficial de despliegue en producción (VPS, cPanel, Docker)

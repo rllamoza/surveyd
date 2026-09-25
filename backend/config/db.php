@@ -79,26 +79,40 @@ class Database {
      */
     public static function autoSetup(): array {
         self::initEnv();
-        $dsnWithoutDb = "mysql:host=" . self::$host . ";port=" . self::$port . ";charset=" . self::$charset;
-        
+        $pdo = null;
+
+        // Intentar primero conectar a la base de datos existente (estándar en cPanel / BanaHosting)
         try {
-            $pdo = new PDO($dsnWithoutDb, self::$user, self::$pass, [
+            $dsnWithDb = "mysql:host=" . self::$host . ";port=" . self::$port . ";dbname=" . self::$dbName . ";charset=" . self::$charset;
+            $pdo = new PDO($dsnWithDb, self::$user, self::$pass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]);
+        } catch (PDOException $e) {
+            // Si no existe la base de datos, intentar crearla (estándar en servidores con usuario root/admin)
+            try {
+                $dsnWithoutDb = "mysql:host=" . self::$host . ";port=" . self::$port . ";charset=" . self::$charset;
+                $pdoAdmin = new PDO($dsnWithoutDb, self::$user, self::$pass, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                ]);
+                $pdoAdmin->exec("CREATE DATABASE IF NOT EXISTS `" . self::$dbName . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                $pdoAdmin->exec("USE `" . self::$dbName . "`");
+                $pdo = $pdoAdmin;
+            } catch (PDOException $e2) {
+                return ['success' => false, 'error' => 'No se pudo conectar a la base de datos: ' . $e2->getMessage()];
+            }
+        }
 
-            $pdo->exec("CREATE DATABASE IF NOT EXISTS `" . self::$dbName . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-            $pdo->exec("USE `" . self::$dbName . "`");
-
+        try {
             $schemaPath = dirname(__DIR__) . '/database/schema.sql';
             if (file_exists($schemaPath)) {
                 $sql = file_get_contents($schemaPath);
                 $pdo->exec($sql);
                 self::$instance = null;
                 self::$attempted = false;
-                return ['success' => true, 'message' => 'Base de datos app_encuestas inicializada e importada con éxito'];
+                return ['success' => true, 'message' => 'Base de datos ' . self::$dbName . ' inicializada e importada con éxito'];
             }
 
-            return ['success' => true, 'message' => 'Base de datos creada.'];
+            return ['success' => true, 'message' => 'Base de datos conectada correctamente.'];
         } catch (PDOException $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }

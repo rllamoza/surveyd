@@ -1,5 +1,4 @@
-USE `app_encuestas`;
-
+-- USE `app_encuestas`;
 SET FOREIGN_KEY_CHECKS = 0;
 
 TRUNCATE TABLE `distritos`;
