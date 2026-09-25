@@ -85,7 +85,111 @@
   <div class="ambient-orb ambient-orb-3"></div>
   <div class="ambient-orb ambient-orb-4"></div>
 
-  <div class="app-container">
+  <!-- ============================================================ -->
+  <!-- PANTALLA PRINCIPAL DE LOGIN (GATEWAY DE ACCESO A HERRAMIENTAS) -->
+  <!-- ============================================================ -->
+  <div id="screen-login" class="min-h-screen w-full flex items-center justify-center p-4 relative z-50">
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-glass-card-border shadow-2xl w-full max-w-md space-y-5 bg-surface/95 dark:bg-slate-900/95 backdrop-blur-2xl">
+      <!-- Encabezado y Marca -->
+      <div class="flex flex-col items-center text-center">
+        <div class="h-16 w-16 rounded-2xl bg-gradient-to-tr from-sky-400 to-indigo-600 flex items-center justify-center text-white mb-3 shadow-[0_0_30px_rgba(14,165,233,0.4)]">
+          <span class="material-symbols-outlined text-3xl font-bold">radar</span>
+        </div>
+        <h2 class="font-headline text-2xl font-extrabold text-on-surface">OmniPoll Core</h2>
+        <span class="text-xs text-primary font-mono font-bold uppercase tracking-wider mt-0.5">Acceso a Herramientas Administrativas</span>
+        <p class="text-xs text-on-surface-variant mt-2 max-w-xs">Ingrese usuario y contraseña para acceder a la administración del sistema.</p>
+      </div>
+
+      <!-- Alerta de Error -->
+      <div id="login-error-alert" class="hidden p-3 rounded-xl bg-error/15 border border-error/40 text-xs text-error flex items-center gap-2">
+        <span class="material-symbols-outlined text-base shrink-0">error</span>
+        <span id="login-error-text">Credenciales inválidas.</span>
+      </div>
+
+      <!-- Formulario Login con User y Pass -->
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-on-surface-variant block mb-1.5">Usuario o Correo:</label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3.5 text-outline text-base">person</span>
+            <input type="text" id="login-email" class="input-glass text-xs w-full pl-10 py-2.5 rounded-xl" placeholder="admin o usuario@omnipoll.pe" required autocomplete="username" autofocus />
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-semibold text-on-surface-variant">Contraseña:</label>
+          </div>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-3.5 text-outline text-base">key</span>
+            <input type="password" id="login-password" class="input-glass text-xs w-full pl-10 pr-10 py-2.5 rounded-xl" placeholder="Contraseña de acceso" required autocomplete="current-password" />
+            <button type="button" id="btn-toggle-login-pwd" class="absolute right-3 text-outline hover:text-on-surface cursor-pointer flex items-center" title="Mostrar/Ocultar Contraseña">
+              <span class="material-symbols-outlined text-base">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-login-submit" class="btn btn-primary w-full text-xs py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-cyan-500/25 transition-all">
+          <span class="material-symbols-outlined text-base">login</span>
+          <span>Iniciar Sesión en el Núcleo</span>
+        </button>
+      </form>
+
+      <!-- Selector Rápido de Cuentas Demo -->
+      <div class="pt-4 border-t border-outline-variant/30 space-y-2.5">
+        <span class="text-[10px] font-mono uppercase text-outline block text-center font-bold tracking-wider">Acceso Rápido con 1 Clic (Pass: admin123):</span>
+        <div class="grid grid-cols-2 gap-2 text-left">
+          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-primary-container/20 border border-outline-variant/40 hover:border-primary transition-all text-xs flex flex-col cursor-pointer" data-email="admin">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Admin</span>
+              <span class="badge badge-approved text-[8px] py-0 px-1">ROOT</span>
+            </div>
+            <span class="text-[10px] text-primary-fixed-dim font-mono truncate">admin</span>
+            <span class="text-[9px] text-outline">SuperAdmin General</span>
+          </button>
+
+          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-primary-container/20 border border-outline-variant/40 hover:border-primary transition-all text-xs flex flex-col cursor-pointer" data-email="carlos.valdivia@omnipoll.pe">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Carlos Valdivia</span>
+              <span class="badge badge-approved text-[8px] py-0 px-1">SUPER</span>
+            </div>
+            <span class="text-[10px] text-primary-fixed-dim font-mono truncate">carlos.valdivia@omnipoll.pe</span>
+            <span class="text-[9px] text-outline">Operaciones & Datos</span>
+          </button>
+
+          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-secondary/20 border border-outline-variant/40 hover:border-secondary transition-all text-xs flex flex-col cursor-pointer" data-email="elena.ramos@omnipoll.pe">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Elena Ramos</span>
+              <span class="badge text-[8px] py-0 px-1 bg-secondary/20 text-secondary border border-secondary/30">AUDITOR</span>
+            </div>
+            <span class="text-[10px] text-secondary font-mono truncate">elena.ramos@omnipoll.pe</span>
+            <span class="text-[9px] text-outline">Auditor INEI</span>
+          </button>
+
+          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-amber-500/20 border border-outline-variant/40 hover:border-amber-500 transition-all text-xs flex flex-col cursor-pointer" data-email="marco.polo@omnipoll.pe">
+            <div class="flex items-center justify-between w-full mb-0.5">
+              <span class="font-bold text-on-surface text-[11px] truncate">Marco Polo</span>
+              <span class="badge text-[8px] py-0 px-1 bg-amber-500/20 text-amber-400 border border-amber-500/30">CAMPO</span>
+            </div>
+            <span class="text-[10px] text-amber-400 font-mono truncate">marco.polo@omnipoll.pe</span>
+            <span class="text-[9px] text-outline">Encuestador</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Enlace Directo a Encuestas Públicas Sin Login -->
+      <div class="pt-3 border-t border-outline-variant/30 flex flex-col items-center gap-2">
+        <a href="encuesta.html?id=CCAVX024" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-emerald-500 hover:text-emerald-400 font-semibold hover:underline">
+          <span class="material-symbols-outlined text-base">public</span>
+          <span>¿Deseas responder una encuesta? Abrir Encuesta Pública CCAV (Sin Login)</span>
+          <span class="material-symbols-outlined text-xs">open_in_new</span>
+        </a>
+        <button type="button" class="btn btn-secondary text-xs hidden mt-1" id="btn-cancel-screen-login" onclick="App.cancelScreenLogin()">Volver al Panel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container hidden" id="app-container">
 
     <!-- BARRA LATERAL (SIDEBAR) -->
     <aside class="app-sidebar">
@@ -1638,97 +1742,6 @@
     </div>
   </div>
 
-  <!-- Modal Autenticación y Login RBAC -->
-  <div id="modal-login" class="modal-overlay">
-    <div class="modal-dialog" style="max-width: 500px;">
-      <div class="flex flex-col items-center text-center pb-3 mb-4 border-b border-outline-variant/30">
-        <div class="h-14 w-14 rounded-2xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary-container mb-3 shadow-[0_0_24px_rgba(0,242,254,0.3)]">
-          <span class="material-symbols-outlined text-3xl">lock_open</span>
-        </div>
-        <h3 class="font-headline text-xl font-bold text-on-surface">Acceso a Herramientas OmniPoll</h3>
-        <p class="text-xs text-on-surface-variant font-mono mt-1">Ingrese usuario y contraseña para acceder a la administración</p>
-      </div>
-
-      <!-- Alerta de Error de Login -->
-      <div id="login-error-alert" class="hidden p-3 mb-4 rounded-xl bg-error/15 border border-error/40 text-xs text-error flex items-center gap-2">
-        <span class="material-symbols-outlined text-base">error</span>
-        <span id="login-error-text">Credenciales inválidas. Verifique usuario o contraseña.</span>
-      </div>
-
-      <!-- Formulario de Login -->
-      <form id="form-login" class="space-y-3.5 mb-5">
-        <div>
-          <label class="text-xs text-on-surface-variant block mb-1">Usuario o Correo:</label>
-          <div class="relative flex items-center">
-            <span class="material-symbols-outlined absolute left-3 text-outline text-base">person</span>
-            <input type="text" id="login-email" class="input-glass text-xs w-full pl-9" placeholder="admin o usuario@omnipoll.pe" required autocomplete="username" />
-          </div>
-        </div>
-
-        <div>
-          <label class="text-xs text-on-surface-variant block mb-1">Contraseña:</label>
-          <div class="relative flex items-center">
-            <span class="material-symbols-outlined absolute left-3 text-outline text-base">key</span>
-            <input type="password" id="login-password" class="input-glass text-xs w-full pl-9 pr-9" placeholder="Contraseña de acceso" required autocomplete="current-password" />
-            <button type="button" id="btn-toggle-login-pwd" class="absolute right-2.5 text-outline hover:text-on-surface cursor-pointer flex items-center" title="Mostrar/Ocultar Contraseña">
-              <span class="material-symbols-outlined text-base">visibility</span>
-            </button>
-          </div>
-        </div>
-
-        <button type="submit" id="btn-login-submit" class="btn btn-primary w-full text-xs py-2.5 mt-2">
-          <span class="material-symbols-outlined text-base">login</span>
-          <span>Iniciar Sesión en el Núcleo</span>
-        </button>
-      </form>
-
-      <!-- Selector Rápido de Cuentas Demo -->
-      <div class="pt-3 border-t border-outline-variant/30">
-        <span class="text-[10px] font-mono uppercase text-outline block text-center mb-2.5">O Acceso Rápido con 1 Clic (Pass: admin123):</span>
-        <div class="grid grid-cols-2 gap-2 text-left">
-          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-primary-container/15 border border-outline-variant/40 hover:border-primary transition-all text-xs flex flex-col cursor-pointer" data-email="admin">
-            <div class="flex items-center justify-between w-full mb-0.5">
-              <span class="font-bold text-on-surface text-[11px] truncate">Admin General</span>
-              <span class="badge badge-approved text-[8px] py-0 px-1">ROOT</span>
-            </div>
-            <span class="text-[10px] text-primary-fixed-dim font-mono truncate">admin</span>
-            <span class="text-[9px] text-outline">SuperAdmin (Acceso Total)</span>
-          </button>
-
-          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-primary-container/15 border border-outline-variant/40 hover:border-primary transition-all text-xs flex flex-col cursor-pointer" data-email="carlos.valdivia@omnipoll.pe">
-            <div class="flex items-center justify-between w-full mb-0.5">
-              <span class="font-bold text-on-surface text-[11px] truncate">Carlos Valdivia</span>
-              <span class="badge badge-approved text-[8px] py-0 px-1">SUPER</span>
-            </div>
-            <span class="text-[10px] text-primary-fixed-dim font-mono truncate">carlos.valdivia@omnipoll.pe</span>
-            <span class="text-[9px] text-outline">SuperAdmin Operaciones</span>
-          </button>
-
-          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-secondary/15 border border-outline-variant/40 hover:border-secondary transition-all text-xs flex flex-col cursor-pointer" data-email="elena.ramos@omnipoll.pe">
-            <div class="flex items-center justify-between w-full mb-0.5">
-              <span class="font-bold text-on-surface text-[11px] truncate">Elena Ramos</span>
-              <span class="badge text-[8px] py-0 px-1 bg-secondary/20 text-secondary border border-secondary/30">AUDITOR</span>
-            </div>
-            <span class="text-[10px] text-secondary font-mono truncate">elena.ramos@omnipoll.pe</span>
-            <span class="text-[9px] text-outline">Auditor INEI (Aprobaciones)</span>
-          </button>
-
-          <button type="button" class="btn-demo-account p-2 rounded-xl bg-surface-container/60 hover:bg-amber-500/20 border border-outline-variant/40 hover:border-amber-500 transition-all text-xs flex flex-col cursor-pointer" data-email="marco.polo@omnipoll.pe">
-            <div class="flex items-center justify-between w-full mb-0.5">
-              <span class="font-bold text-on-surface text-[11px] truncate">Marco Polo</span>
-              <span class="badge text-[8px] py-0 px-1 bg-amber-500/20 text-amber-400 border border-amber-500/30">CAMPO</span>
-            </div>
-            <span class="text-[10px] text-amber-400 font-mono truncate">marco.polo@omnipoll.pe</span>
-            <span class="text-[9px] text-outline">Encuestador (Solo Encuestas)</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="flex justify-end gap-2 mt-4" id="login-modal-footer">
-        <button class="btn btn-secondary text-xs hidden" id="btn-close-modal-login" onclick="App.closeModal('modal-login')">Cerrar</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Modal Matriz RBAC de Roles y Permisos Granulares -->
   <div id="modal-roles-matrix" class="modal-overlay">

@@ -78,7 +78,6 @@ const App = (() => {
     applyUserToUI();
 
     if (!currentUser) {
-      openModal('modal-login');
       return false;
     }
     return true;
@@ -92,12 +91,16 @@ const App = (() => {
   };
 
   const applyUserToUI = () => {
+    const screenLogin = document.getElementById('screen-login');
+    const appContainer = document.getElementById('app-container');
     const quickLogoutBtn = document.getElementById('btn-quick-logout');
-    const closeLoginModalBtn = document.getElementById('btn-close-modal-login');
+    const cancelLoginBtn = document.getElementById('btn-cancel-screen-login');
 
     if (!currentUser) {
+      if (screenLogin) screenLogin.classList.remove('hidden');
+      if (appContainer) appContainer.classList.add('hidden');
+      if (cancelLoginBtn) cancelLoginBtn.classList.add('hidden');
       if (quickLogoutBtn) quickLogoutBtn.classList.add('hidden');
-      if (closeLoginModalBtn) closeLoginModalBtn.classList.add('hidden');
 
       const headerName = document.getElementById('header-user-name');
       const headerRole = document.getElementById('header-user-role');
@@ -113,8 +116,10 @@ const App = (() => {
       return;
     }
 
+    if (screenLogin) screenLogin.classList.add('hidden');
+    if (appContainer) appContainer.classList.remove('hidden');
     if (quickLogoutBtn) quickLogoutBtn.classList.remove('hidden');
-    if (closeLoginModalBtn) closeLoginModalBtn.classList.remove('hidden');
+    if (cancelLoginBtn) cancelLoginBtn.classList.add('hidden');
 
     // Actualizar elementos de cabecera
     const headerName = document.getElementById('header-user-name');
@@ -252,7 +257,6 @@ const App = (() => {
           localStorage.setItem('omnipoll_user', JSON.stringify(res.usuario));
         }
         applyUserToUI();
-        closeModal('modal-login');
         showToast(`Bienvenido al Núcleo, ${currentUser.nombre} (${currentUser.rol_nombre || currentUser.rol})`, 'success');
 
         // Inicializar módulos de la aplicación si no se habían inicializado
@@ -368,7 +372,7 @@ const App = (() => {
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!currentUser) {
-        openModal('modal-login');
+        applyUserToUI();
         return;
       }
       const notifDrawer = document.getElementById('notifications-drawer');
@@ -394,7 +398,12 @@ const App = (() => {
     if (optSwitchRole) {
       optSwitchRole.addEventListener('click', () => {
         menu.classList.remove('active');
-        openModal('modal-login');
+        const screenLogin = document.getElementById('screen-login');
+        const appContainer = document.getElementById('app-container');
+        const cancelBtn = document.getElementById('btn-cancel-screen-login');
+        if (screenLogin) screenLogin.classList.remove('hidden');
+        if (appContainer) appContainer.classList.add('hidden');
+        if (cancelBtn) cancelBtn.classList.remove('hidden');
       });
     }
 
@@ -430,7 +439,6 @@ const App = (() => {
       localStorage.removeItem('omnipoll_user');
       applyUserToUI();
       showToast('Sesión finalizada. Ingrese con usuario y contraseña.', 'info');
-      openModal('modal-login');
     };
 
     const optLogout = document.getElementById('opt-user-logout');
@@ -500,7 +508,7 @@ const App = (() => {
 
   const navigateTo = (path) => {
     if (!currentUser) {
-      openModal('modal-login');
+      applyUserToUI();
       return;
     }
     currentRoute = path;
@@ -987,12 +995,19 @@ const App = (() => {
   };
 
   const closeModal = (id) => {
-    if (id === 'modal-login' && !currentUser) {
-      showToast('Debe ingresar con usuario y contraseña para acceder al sistema.', 'error');
-      return;
-    }
     const m = document.getElementById(id);
     if (m) m.classList.remove('active');
+  };
+
+  const cancelScreenLogin = () => {
+    if (currentUser) {
+      const screenLogin = document.getElementById('screen-login');
+      const appContainer = document.getElementById('app-container');
+      const cancelBtn = document.getElementById('btn-cancel-screen-login');
+      if (screenLogin) screenLogin.classList.add('hidden');
+      if (appContainer) appContainer.classList.remove('hidden');
+      if (cancelBtn) cancelBtn.classList.add('hidden');
+    }
   };
 
   const showToast = (message, type = 'info') => {
@@ -1027,6 +1042,7 @@ const App = (() => {
     showToast,
     openModal,
     closeModal,
+    cancelScreenLogin,
     closeMobileSidebar,
     hasPermission,
     handleRoleChange,
