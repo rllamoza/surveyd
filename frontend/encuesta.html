@@ -142,7 +142,7 @@
     <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
       
       <!-- Logotipo de la Encuesta / OmniPoll -->
-      <a href="index.html" class="flex items-center gap-2.5 group" id="public-header-brand-link">
+      <a href="#" class="flex items-center gap-2.5 group cursor-default" id="public-header-brand-link">
         <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 p-[1.5px] shadow-sm group-hover:scale-105 transition-transform overflow-hidden flex items-center justify-center shrink-0" id="public-header-logo-box">
           <img id="public-header-custom-logo" src="" alt="Logo" class="h-full w-full object-contain rounded-[10px] hidden bg-white/10 p-0.5"/>
           <div id="public-header-default-icon" class="h-full w-full bg-slate-950/80 rounded-[10px] flex items-center justify-center backdrop-blur-md">
@@ -158,16 +158,16 @@
         </div>
       </a>
 
-      <!-- Herramientas: Conmutador Día/Noche & Retorno -->
-      <div class="flex items-center gap-2.5">
+      <!-- Herramientas: Compartir Enlace & Conmutador Día/Noche -->
+      <div class="flex items-center gap-2">
+        <button type="button" id="btn-share-survey-public" class="btn btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 rounded-xl border-primary/40 text-primary hover:bg-primary/10 shadow-sm transition-all" onclick="PublicSurvey.copyCurrentUrl()" title="Copiar enlace para compartir a los encuestados">
+          <span class="material-symbols-outlined text-sm">share</span>
+          <span class="font-bold hidden sm:inline">Compartir</span>
+        </button>
+
         <button id="theme-toggle-btn" class="btn-icon h-9 w-9 rounded-xl glass-subcard text-on-surface hover:text-primary transition-all shadow-sm" title="Cambiar Tema (Día / Noche)">
           <span class="material-symbols-outlined text-lg" id="theme-toggle-icon">light_mode</span>
         </button>
-
-        <a href="index.html" class="btn btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 rounded-lg" title="Ir al Panel Principal">
-          <span class="material-symbols-outlined text-sm">home</span>
-          <span class="hidden sm:inline">Panel</span>
-        </a>
       </div>
     </div>
   </header>

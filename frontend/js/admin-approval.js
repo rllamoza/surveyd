@@ -87,11 +87,15 @@ const AdminApproval = (() => {
           <span class="font-mono text-xs font-bold text-primary">${e.total_respuestas !== undefined ? e.total_respuestas : 0}</span>
         </td>
         <td class="p-4 text-right">
-          <div class="flex items-center justify-end gap-2">
+          <div class="flex items-center justify-end gap-2 flex-wrap">
             <a href="encuesta.html?id=${encodeURIComponent(e.codigo || e.id)}" target="_blank" class="btn btn-primary text-xs py-1.5 px-3 flex items-center gap-1 shadow-sm hover:brightness-110" title="Abrir dirección permanente de la encuesta pública">
               <span class="material-symbols-outlined text-sm">open_in_new</span>
               <span>Ver Encuesta</span>
             </a>
+            <button type="button" class="btn btn-secondary text-xs py-1.5 px-2.5 flex items-center gap-1 border-outline-variant/40 hover:text-emerald-400 hover:border-emerald-500/40" onclick="AdminApproval.copyShareLink('${encodeURIComponent(e.codigo || e.id)}')" title="Copiar enlace directo para compartir a los encuestados">
+              <span class="material-symbols-outlined text-sm">share</span>
+              <span class="hidden sm:inline">Copiar Enlace</span>
+            </button>
             ${e.estado === 'pendiente' ? `
               <button class="btn btn-success text-xs py-1.5 px-3" onclick="AdminApproval.openApproveModal(${e.id})">
                 <span class="material-symbols-outlined text-sm">verified</span>
@@ -234,11 +238,32 @@ const AdminApproval = (() => {
     if (m) m.classList.remove('active');
   };
 
+  const copyShareLink = async (code) => {
+    const origin = window.location.origin;
+    const pathname = window.location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
+    const fullUrl = `${origin}${pathname}/encuesta.html?id=${code}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(fullUrl);
+      } else {
+        const t = document.createElement('textarea');
+        t.value = fullUrl;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand('copy');
+        t.remove();
+      }
+      App.showToast(`¡Enlace copiado para compartir: ${fullUrl}!`, 'success');
+    } catch (e) {
+      prompt('Copie el enlace para compartir con los usuarios:', fullUrl);
+    }
+  };
+
   const escapeHtml = (str) => {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
   };
 
-  return { init, openApproveModal, openRejectModal, openPreviewModal, closeModal };
+  return { init, openApproveModal, openRejectModal, openPreviewModal, copyShareLink, closeModal };
 })();

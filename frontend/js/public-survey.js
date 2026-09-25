@@ -1068,6 +1068,25 @@ const PublicSurvey = (() => {
     }, 3500);
   };
 
+  const copyCurrentUrl = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const t = document.createElement('textarea');
+        t.value = url;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand('copy');
+        t.remove();
+      }
+      showToast('¡Dirección de la encuesta copiada al portapapeles!', 'success');
+    } catch (e) {
+      prompt('Copie la dirección para compartir con los usuarios:', url);
+    }
+  };
+
   return {
     init,
     submitSurvey,
@@ -1076,7 +1095,8 @@ const PublicSurvey = (() => {
     editSpecificQuestion,
     confirmFinalSubmit,
     onAnswerChange,
-    onCheckboxChange
+    onCheckboxChange,
+    copyCurrentUrl
   };
 })();
 
