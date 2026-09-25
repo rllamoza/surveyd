@@ -593,3 +593,236 @@ html.dark .toast {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
+
+/* ==========================================================================
+   ROLES & USUARIOS - DASHBOARD UI PRO (STATE-OF-THE-ART GLASS)
+   ========================================================================== */
+
+/* Switcher Segmentado de Pestañas */
+.subtab-segmented-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border-radius: 1.15rem;
+  background: var(--glass-subcard) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid var(--glass-card-border) !important;
+  border-top: 1.5px solid var(--glass-card-border-top) !important;
+  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+}
+
+.subtab-segmented-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 0.85rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--on-surface-variant);
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.subtab-segmented-btn:hover {
+  color: var(--on-surface);
+  background: rgba(2, 132, 199, 0.06);
+}
+
+.subtab-segmented-btn.active {
+  background: #ffffff !important;
+  color: var(--primary) !important;
+  border: 1px solid rgba(2, 132, 199, 0.22) !important;
+  box-shadow: 0 4px 16px -2px rgba(2, 132, 199, 0.18), 0 1px 3px rgba(0, 0, 0, 0.05), inset 0 1px 1px #ffffff !important;
+  transform: translateY(-1px);
+}
+
+html.dark .subtab-segmented-btn.active {
+  background: rgba(30, 41, 59, 0.95) !important;
+  color: #00f2fe !important;
+  border: 1px solid rgba(0, 242, 254, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(0, 242, 254, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+}
+
+.subtab-pill-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}
+
+/* Tarjeta KPI Pro con Glow */
+.kpi-card-pro {
+  background: var(--glass-card) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-card-border) !important;
+  border-top: 1.5px solid var(--glass-card-border-top) !important;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-spatial), var(--shadow-glass-inset) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card-pro:hover {
+  transform: translateY(-3px);
+  border-color: rgba(2, 132, 199, 0.35) !important;
+  box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.15), var(--shadow-glass-inset) !important;
+}
+
+html.dark .kpi-card-pro:hover {
+  border-color: rgba(0, 242, 254, 0.4) !important;
+  box-shadow: 0 20px 40px -10px rgba(0, 242, 254, 0.25), var(--shadow-glass-inset) !important;
+}
+
+.kpi-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+  box-shadow: 0 10px 22px -4px rgba(0, 0, 0, 0.2), inset 0 1.5px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Tarjeta de Rol Ejecutiva Pro */
+.role-card-pro {
+  background: var(--glass-card) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-card-border) !important;
+  border-top: 1.5px solid var(--glass-card-border-top) !important;
+  border-radius: 1.35rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.07), var(--shadow-glass-inset) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.role-card-pro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-accent-gradient, linear-gradient(90deg, #0284c7, #00f2fe));
+  opacity: 0.85;
+  transition: height 0.25s ease;
+}
+
+.role-card-pro:hover {
+  transform: translateY(-4px);
+  border-color: rgba(2, 132, 199, 0.4) !important;
+  box-shadow: 0 22px 50px -12px rgba(2, 132, 199, 0.2), var(--shadow-glass-inset) !important;
+}
+
+.role-card-pro:hover::before {
+  height: 4px;
+}
+
+html.dark .role-card-pro:hover {
+  border-color: rgba(0, 242, 254, 0.45) !important;
+  box-shadow: 0 22px 50px -12px rgba(0, 242, 254, 0.3), var(--shadow-glass-inset) !important;
+}
+
+/* Avatar de Rol con Gradiente */
+.role-avatar-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 8px 18px -4px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+/* Barra de Cobertura de Permisos */
+.role-coverage-track {
+  width: 100%;
+  height: 7px;
+  border-radius: 9999px;
+  background: rgba(148, 163, 184, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.role-coverage-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+}
+
+/* Pills de Módulos Autorizados Interactivas */
+.module-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.35rem;
+}
+
+.module-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.25rem;
+  border-radius: 0.75rem;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.module-chip.allowed {
+  background: rgba(2, 132, 199, 0.08);
+  color: var(--on-surface);
+  border-color: rgba(2, 132, 199, 0.25);
+}
+
+.module-chip.allowed:hover {
+  background: rgba(2, 132, 199, 0.16);
+  transform: translateY(-1px);
+}
+
+.module-chip.locked {
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--outline);
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
+html.dark .module-chip.allowed {
+  background: rgba(0, 242, 254, 0.08);
+  border-color: rgba(0, 242, 254, 0.25);
+  color: #e2e8f0;
+}
+
+html.dark .module-chip.locked {
+  background: rgba(30, 41, 59, 0.3);
+  opacity: 0.35;
+}
+

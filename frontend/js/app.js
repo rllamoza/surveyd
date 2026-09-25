@@ -603,15 +603,15 @@ const App = (() => {
 
     if (subtabUsers && subtabRoles && subviewUsers && subviewRoles) {
       subtabUsers.addEventListener('click', () => {
-        subtabUsers.className = 'btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 font-bold transition-all rounded-t-xl bg-primary/10 border-primary text-primary';
-        subtabRoles.className = 'btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-bold transition-all rounded-t-xl';
+        subtabUsers.classList.add('active');
+        subtabRoles.classList.remove('active');
         subviewUsers.classList.remove('hidden');
         subviewRoles.classList.add('hidden');
       });
 
       subtabRoles.addEventListener('click', () => {
-        subtabRoles.className = 'btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 font-bold transition-all rounded-t-xl bg-primary/10 border-primary text-primary';
-        subtabUsers.className = 'btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-bold transition-all rounded-t-xl';
+        subtabRoles.classList.add('active');
+        subtabUsers.classList.remove('active');
         subviewRoles.classList.remove('hidden');
         subviewUsers.classList.add('hidden');
         renderRolesList();
@@ -1153,69 +1153,154 @@ const App = (() => {
       return;
     }
 
+    const roleConfig = {
+      superadmin: {
+        gradient: 'linear-gradient(135deg, #0284c7, #0369a1)',
+        glow: 'rgba(2, 132, 199, 0.4)',
+        icon: 'shield',
+        badgeBg: 'bg-primary/20 text-primary border-primary/30',
+        label: 'SuperAdmin Root'
+      },
+      constructor: {
+        gradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
+        glow: 'rgba(245, 158, 11, 0.4)',
+        icon: 'construction',
+        badgeBg: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+        label: 'Constructor'
+      },
+      admin: {
+        gradient: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+        glow: 'rgba(6, 182, 212, 0.4)',
+        icon: 'tune',
+        badgeBg: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+        label: 'Administrador'
+      },
+      auditor: {
+        gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+        glow: 'rgba(139, 92, 246, 0.4)',
+        icon: 'verified',
+        badgeBg: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+        label: 'Auditor'
+      },
+      encuestador: {
+        gradient: 'linear-gradient(135deg, #10b981, #059669)',
+        glow: 'rgba(16, 185, 129, 0.4)',
+        icon: 'location_on',
+        badgeBg: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        label: 'Encuestador'
+      },
+      cliente: {
+        gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+        glow: 'rgba(59, 130, 246, 0.4)',
+        icon: 'analytics',
+        badgeBg: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+        label: 'Cliente'
+      }
+    };
+
+    const totalPossiblePerms = systemPermisos.length || 18;
+
     container.innerHTML = systemRoles.map(role => {
-      let badgeClass = 'badge-pending';
-      if (role.codigo === 'superadmin') badgeClass = 'badge-approved';
-      else if (role.codigo === 'constructor' || role.badge_color === 'amber') badgeClass = 'badge bg-amber-500/20 text-amber-400 border border-amber-500/40';
-      else if (role.codigo === 'admin' || role.badge_color === 'secondary') badgeClass = 'badge bg-cyan-500/20 text-cyan-400 border border-cyan-500/40';
-      else if (role.codigo === 'auditor' || role.badge_color === 'warning') badgeClass = 'badge bg-secondary/20 text-secondary border border-secondary/40';
-      else if (role.codigo === 'encuestador' || role.badge_color === 'success' || role.badge_color === 'emerald') badgeClass = 'badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
-      else if (role.codigo === 'cliente') badgeClass = 'badge bg-blue-500/20 text-blue-400 border border-blue-500/40';
+      const cfg = roleConfig[role.codigo] || {
+        gradient: 'linear-gradient(135deg, #64748b, #475569)',
+        glow: 'rgba(100, 116, 139, 0.4)',
+        icon: 'shield_person',
+        badgeBg: 'bg-surface-container text-on-surface border-outline-variant/30',
+        label: role.nombre
+      };
 
       const permCount = role.total_permisos || (role.permisos_ids ? role.permisos_ids.length : 0);
       const userCount = role.total_usuarios || cachedUsers.filter(u => u.rol === role.codigo).length;
+      const coveragePct = Math.min(100, Math.round((permCount / totalPossiblePerms) * 100));
 
-      // Extraer nombres de módulos que tienen permisos activos
-      const allowedModuleNames = [];
       const assignedPermCodigos = role.permisos_codigos || rolesMatrix[role.codigo] || [];
-      if (role.codigo === 'superadmin') {
-        systemModulos.forEach(m => allowedModuleNames.push(m.nombre));
-      } else {
-        systemModulos.forEach(m => {
+
+      // Mapear el estado de cada uno de los 5 módulos
+      const modulesStatus = systemModulos.map(m => {
+        let isAllowed = false;
+        if (role.codigo === 'superadmin') {
+          isAllowed = true;
+        } else {
           const modPerms = systemPermisos.filter(p => parseInt(p.modulo_id) === parseInt(m.id)).map(p => p.codigo);
-          const hasAny = modPerms.some(cp => assignedPermCodigos.includes(cp));
-          if (hasAny) allowedModuleNames.push(m.nombre);
-        });
-      }
+          isAllowed = modPerms.some(cp => assignedPermCodigos.includes(cp));
+        }
+
+        let shortName = m.nombre;
+        if (m.codigo === 'encuestas_activas') shortName = 'Encuestas';
+        else if (m.codigo === 'constructor_excel') shortName = 'Constructor';
+        else if (m.codigo === 'bento_analytics') shortName = 'Analítica';
+        else if (m.codigo === 'aprobacion_admin') shortName = 'Aprobación';
+        else if (m.codigo === 'gestion_usuarios') shortName = 'Usuarios';
+
+        return {
+          id: m.id,
+          codigo: m.codigo,
+          nombre: shortName,
+          icono: m.icono || 'folder',
+          allowed: isAllowed
+        };
+      });
 
       return `
-        <div class="glass-card p-5 flex flex-col justify-between space-y-4 hover:border-amber-500/40 transition-all shadow-sm">
-          <div>
-            <div class="flex items-start justify-between gap-2 mb-2">
-              <span class="${badgeClass} text-xs font-bold">${role.nombre}</span>
-              <span class="text-[10px] font-mono text-outline uppercase tracking-wider">#${role.codigo}</span>
-            </div>
-            <p class="text-xs text-on-surface-variant line-clamp-2 mb-3 min-h-[32px]">${role.descripcion || 'Sin descripción asignada.'}</p>
-
-            <div class="flex items-center gap-4 text-xs mb-3 font-mono">
-              <div class="flex items-center gap-1.5 text-on-surface">
-                <span class="material-symbols-outlined text-sm text-amber-500">key</span>
-                <span class="font-bold text-amber-400">${permCount}/18</span>
-                <span class="text-outline text-[10px]">Permisos</span>
+        <div class="role-card-pro" style="--card-accent-gradient: ${cfg.gradient};">
+          <div class="space-y-3.5">
+            <!-- Header de Tarjeta: Avatar + Nombre + Contador de Usuarios -->
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="role-avatar-box" style="background: ${cfg.gradient};">
+                  <span class="material-symbols-outlined text-2xl">${cfg.icon}</span>
+                </div>
+                <div>
+                  <h4 class="font-headline font-bold text-sm text-on-surface leading-tight">${role.nombre}</h4>
+                  <span class="text-[10px] font-mono text-outline block mt-0.5">#${role.codigo}</span>
+                </div>
               </div>
-              <div class="flex items-center gap-1.5 text-on-surface">
-                <span class="material-symbols-outlined text-sm text-secondary">group</span>
-                <span class="font-bold">${userCount}</span>
-                <span class="text-outline text-[10px]">Usuarios</span>
+              <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container/60 border border-outline-variant/30 text-xs font-mono" title="${userCount} usuarios asignados a este rol">
+                <span class="material-symbols-outlined text-xs text-primary">group</span>
+                <span class="font-bold text-on-surface">${userCount}</span>
               </div>
             </div>
 
-            <!-- Chips de módulos autorizados -->
-            <div class="flex flex-wrap gap-1">
-              ${allowedModuleNames.map(mn => `
-                <span class="badge text-[9px] bg-surface-container border border-outline-variant/30 text-on-surface font-sans">
-                  ${mn}
+            <!-- Descripción -->
+            <p class="text-xs text-on-surface-variant line-clamp-2 min-h-[34px] leading-relaxed">
+              ${role.descripcion || 'Sin descripción asignada para este perfil de acceso.'}
+            </p>
+
+            <!-- Barra de Cobertura de Permisos -->
+            <div class="space-y-1.5 pt-1">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <span class="text-[11px] text-outline flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs text-amber-500">key</span>
+                  <span>Cobertura de Permisos:</span>
                 </span>
-              `).join('')}
+                <span class="font-bold text-on-surface text-[11px]">${permCount}/${totalPossiblePerms} <span class="text-outline">(${coveragePct}%)</span></span>
+              </div>
+              <div class="role-coverage-track">
+                <div class="role-coverage-fill" style="width: ${coveragePct}%; background: ${cfg.gradient};"></div>
+              </div>
+            </div>
+
+            <!-- Matriz Visual de Acceso a Módulos (5 Módulos) -->
+            <div class="pt-2">
+              <span class="text-[10px] uppercase font-mono tracking-wider text-outline block mb-1.5">Acceso por Módulo:</span>
+              <div class="module-chip-grid">
+                ${modulesStatus.map(ms => `
+                  <div class="module-chip ${ms.allowed ? 'allowed' : 'locked'}" title="${ms.allowed ? 'Acceso Habilitado al módulo ' + ms.nombre : 'Acceso Denegado / Bloqueado'}">
+                    <span class="material-symbols-outlined text-base mb-0.5">${ms.allowed ? ms.icono : 'lock'}</span>
+                    <span class="truncate w-full">${ms.nombre}</span>
+                  </div>
+                `).join('')}
+              </div>
             </div>
           </div>
 
-          <div class="pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
-            <button type="button" class="btn btn-secondary text-[11px] py-1 px-2.5 flex items-center gap-1" onclick="App.openModal('modal-roles-matrix')">
-              <span class="material-symbols-outlined text-sm text-secondary">visibility</span>
+          <!-- Acciones de Tarjeta -->
+          <div class="pt-4 mt-4 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+            <button type="button" class="btn btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 hover:text-primary" onclick="App.openModal('modal-roles-matrix')">
+              <span class="material-symbols-outlined text-sm text-primary">visibility</span>
               <span>Ver Matriz</span>
             </button>
-            <button type="button" class="btn btn-primary text-[11px] py-1 px-3 flex items-center gap-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30" onclick="App.openEditRoleModal(${role.id})">
+            <button type="button" class="btn btn-primary text-xs py-1.5 px-3.5 flex items-center gap-1.5" style="background: ${cfg.gradient}; border: none; color: #ffffff;" onclick="App.openEditRoleModal(${role.id})">
               <span class="material-symbols-outlined text-sm">edit</span>
               <span>Editar Permisos</span>
             </button>

@@ -1395,61 +1395,71 @@
             </div>
           </div>
 
-          <!-- Pestañas de Sub-Navegación: Usuarios vs Roles & Permisos -->
-          <div class="flex items-center gap-2 border-b border-outline-variant/30 pb-1">
-            <button type="button" class="btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 font-bold transition-all rounded-t-xl bg-primary/10 border-primary text-primary" id="subtab-btn-users">
-              <span class="material-symbols-outlined text-base">manage_accounts</span>
-              <span>Directorio de Usuarios</span>
-              <span class="badge text-[10px] bg-primary/20 text-primary border border-primary/30" id="subtab-badge-users">...</span>
-            </button>
-            <button type="button" class="btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-bold transition-all rounded-t-xl" id="subtab-btn-roles">
-              <span class="material-symbols-outlined text-base text-amber-500">shield_person</span>
-              <span>Roles & Permisos del Sistema</span>
-              <span class="badge text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30" id="subtab-badge-roles">...</span>
-            </button>
+          <!-- Pestañas de Sub-Navegación: Segmented Pill Switcher -->
+          <div class="flex items-center justify-between pb-1 flex-wrap gap-3">
+            <div class="subtab-segmented-container" id="subtab-nav-container">
+              <button type="button" class="subtab-segmented-btn active" id="subtab-btn-users">
+                <span class="material-symbols-outlined text-base">manage_accounts</span>
+                <span>Directorio de Usuarios</span>
+                <span class="subtab-pill-badge bg-primary/15 text-primary border border-primary/30" id="subtab-badge-users">...</span>
+              </button>
+              <button type="button" class="subtab-segmented-btn" id="subtab-btn-roles">
+                <span class="material-symbols-outlined text-base text-amber-500">shield_person</span>
+                <span>Roles & Permisos del Sistema</span>
+                <span class="subtab-pill-badge bg-amber-500/20 text-amber-500 border border-amber-500/30" id="subtab-badge-roles">...</span>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-outline font-mono">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Motor RBAC Activo</span>
+            </div>
           </div>
 
           <!-- SUB-VISTA 1: DIRECTORIO DE USUARIOS -->
           <div id="subview-users" class="space-y-6">
             <!-- Métricas Resumen RBAC Usuarios -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div class="glass-card p-4 flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary-container">
+              <div class="kpi-card-pro">
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono font-semibold">Usuarios Totales</span>
+                  <span class="text-2xl font-headline font-bold text-on-surface" id="stat-total-users">0</span>
+                  <span class="text-[10px] text-outline block mt-0.5">Identidades activas</span>
+                </div>
+                <div class="kpi-icon-box" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
                   <span class="material-symbols-outlined text-2xl">group</span>
                 </div>
-                <div>
-                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Usuarios Registrados</span>
-                  <span class="text-xl font-headline font-bold text-on-surface" id="stat-total-users">0</span>
-                </div>
               </div>
 
-              <div class="glass-card p-4 flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-secondary/20 border border-secondary/40 flex items-center justify-center text-secondary">
+              <div class="kpi-card-pro">
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono font-semibold">SuperAdmins</span>
+                  <span class="text-2xl font-headline font-bold text-on-surface" id="stat-superadmin-users">0</span>
+                  <span class="text-[10px] text-outline block mt-0.5">Control irrestricto</span>
+                </div>
+                <div class="kpi-icon-box" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
                   <span class="material-symbols-outlined text-2xl">admin_panel_settings</span>
                 </div>
-                <div>
-                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">SuperAdmins</span>
-                  <span class="text-xl font-headline font-bold text-on-surface" id="stat-superadmin-users">0</span>
-                </div>
               </div>
 
-              <div class="glass-card p-4 flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+              <div class="kpi-card-pro">
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono font-semibold">Constructores & Campo</span>
+                  <span class="text-2xl font-headline font-bold text-amber-500" id="stat-builder-users">0</span>
+                  <span class="text-[10px] text-outline block mt-0.5">Operación directa</span>
+                </div>
+                <div class="kpi-icon-box" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
                   <span class="material-symbols-outlined text-2xl">construction</span>
                 </div>
-                <div>
-                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Constructores & Campo</span>
-                  <span class="text-xl font-headline font-bold text-amber-400" id="stat-builder-users">0</span>
-                </div>
               </div>
 
-              <div class="glass-card p-4 flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
-                  <span class="material-symbols-outlined text-2xl">key</span>
-                </div>
+              <div class="kpi-card-pro">
                 <div>
-                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Permisos Granulares</span>
-                  <span class="text-xl font-headline font-bold text-emerald-400">18 Activos</span>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono font-semibold">Permisos Sistema</span>
+                  <span class="text-2xl font-headline font-bold text-emerald-500">18 Activos</span>
+                  <span class="text-[10px] text-outline block mt-0.5">Granularidad 100%</span>
+                </div>
+                <div class="kpi-icon-box" style="background: linear-gradient(135deg, #10b981, #059669);">
+                  <span class="material-symbols-outlined text-2xl">verified_user</span>
                 </div>
               </div>
             </div>
@@ -1559,43 +1569,47 @@
           <div id="subview-roles" class="space-y-6 hidden">
             <!-- Métricas Resumen Roles -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div class="glass-card p-4 flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+              <div class="kpi-card-pro">
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono font-semibold">Roles Configurados</span>
+                  <span class="text-2xl font-headline font-bold text-on-surface" id="stat-total-roles">6</span>
+                  <span class="text-[10px] text-outline block mt-0.5">Perfiles de seguridad</span>
+                </div>
+                <div class="kpi-icon-box" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
                   <span class="material-symbols-outlined text-2xl">shield_person</span>
                 </div>
-                <div>
-                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Roles Configurados</span>
-                  <span class="text-xl font-headline font-bold text-on-surface" id="stat-total-roles">6</span>
-                </div>
               </div>
 
-              <div class="glass-card p-4 flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+              <div class="kpi-card-pro">
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono font-semibold">Permisos Granulares</span>
+                  <span class="text-2xl font-headline font-bold text-emerald-500">18 Activos</span>
+                  <span class="text-[10px] text-outline block mt-0.5">Capacidades asignables</span>
+                </div>
+                <div class="kpi-icon-box" style="background: linear-gradient(135deg, #10b981, #059669);">
                   <span class="material-symbols-outlined text-2xl">key</span>
                 </div>
-                <div>
-                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Permisos Granulares</span>
-                  <span class="text-xl font-headline font-bold text-emerald-400">18 Activos</span>
-                </div>
               </div>
 
-              <div class="glass-card p-4 flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-secondary/20 border border-secondary/40 flex items-center justify-center text-secondary">
+              <div class="kpi-card-pro">
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono font-semibold">Módulos Blindados</span>
+                  <span class="text-2xl font-headline font-bold text-secondary">5 Módulos</span>
+                  <span class="text-[10px] text-outline block mt-0.5">Control perimetral</span>
+                </div>
+                <div class="kpi-icon-box" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
                   <span class="material-symbols-outlined text-2xl">grid_view</span>
                 </div>
-                <div>
-                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Módulos Blindados</span>
-                  <span class="text-xl font-headline font-bold text-secondary">5 Módulos</span>
-                </div>
               </div>
 
-              <div class="glass-card p-4 flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary">
-                  <span class="material-symbols-outlined text-2xl">lock</span>
-                </div>
+              <div class="kpi-card-pro">
                 <div>
-                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Arquitectura RBAC</span>
-                  <span class="text-xs font-headline font-bold text-primary">Zero-Trust Dinámico</span>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono font-semibold">Arquitectura RBAC</span>
+                  <span class="text-base font-headline font-bold text-primary mt-1 block">Zero-Trust Dinámico</span>
+                  <span class="text-[10px] text-outline block mt-0.5">Validación en tiempo real</span>
+                </div>
+                <div class="kpi-icon-box" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
+                  <span class="material-symbols-outlined text-2xl">lock</span>
                 </div>
               </div>
             </div>
