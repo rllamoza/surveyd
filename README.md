@@ -37,7 +37,13 @@ El motor analítico evalúa automáticamente la naturaleza matemática de cada p
 - **Barra de Progreso Inteligente**: Transiciona fluidamente a una barra flotante inferior cuando el usuario hace scroll en smartphones para no perder la noción de avance.
 - **Pantalla de Resumen y Confirmación**: Antes de registrar, el informante puede revisar todas sus respuestas y dispone de botones directos para **regresar y corregir** cualquier dato con un solo clic.
 
-### 5. 🛡️ Gobernanza, Auditoría y Seguridad RBAC Multi-Inquilino
+### 5. 🎨 Identidad Visual (Branding) Exclusiva & Enlaces Permanentes
+- **Personalización Independiente por Encuesta**: Configuración de colores primarios y secundarios, tipografías Google Fonts (*Plus Jakarta Sans*, *Inter*, *Outfit*, *Poppins*, *Roboto*, *Playfair Display*), logotipo personalizado y textos de bienvenida/agradecimiento que aplican **únicamente** a la encuesta seleccionada sin alterar el resto de la plataforma.
+- **Direcciones Permanentes para el Público**: Cada instrumento cuenta con una URL pública fija (`frontend/encuesta.html?id=CODIGO`) que no requiere login ni credenciales.
+- **Distribución Rápida en 1 Clic**: Botones de **Copiar Enlace** integrados en la tabla de Aprobación, en el Constructor y en la cabecera de la encuesta pública listos para compartir por WhatsApp, correo o redes sociales.
+- Consulta la [Guía Completa de Encuestas Públicas y Branding](docs/PUBLIC_SURVEYS_AND_BRANDING.md).
+
+### 6. 🛡️ Gobernanza, Auditoría y Seguridad RBAC Multi-Inquilino
 - **SuperAdmin**: Control total sobre el sistema, aprobación técnica de encuestas (`RES-DIR-XXX-2025/MTC`) y gestión de usuarios.
 - **Analista**: Construcción, importación y visualización global de métricas.
 - **Cliente**: Acceso restringido exclusivamente a las encuestas asignadas por el administrador, garantizando aislamiento de datos sensible y confidencialidad.
@@ -128,7 +134,8 @@ surveyd/
 ├── docs/                           # Documentación técnica extendida
 │   ├── API.md                      # Especificación de endpoints REST
 │   ├── EXCEL_FORMAT.md             # Guía de importación de archivos Excel
-│   └── INSTALLATION.md             # Guía paso a paso de instalación
+│   ├── INSTALLATION.md             # Guía paso a paso de instalación
+│   └── PUBLIC_SURVEYS_AND_BRANDING.md # Guía de encuestas públicas y branding exclusivo
 ├── .gitignore
 ├── LICENSE
 └── README.md

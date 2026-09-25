@@ -94,10 +94,36 @@ Devuelve los distritos de la provincia especificada (ej. Lima Metropolitana).
 Lista las encuestas disponibles. Si se envía el encabezado de autenticación de un usuario con rol `cliente`, filtra únicamente las encuestas asignadas a dicho cliente.
 
 ### `GET /backend/api/encuestas.php?id={id_o_codigo}`
-Obtiene el detalle completo de una encuesta con su estructura de preguntas y opciones normalizadas para su ejecución.
+Obtiene el detalle completo de una encuesta con su estructura de preguntas, opciones normalizadas y configuración de `branding` para su ejecución.
+
+**Campos de respuesta relevantes:**
+- `id`, `codigo`, `titulo`, `descripcion`, `categoria`, `norma_tecnica`, `estado`.
+- `branding`: Objeto con `primary_color`, `secondary_color`, `font_family`, `logo_url`, `public_title`, `public_subtitle`, `welcome_message`, `thank_you_message`.
+- `preguntas`: Array ordenado de preguntas con sus alternativas.
 
 ### `POST /backend/api/encuestas.php`
-Crea una nueva encuesta estructurada.
+Crea una nueva encuesta estructurada o actualiza un borrador/publicación existente, incluyendo su configuración de `branding`.
+
+### `POST /backend/api/encuestas.php?action=update_branding`
+Actualiza de forma atómica y segura el branding visual de una encuesta sin tocar preguntas ni respuestas existentes.
+
+**Payload:**
+```json
+{
+  "encuesta_id": 24,
+  "branding": {
+    "primary_color": "#8B5CF6",
+    "secondary_color": "#00F2FE",
+    "bg_color": "#0b132b",
+    "font_family": "Outfit",
+    "logo_url": "https://midominio.com/logo.png",
+    "public_title": "Portal de Servicios 2026",
+    "public_subtitle": "Dirección de Calidad",
+    "welcome_message": "Instrucciones de la encuesta...",
+    "thank_you_message": "¡Muchas gracias por su respuesta!"
+  }
+}
+```
 
 ### `POST /backend/api/import_excel.php`
 Importa masivamente una encuesta a partir de un payload JSON generado desde una hoja de cálculo Excel.
