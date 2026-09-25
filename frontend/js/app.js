@@ -39,20 +39,22 @@ const App = (() => {
     setupUserManagement();
     setupRolesMatrixModal();
 
-    // Comprobar sesión existente o autenticar como SuperAdmin Root por defecto
-    await checkAuthSession();
+    // Comprobar sesión existente (sin auto-login bypass)
+    const hasSession = await checkAuthSession();
 
-    // Inicializar módulos de la aplicación
-    await SurveyRunner.init();
-    SurveyBuilder.init();
-    await AdminApproval.init();
-    await BentoAnalytics.init();
+    if (hasSession) {
+      // Inicializar módulos de la aplicación solo si está autenticado
+      await SurveyRunner.init();
+      SurveyBuilder.init();
+      await AdminApproval.init();
+      await BentoAnalytics.init();
 
-    // Cargar matriz de roles
-    await loadRolesAndMatrix();
+      // Cargar matriz de roles
+      await loadRolesAndMatrix();
 
-    // Configurar ruta inicial respetando permisos
-    navigateTo(currentRoute);
+      // Configurar ruta inicial respetando permisos
+      navigateTo(currentRoute);
+    }
   };
 
   /* ==========================================================================
@@ -64,15 +66,22 @@ const App = (() => {
       const res = await API.checkSession();
       if (res && res.authenticated && res.usuario) {
         currentUser = res.usuario;
+      } else {
+        currentUser = null;
+        localStorage.removeItem('omnipoll_token');
+        localStorage.removeItem('omnipoll_user');
       }
     } else {
-      // Iniciar sesión inicial automática con Raúl Llamoza si no hay sesión
-      const res = await API.login('rllamoza@gmail.com', 'Ra020976');
-      if (res && res.success && res.usuario) {
-        currentUser = res.usuario;
-      }
+      currentUser = null;
     }
+
     applyUserToUI();
+
+    if (!currentUser) {
+      openModal('modal-login');
+      return false;
+    }
+    return true;
   };
 
   const hasPermission = (permKey) => {
@@ -83,7 +92,29 @@ const App = (() => {
   };
 
   const applyUserToUI = () => {
-    if (!currentUser) return;
+    const quickLogoutBtn = document.getElementById('btn-quick-logout');
+    const closeLoginModalBtn = document.getElementById('btn-close-modal-login');
+
+    if (!currentUser) {
+      if (quickLogoutBtn) quickLogoutBtn.classList.add('hidden');
+      if (closeLoginModalBtn) closeLoginModalBtn.classList.add('hidden');
+
+      const headerName = document.getElementById('header-user-name');
+      const headerRole = document.getElementById('header-user-role');
+      if (headerName) headerName.textContent = 'Sin Sesión';
+      if (headerRole) headerRole.textContent = 'Acceso Requerido';
+
+      const sideName = document.getElementById('sidebar-user-name');
+      const sideRole = document.getElementById('sidebar-user-role');
+      if (sideName) sideName.textContent = 'No Autenticado';
+      if (sideRole) sideRole.textContent = 'Inicie Sesión';
+
+      applyNavPermissions();
+      return;
+    }
+
+    if (quickLogoutBtn) quickLogoutBtn.classList.remove('hidden');
+    if (closeLoginModalBtn) closeLoginModalBtn.classList.remove('hidden');
 
     // Actualizar elementos de cabecera
     const headerName = document.getElementById('header-user-name');
@@ -131,6 +162,18 @@ const App = (() => {
       { id: 'nav-aprobacion-admin', perm: 'aprobacion_admin.ver', path: 'aprobacion-admin' },
       { id: 'nav-gestion-usuarios', perm: 'gestion_usuarios.ver', path: 'gestion-usuarios' }
     ];
+
+    if (!currentUser) {
+      navModules.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el) el.style.display = 'none';
+      });
+      const optManage = document.getElementById('opt-manage-users');
+      if (optManage) optManage.style.display = 'none';
+      const optMatrix = document.getElementById('opt-roles-matrix');
+      if (optMatrix) optMatrix.style.display = 'none';
+      return;
+    }
 
     let firstAllowedPath = null;
 
@@ -187,7 +230,7 @@ const App = (() => {
       });
     }
 
-    const executeLogin = async (email, password) => {
+    const executeLogin = async (identifier, password) => {
       if (errorAlert) errorAlert.classList.add('hidden');
       const submitBtn = document.getElementById('btn-login-submit');
       if (submitBtn) {
@@ -195,7 +238,7 @@ const App = (() => {
         submitBtn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">refresh</span><span>Verificando BCRYPT...</span>`;
       }
 
-      const res = await API.login(email, password);
+      const res = await API.login(identifier, password);
 
       if (submitBtn) {
         submitBtn.disabled = false;
@@ -204,21 +247,33 @@ const App = (() => {
 
       if (res && res.success && res.usuario) {
         currentUser = res.usuario;
+        if (res.token) {
+          localStorage.setItem('omnipoll_token', res.token);
+          localStorage.setItem('omnipoll_user', JSON.stringify(res.usuario));
+        }
         applyUserToUI();
         closeModal('modal-login');
         showToast(`Bienvenido al Núcleo, ${currentUser.nombre} (${currentUser.rol_nombre || currentUser.rol})`, 'success');
-        
-        // Si el usuario es de rol cliente, forzar vista a Bento Analytics
+
+        // Inicializar módulos de la aplicación si no se habían inicializado
+        await SurveyRunner.init();
+        SurveyBuilder.init();
+        await AdminApproval.init();
+        await BentoAnalytics.init();
+        await loadRolesAndMatrix();
+
         if (currentUser.rol === 'cliente') {
           navigateTo('bento-analytics');
         } else if (currentRoute === 'bento-analytics') {
           if (typeof BentoAnalytics !== 'undefined') BentoAnalytics.init();
         } else if (currentRoute === 'gestion-usuarios') {
           loadUsersTable();
+        } else {
+          navigateTo(currentRoute || 'encuestas-activas');
         }
       } else {
         if (errorAlert && errorText) {
-          errorText.textContent = res.error || 'Credenciales inválidas. Verifique su correo o contraseña.';
+          errorText.textContent = res.error || 'Credenciales inválidas. Verifique usuario o contraseña.';
           errorAlert.classList.remove('hidden');
         }
       }
@@ -227,20 +282,20 @@ const App = (() => {
     if (formLogin) {
       formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = emailInput.value.trim();
+        const identifier = emailInput.value.trim();
         const password = pwdInput.value;
-        if (!email || !password) return;
-        await executeLogin(email, password);
+        if (!identifier || !password) return;
+        await executeLogin(identifier, password);
       });
     }
 
     // Botones de 1-clic para cuentas Demo
     document.querySelectorAll('.btn-demo-account').forEach(btn => {
       btn.addEventListener('click', async (e) => {
-        const email = btn.dataset.email;
-        if (emailInput) emailInput.value = email;
-        if (pwdInput) pwdInput.value = 'Ra020976';
-        await executeLogin(email, 'Ra020976');
+        const identifier = btn.dataset.email;
+        if (emailInput) emailInput.value = identifier;
+        if (pwdInput) pwdInput.value = 'admin123';
+        await executeLogin(identifier, 'admin123');
       });
     });
   };
@@ -312,6 +367,10 @@ const App = (() => {
 
     trigger.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (!currentUser) {
+        openModal('modal-login');
+        return;
+      }
       const notifDrawer = document.getElementById('notifications-drawer');
       if (notifDrawer) notifDrawer.classList.remove('active');
       menu.classList.toggle('active');
@@ -363,14 +422,25 @@ const App = (() => {
       });
     }
 
+    const performLogout = async () => {
+      if (menu) menu.classList.remove('active');
+      await API.logout();
+      currentUser = null;
+      localStorage.removeItem('omnipoll_token');
+      localStorage.removeItem('omnipoll_user');
+      applyUserToUI();
+      showToast('Sesión finalizada. Ingrese con usuario y contraseña.', 'info');
+      openModal('modal-login');
+    };
+
     const optLogout = document.getElementById('opt-user-logout');
     if (optLogout) {
-      optLogout.addEventListener('click', async () => {
-        menu.classList.remove('active');
-        await API.logout();
-        showToast('Sesión finalizada. Ingrese sus credenciales.', 'info');
-        openModal('modal-login');
-      });
+      optLogout.addEventListener('click', performLogout);
+    }
+
+    const quickLogout = document.getElementById('btn-quick-logout');
+    if (quickLogout) {
+      quickLogout.addEventListener('click', performLogout);
     }
   };
 
@@ -429,6 +499,10 @@ const App = (() => {
   };
 
   const navigateTo = (path) => {
+    if (!currentUser) {
+      openModal('modal-login');
+      return;
+    }
     currentRoute = path;
 
     // Actualizar sidebar links
@@ -913,6 +987,10 @@ const App = (() => {
   };
 
   const closeModal = (id) => {
+    if (id === 'modal-login' && !currentUser) {
+      showToast('Debe ingresar con usuario y contraseña para acceder al sistema.', 'error');
+      return;
+    }
     const m = document.getElementById(id);
     if (m) m.classList.remove('active');
   };

@@ -31,16 +31,16 @@ try {
             $rawInput = file_get_contents('php://input');
             $data = json_decode($rawInput, true);
 
-            $email = trim($data['email'] ?? $_POST['email'] ?? '');
-            $password = trim($data['password'] ?? $_POST['password'] ?? '');
+            $identifier = trim($data['username'] ?? $data['user'] ?? $data['email'] ?? $_POST['username'] ?? $_POST['user'] ?? $_POST['email'] ?? '');
+            $password = trim($data['password'] ?? $data['pass'] ?? $_POST['password'] ?? $_POST['pass'] ?? '');
 
-            if (empty($email) || empty($password)) {
+            if (empty($identifier) || empty($password)) {
                 http_response_code(400);
-                echo json_encode(['success' => false, 'error' => 'Debe ingresar correo electrónico y contraseña']);
+                echo json_encode(['success' => false, 'error' => 'Debe ingresar usuario/correo y contraseña']);
                 exit;
             }
 
-            $result = AuthHelper::login($email, $password);
+            $result = AuthHelper::login($identifier, $password);
 
             if (!$result['success']) {
                 http_response_code(401);

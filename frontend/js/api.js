@@ -155,12 +155,18 @@ const API = (() => {
 
   return {
     // --- AUTENTICACIÓN & SESIÓN RBAC ---
-    async login(email, password) {
+    async login(identifier, password) {
       try {
         const res = await fetch(`${BASE_URL}/auth.php?action=login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({
+            user: identifier,
+            username: identifier,
+            email: identifier,
+            pass: password,
+            password: password
+          })
         });
         const data = await res.json();
         if (data.success && data.token) {
