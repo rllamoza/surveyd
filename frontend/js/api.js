@@ -253,6 +253,22 @@ const API = (() => {
       const res = await request('roles.php');
       return res || { success: false, roles: [], matriz_permisos: {} };
     },
+
+    async createRol(roleData) {
+      const res = await request('roles.php', {
+        method: 'POST',
+        body: JSON.stringify(roleData)
+      });
+      return res;
+    },
+
+    async updateRol(roleData) {
+      const res = await request('roles.php', {
+        method: 'PUT',
+        body: JSON.stringify(roleData)
+      });
+      return res;
+    },
     // --- UBIGEO ---
     async getDepartamentos() {
       const res = await request('ubigeo.php?action=departamentos');

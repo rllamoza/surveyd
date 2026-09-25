@@ -287,7 +287,8 @@ INSERT INTO `roles` (`id`, `codigo`, `nombre`, `descripcion`, `badge_color`, `cr
   ('2', 'admin', 'Administrador Metodológico', 'Gestión de instrumentos, diseño de encuestas, importación y analítica', 'secondary', '2026-09-23 14:54:06'),
   ('3', 'auditor', 'Auditor INEI', 'Supervisión técnica, emisión de resoluciones oficiales de aprobación y dictamen metodológico', 'warning', '2026-09-23 14:54:06'),
   ('4', 'encuestador', 'Encuestador de Campo', 'Operación de encuestas en vivo con geolocalización UBIGEO y captura de datos', 'success', '2026-09-23 14:54:06'),
-  ('17', 'cliente', 'Cliente / Visualizador de Reportes', 'Visualización restringida exclusiva de tableros analíticos y métricas únicamente de las encuestas asignadas a su cuenta', 'primary', '2026-09-24 12:55:44');
+  ('17', 'cliente', 'Cliente / Visualizador de Reportes', 'Visualización restringida exclusiva de tableros analíticos y métricas únicamente de las encuestas asignadas a su cuenta', 'primary', '2026-09-24 12:55:44'),
+  ('18', 'constructor', 'Constructor de Encuestas', 'Diseño, importación masiva de preguntas .XLSX y publicación de instrumentos', 'amber', '2026-09-25 16:30:00');
 
 -- Datos para la tabla: modulos (5 registros)
 INSERT INTO `modulos` (`id`, `codigo`, `nombre`, `icono`, `orden`, `created_at`) VALUES
@@ -364,16 +365,22 @@ INSERT INTO `rol_permisos` (`rol_id`, `permiso_id`) VALUES
   ('1', '16'),
   ('2', '16'),
   ('1', '17'),
-  ('1', '18');
+  ('1', '18'),
+  ('18', '1'),
+  ('18', '4'),
+  ('18', '5'),
+  ('18', '6'),
+  ('18', '7');
 
--- Datos para la tabla: usuarios (6 registros)
+-- Datos para la tabla: usuarios (7 registros)
 INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password_hash`, `rol`, `cargo`, `avatar_url`, `activo`, `auth_token`, `created_at`, `updated_at`) VALUES
   ('1', 'Ing. Carlos Valdivia', 'carlos.valdivia@omnipoll.pe', '$2y$10$1/RSeB9OtgfAvWO97EDeO.wmhhszWoyhgF17Dn8a9phpN1eLs8K7C', 'superadmin', 'Director de Operaciones & Datos', 'diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png', '1', NULL, '2026-09-25 10:07:10', '2026-09-25 11:55:04'),
   ('2', 'Dra. Elena Ramos', 'elena.ramos@omnipoll.pe', '$2y$10$1/RSeB9OtgfAvWO97EDeO.wmhhszWoyhgF17Dn8a9phpN1eLs8K7C', 'auditor', 'Especialista en Muestreo Geoespacial (Auditor INEI)', NULL, '1', NULL, '2026-09-25 10:07:10', '2026-09-25 11:55:04'),
   ('3', 'Lic. Marco Polo', 'marco.polo@omnipoll.pe', '$2y$10$1/RSeB9OtgfAvWO97EDeO.wmhhszWoyhgF17Dn8a9phpN1eLs8K7C', 'encuestador', 'Coordinador de Campo Lima Centro', NULL, '1', NULL, '2026-09-25 10:07:10', '2026-09-25 11:55:04'),
   ('4', 'Administrador OmniPoll', 'admin@omnipoll.pe', '$2y$10$1/RSeB9OtgfAvWO97EDeO.wmhhszWoyhgF17Dn8a9phpN1eLs8K7C', 'superadmin', 'SuperAdministrador de Sistemas', 'diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png', '1', NULL, '2026-09-25 10:54:23', '2026-09-25 11:55:04'),
   ('5', 'Raúl Llamoza', 'rllamoza@gmail.com', '$2y$10$1/RSeB9OtgfAvWO97EDeO.wmhhszWoyhgF17Dn8a9phpN1eLs8K7C', 'superadmin', 'Fundador & Director General', 'diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png', '1', NULL, '2026-09-25 11:54:53', '2026-09-25 11:55:04'),
-  ('13', 'Lic. Roberto Mendoza', 'cliente@empresa.pe', '$2y$10$1/RSeB9OtgfAvWO97EDeO.wmhhszWoyhgF17Dn8a9phpN1eLs8K7C', 'cliente', 'Director de Operaciones (Cliente Corporativo)', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop', '1', NULL, '2026-09-25 11:55:04', '2026-09-25 11:55:04');
+  ('13', 'Lic. Roberto Mendoza', 'cliente@empresa.pe', '$2y$10$1/RSeB9OtgfAvWO97EDeO.wmhhszWoyhgF17Dn8a9phpN1eLs8K7C', 'cliente', 'Director de Operaciones (Cliente Corporativo)', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop', '1', NULL, '2026-09-25 11:55:04', '2026-09-25 11:55:04'),
+  ('18', 'Arq. Valeria Gómez', 'constructor@omnipoll.pe', '$2y$10$1/RSeB9OtgfAvWO97EDeO.wmhhszWoyhgF17Dn8a9phpN1eLs8K7C', 'constructor', 'Especialista en Diseño & Publicación', 'diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png', '1', NULL, '2026-09-25 16:30:00', '2026-09-25 16:30:00');
 
 -- Datos para la tabla: usuario_encuestas (4 registros)
 INSERT INTO `usuario_encuestas` (`id`, `usuario_id`, `encuesta_id`, `created_at`) VALUES

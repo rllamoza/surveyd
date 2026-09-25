@@ -26,6 +26,8 @@ const App = (() => {
   };
 
   let systemRoles = [];
+  let systemModulos = [];
+  let systemPermisos = [];
   let rolesMatrix = {};
 
   const init = async () => {
@@ -53,7 +55,13 @@ const App = (() => {
       await loadRolesAndMatrix();
 
       // Configurar ruta inicial respetando permisos
-      navigateTo(currentRoute);
+      if (currentUser && currentUser.rol === 'cliente') {
+        navigateTo('bento-analytics');
+      } else if (currentUser && currentUser.rol === 'constructor') {
+        navigateTo('constructor-excel');
+      } else {
+        navigateTo(currentRoute);
+      }
     }
   };
 
@@ -268,6 +276,8 @@ const App = (() => {
 
         if (currentUser.rol === 'cliente') {
           navigateTo('bento-analytics');
+        } else if (currentUser.rol === 'constructor') {
+          navigateTo('constructor-excel');
         } else if (currentRoute === 'bento-analytics') {
           if (typeof BentoAnalytics !== 'undefined') BentoAnalytics.init();
         } else if (currentRoute === 'gestion-usuarios') {
@@ -537,9 +547,10 @@ const App = (() => {
       targetView.classList.add('animate-fade-in');
     }
 
-    // Si navegamos a gestión de usuarios, refrescar tabla
+    // Si navegamos a gestión de usuarios, refrescar tabla y roles
     if (path === 'gestion-usuarios') {
       loadUsersTable();
+      loadRolesAndMatrix();
     }
     if (path === 'bento-analytics' && typeof BentoAnalytics !== 'undefined') {
       BentoAnalytics.init();
@@ -581,32 +592,59 @@ const App = (() => {
   };
 
   /* ==========================================================================
-     VISTA DE GESTIÓN DE USUARIOS
+     VISTA DE GESTIÓN DE USUARIOS & ROLES RBAC
      ========================================================================== */
   const setupUserManagement = () => {
-    const btnToggleNew = document.getElementById('btn-toggle-new-user');
-    const panelNew = document.getElementById('panel-new-user');
-    const btnCancel = document.getElementById('btn-cancel-new-user');
-    const btnRefresh = document.getElementById('btn-refresh-users');
+    // Pestañas Sub-Navegación
+    const subtabUsers = document.getElementById('subtab-btn-users');
+    const subtabRoles = document.getElementById('subtab-btn-roles');
+    const subviewUsers = document.getElementById('subview-users');
+    const subviewRoles = document.getElementById('subview-roles');
+
+    if (subtabUsers && subtabRoles && subviewUsers && subviewRoles) {
+      subtabUsers.addEventListener('click', () => {
+        subtabUsers.className = 'btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 font-bold transition-all rounded-t-xl bg-primary/10 border-primary text-primary';
+        subtabRoles.className = 'btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-bold transition-all rounded-t-xl';
+        subviewUsers.classList.remove('hidden');
+        subviewRoles.classList.add('hidden');
+      });
+
+      subtabRoles.addEventListener('click', () => {
+        subtabRoles.className = 'btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 font-bold transition-all rounded-t-xl bg-primary/10 border-primary text-primary';
+        subtabUsers.className = 'btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-bold transition-all rounded-t-xl';
+        subviewRoles.classList.remove('hidden');
+        subviewUsers.classList.add('hidden');
+        renderRolesList();
+      });
+    }
+
+    // Toggle panel nuevo usuario
+    const btnToggleNewUser = document.getElementById('btn-toggle-new-user');
+    const panelNewUser = document.getElementById('panel-new-user');
+    const btnCancelNewUser = document.getElementById('btn-cancel-new-user');
+    const btnRefreshUsers = document.getElementById('btn-refresh-users');
     const btnOpenMatrix = document.getElementById('btn-open-matrix');
-    const formCreate = document.getElementById('form-create-user');
+    const formCreateUser = document.getElementById('form-create-user');
 
-    if (btnToggleNew && panelNew) {
-      btnToggleNew.addEventListener('click', () => {
-        panelNew.classList.toggle('hidden');
+    if (btnToggleNewUser && panelNewUser) {
+      btnToggleNewUser.addEventListener('click', () => {
+        if (subviewUsers && subviewUsers.classList.contains('hidden') && subtabUsers) {
+          subtabUsers.click();
+        }
+        panelNewUser.classList.toggle('hidden');
       });
     }
 
-    if (btnCancel && panelNew) {
-      btnCancel.addEventListener('click', () => {
-        panelNew.classList.add('hidden');
+    if (btnCancelNewUser && panelNewUser) {
+      btnCancelNewUser.addEventListener('click', () => {
+        panelNewUser.classList.add('hidden');
       });
     }
 
-    if (btnRefresh) {
-      btnRefresh.addEventListener('click', () => {
-        loadUsersTable();
-        showToast('Lista de usuarios actualizada desde MySQL', 'info');
+    if (btnRefreshUsers) {
+      btnRefreshUsers.addEventListener('click', async () => {
+        await loadUsersTable();
+        showToast('Directorio de usuarios sincronizado con MySQL', 'info');
       });
     }
 
@@ -616,8 +654,70 @@ const App = (() => {
       });
     }
 
-    if (formCreate) {
-      formCreate.addEventListener('submit', async (e) => {
+    // Toggle panel nuevo rol
+    const btnToggleNewRole = document.getElementById('btn-toggle-new-role');
+    const panelNewRole = document.getElementById('panel-new-role');
+    const btnCancelNewRole = document.getElementById('btn-cancel-new-role');
+    const btnCancelNewRole2 = document.getElementById('btn-cancel-new-role-2');
+    const btnRefreshRoles = document.getElementById('btn-refresh-roles');
+    const formCreateRole = document.getElementById('form-create-role');
+
+    if (btnToggleNewRole && panelNewRole) {
+      btnToggleNewRole.addEventListener('click', () => {
+        if (subviewRoles && subviewRoles.classList.contains('hidden') && subtabRoles) {
+          subtabRoles.click();
+        }
+        panelNewRole.classList.toggle('hidden');
+        renderNewRolePermissionsMatrix();
+      });
+    }
+
+    const closeNewRolePanel = () => {
+      if (panelNewRole) panelNewRole.classList.add('hidden');
+    };
+    if (btnCancelNewRole) btnCancelNewRole.addEventListener('click', closeNewRolePanel);
+    if (btnCancelNewRole2) btnCancelNewRole2.addEventListener('click', closeNewRolePanel);
+
+    if (btnRefreshRoles) {
+      btnRefreshRoles.addEventListener('click', async () => {
+        await loadRolesAndMatrix();
+        showToast('Catálogo de roles y permisos actualizado', 'info');
+      });
+    }
+
+    // Botones de selección masiva en panel de nuevo rol
+    const btnSelectAllRolePerms = document.getElementById('btn-select-all-role-perms');
+    const btnClearAllRolePerms = document.getElementById('btn-clear-all-role-perms');
+
+    if (btnSelectAllRolePerms) {
+      btnSelectAllRolePerms.addEventListener('click', () => {
+        document.querySelectorAll('input[name="new_role_perms"]').forEach(cb => cb.checked = true);
+      });
+    }
+    if (btnClearAllRolePerms) {
+      btnClearAllRolePerms.addEventListener('click', () => {
+        document.querySelectorAll('input[name="new_role_perms"]').forEach(cb => cb.checked = false);
+      });
+    }
+
+    // Botones de selección masiva en modal de edición de permisos
+    const btnEditRoleSelectAll = document.getElementById('btn-edit-role-select-all');
+    const btnEditRoleClearAll = document.getElementById('btn-edit-role-clear-all');
+
+    if (btnEditRoleSelectAll) {
+      btnEditRoleSelectAll.addEventListener('click', () => {
+        document.querySelectorAll('input[name="edit_role_perms"]').forEach(cb => cb.checked = true);
+      });
+    }
+    if (btnEditRoleClearAll) {
+      btnEditRoleClearAll.addEventListener('click', () => {
+        document.querySelectorAll('input[name="edit_role_perms"]').forEach(cb => cb.checked = false);
+      });
+    }
+
+    // Submit: Crear Usuario
+    if (formCreateUser) {
+      formCreateUser.addEventListener('submit', async (e) => {
         e.preventDefault();
         const nombre = document.getElementById('new-user-nombre').value.trim();
         const email = document.getElementById('new-user-email').value.trim();
@@ -627,18 +727,94 @@ const App = (() => {
 
         if (!nombre || !email || !password) return;
 
-        // Encuestas asignadas marcadas en el formulario
         const checkedBoxes = Array.from(document.querySelectorAll('input[name="new_user_surveys"]:checked'));
         const encuestas_asignadas = checkedBoxes.map(cb => parseInt(cb.value));
 
         const res = await API.createUsuario({ nombre, email, password, cargo, rol, encuestas_asignadas });
         if (res && res.success) {
-          showToast(`Usuario ${nombre} creado exitosamente con rol ${rol.toUpperCase()}`, 'success');
-          formCreate.reset();
-          if (panelNew) panelNew.classList.add('hidden');
+          showToast(`Usuario ${nombre} creado con rol ${rol.toUpperCase()}`, 'success');
+          formCreateUser.reset();
+          if (panelNewUser) panelNewUser.classList.add('hidden');
+          await loadUsersTable();
+          await loadRolesAndMatrix();
+        } else {
+          showToast(res?.error || 'Error al crear el usuario', 'error');
+        }
+      });
+    }
+
+    // Submit: Crear Rol
+    if (formCreateRole) {
+      formCreateRole.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nombre = document.getElementById('new-role-nombre').value.trim();
+        const codigo = document.getElementById('new-role-codigo').value.trim();
+        const badge_color = document.getElementById('new-role-color').value;
+        const descripcion = document.getElementById('new-role-descripcion').value.trim();
+
+        if (!nombre || !codigo) {
+          showToast('Nombre y código del rol son obligatorios', 'error');
+          return;
+        }
+
+        const checkedBoxes = Array.from(document.querySelectorAll('input[name="new_role_perms"]:checked'));
+        const permisos = checkedBoxes.map(cb => parseInt(cb.value));
+
+        const res = await API.createRol({
+          nombre,
+          codigo,
+          badge_color,
+          descripcion,
+          permisos
+        });
+
+        if (res && res.success) {
+          showToast(`Rol "${nombre}" (${codigo}) creado exitosamente con ${permisos.length} permisos`, 'success');
+          formCreateRole.reset();
+          closeNewRolePanel();
+          await loadRolesAndMatrix();
           await loadUsersTable();
         } else {
-          showToast(res.error || 'Error al crear el usuario', 'error');
+          showToast(res?.error || 'Error al crear el rol', 'error');
+        }
+      });
+    }
+
+    // Submit: Editar Permisos de Rol
+    const formEditRole = document.getElementById('form-edit-role-permissions');
+    if (formEditRole) {
+      formEditRole.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('edit-role-id').value);
+        const nombre = document.getElementById('edit-role-nombre').value.trim();
+        const badge_color = document.getElementById('edit-role-color').value;
+        const descripcion = document.getElementById('edit-role-descripcion').value.trim();
+
+        if (!id || !nombre) return;
+
+        const checkedBoxes = Array.from(document.querySelectorAll('input[name="edit_role_perms"]:checked'));
+        const permisos = checkedBoxes.map(cb => parseInt(cb.value));
+
+        const res = await API.updateRol({
+          id,
+          nombre,
+          badge_color,
+          descripcion,
+          permisos
+        });
+
+        if (res && res.success) {
+          showToast(`Rol "${nombre}" y sus permisos actualizados exitosamente`, 'success');
+          closeModal('modal-edit-role-permissions');
+          await loadRolesAndMatrix();
+          await loadUsersTable();
+
+          // Si el usuario actual tiene este rol, refrescar sesión
+          if (currentUser && currentUser.rol === systemRoles.find(r => r.id === id)?.codigo) {
+            await checkAuthSession();
+          }
+        } else {
+          showToast(res?.error || 'Error al actualizar el rol', 'error');
         }
       });
     }
@@ -682,14 +858,19 @@ const App = (() => {
       `).join('');
     }
 
-    // Actualizar métricas
+    // Actualizar métricas de usuarios
     const statTotal = document.getElementById('stat-total-users');
     const statSuper = document.getElementById('stat-superadmin-users');
-    const statAudit = document.getElementById('stat-audit-users');
+    const statBuilder = document.getElementById('stat-builder-users');
+    const subtabBadgeUsers = document.getElementById('subtab-badge-users');
 
     if (statTotal) statTotal.textContent = users.length;
     if (statSuper) statSuper.textContent = users.filter(u => u.rol === 'superadmin').length;
-    if (statAudit) statAudit.textContent = users.filter(u => u.rol === 'auditor' || u.rol === 'encuestador' || u.rol === 'cliente').length;
+    if (statBuilder) statBuilder.textContent = users.filter(u => u.rol === 'constructor' || u.rol === 'encuestador').length;
+    if (subtabBadgeUsers) subtabBadgeUsers.textContent = users.length;
+
+    // Actualizar combo de roles en creación
+    populateRoleDropdowns();
 
     if (users.length === 0) {
       tbody.innerHTML = `
@@ -705,18 +886,31 @@ const App = (() => {
     tbody.innerHTML = users.map(user => {
       let roleBadgeClass = 'badge-pending';
       if (user.rol === 'superadmin') roleBadgeClass = 'badge-approved';
-      if (user.rol === 'admin') roleBadgeClass = 'badge bg-cyan-500/20 text-cyan-400 border border-cyan-500/40';
-      if (user.rol === 'auditor') roleBadgeClass = 'badge bg-secondary/20 text-secondary border border-secondary/40';
-      if (user.rol === 'encuestador') roleBadgeClass = 'badge bg-amber-500/20 text-amber-400 border border-amber-500/40';
-      if (user.rol === 'cliente') roleBadgeClass = 'badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
+      else if (user.rol === 'constructor') roleBadgeClass = 'badge bg-amber-500/20 text-amber-400 border border-amber-500/40';
+      else if (user.rol === 'admin') roleBadgeClass = 'badge bg-cyan-500/20 text-cyan-400 border border-cyan-500/40';
+      else if (user.rol === 'auditor') roleBadgeClass = 'badge bg-secondary/20 text-secondary border border-secondary/40';
+      else if (user.rol === 'encuestador') roleBadgeClass = 'badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
+      else if (user.rol === 'cliente') roleBadgeClass = 'badge bg-blue-500/20 text-blue-400 border border-blue-500/40';
 
       const isActive = parseInt(user.activo) === 1;
       const statusBadge = isActive
         ? `<span class="badge text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">ACTIVO</span>`
         : `<span class="badge text-[10px] bg-red-500/15 text-red-400 border border-red-500/30">INACTIVO</span>`;
 
-      const avatarSrc = user.avatar_url || '../diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png';
+      const avatarSrc = user.avatar_url || 'diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png';
       const assignedCount = (user.encuestas_asignadas && user.encuestas_asignadas.length) || 0;
+
+      // Opciones dinámicas para el selector de rol
+      const roleOptions = systemRoles.length > 0
+        ? systemRoles.map(r => `<option value="${r.codigo}" ${user.rol === r.codigo ? 'selected' : ''}>${r.nombre}</option>`).join('')
+        : `
+          <option value="superadmin" ${user.rol === 'superadmin' ? 'selected' : ''}>SuperAdmin Root</option>
+          <option value="constructor" ${user.rol === 'constructor' ? 'selected' : ''}>Constructor</option>
+          <option value="admin" ${user.rol === 'admin' ? 'selected' : ''}>Administrador</option>
+          <option value="auditor" ${user.rol === 'auditor' ? 'selected' : ''}>Auditor INEI</option>
+          <option value="encuestador" ${user.rol === 'encuestador' ? 'selected' : ''}>Encuestador</option>
+          <option value="cliente" ${user.rol === 'cliente' ? 'selected' : ''}>Cliente</option>
+        `;
 
       return `
         <tr class="hover:bg-surface-container/40 transition-colors">
@@ -735,11 +929,7 @@ const App = (() => {
           </td>
           <td class="py-3 px-3">
             <select class="input-glass text-xs py-1 px-2 font-mono bg-surface-container rounded-lg border border-outline-variant/40" onchange="App.handleRoleChange(${user.id}, this.value)">
-              <option value="superadmin" ${user.rol === 'superadmin' ? 'selected' : ''}>SuperAdmin Root</option>
-              <option value="admin" ${user.rol === 'admin' ? 'selected' : ''}>Administrador</option>
-              <option value="auditor" ${user.rol === 'auditor' ? 'selected' : ''}>Auditor INEI</option>
-              <option value="encuestador" ${user.rol === 'encuestador' ? 'selected' : ''}>Encuestador</option>
-              <option value="cliente" ${user.rol === 'cliente' ? 'selected' : ''}>Cliente (Reportes)</option>
+              ${roleOptions}
             </select>
           </td>
           <td class="py-3 px-3">
@@ -775,6 +965,18 @@ const App = (() => {
         </tr>
       `;
     }).join('');
+  };
+
+  const populateRoleDropdowns = () => {
+    const newUserRolSelect = document.getElementById('new-user-rol');
+    if (newUserRolSelect && systemRoles.length > 0) {
+      const currentVal = newUserRolSelect.value;
+      newUserRolSelect.innerHTML = systemRoles.map(r => `
+        <option value="${r.codigo}" ${r.codigo === currentVal ? 'selected' : (r.codigo === 'constructor' && !currentVal ? 'selected' : '')}>
+          ${r.nombre} (${r.descripcion ? r.descripcion.substring(0, 48) + '...' : r.codigo})
+        </option>
+      `).join('');
+    }
   };
 
   const openAssignSurveysModal = (userId) => {
@@ -843,7 +1045,6 @@ const App = (() => {
         closeModal('modal-assign-surveys');
         await loadUsersTable();
 
-        // Si el usuario editado es el activo actualmente, refrescar BentoAnalytics
         if (currentUser && parseInt(currentUser.id) === parseInt(currentAssignUserId)) {
           currentUser.encuestas_asignadas = selectedIds;
           if (typeof BentoAnalytics !== 'undefined') {
@@ -860,13 +1061,13 @@ const App = (() => {
     const res = await API.updateUsuario({ id: userId, rol: newRole });
     if (res && res.success) {
       showToast(`Rol actualizado a ${newRole.toUpperCase()} para el usuario #${userId}`, 'success');
-      // Si el usuario modificado es el actual, refrescar sesión
       if (currentUser && currentUser.id === userId) {
         await checkAuthSession();
       }
       await loadUsersTable();
+      await loadRolesAndMatrix();
     } else {
-      showToast(res.error || 'Error al actualizar rol', 'error');
+      showToast(res?.error || 'Error al actualizar rol', 'error');
     }
   };
 
@@ -876,19 +1077,31 @@ const App = (() => {
       showToast(`Estado del usuario actualizado (${newStatus ? 'Activo' : 'Inactivo'})`, 'info');
       await loadUsersTable();
     } else {
-      showToast(res.error || 'Error al cambiar estado', 'error');
+      showToast(res?.error || 'Error al cambiar estado', 'error');
     }
   };
 
   /* ==========================================================================
-     MATRIZ DE ROLES & PERMISOS GRANULARES (18)
+     CATÁLOGO DE ROLES & PERMISOS DINÁMICOS
      ========================================================================== */
   const loadRolesAndMatrix = async () => {
     const res = await API.getRoles();
     if (res && res.success) {
       systemRoles = res.roles || [];
+      systemModulos = res.modulos || [];
+      systemPermisos = res.permisos || [];
       rolesMatrix = res.matriz_permisos || {};
+
+      // Actualizar contadores
+      const statTotalRoles = document.getElementById('stat-total-roles');
+      if (statTotalRoles) statTotalRoles.textContent = systemRoles.length;
+      const subtabBadgeRoles = document.getElementById('subtab-badge-roles');
+      if (subtabBadgeRoles) subtabBadgeRoles.textContent = systemRoles.length;
+
+      renderRolesList();
       renderRolesMatrixTable();
+      renderNewRolePermissionsMatrix();
+      populateRoleDropdowns();
     }
   };
 
@@ -896,94 +1109,221 @@ const App = (() => {
     renderRolesMatrixTable();
   };
 
+  const renderNewRolePermissionsMatrix = () => {
+    const container = document.getElementById('new-role-permissions-matrix');
+    if (!container || !systemModulos.length || !systemPermisos.length) return;
+
+    container.innerHTML = systemModulos.map(mod => {
+      const perms = systemPermisos.filter(p => parseInt(p.modulo_id) === parseInt(mod.id));
+      return `
+        <div class="p-3 rounded-xl bg-surface-container/60 border border-outline-variant/30 space-y-2">
+          <div class="flex items-center justify-between pb-1.5 border-b border-outline-variant/30">
+            <span class="font-bold text-xs text-primary flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm">${mod.icono || 'folder'}</span>
+              <span>${mod.nombre}</span>
+            </span>
+            <button type="button" class="text-[10px] text-amber-500 hover:underline font-mono" onclick="App.toggleModulePerms('create', ${mod.id})">Todo</button>
+          </div>
+          <div class="space-y-1.5">
+            ${perms.map(p => `
+              <label class="flex items-start gap-2 p-1.5 rounded hover:bg-surface-container cursor-pointer text-xs">
+                <input type="checkbox" name="new_role_perms" value="${p.id}" data-mod-id="${mod.id}" class="accent-amber-500 rounded mt-0.5 h-3.5 w-3.5" />
+                <div class="flex flex-col min-w-0">
+                  <span class="font-semibold text-on-surface text-[11px] leading-tight">${p.nombre}</span>
+                  <span class="text-[9px] text-outline font-mono truncate" title="${p.descripcion}">${p.codigo}</span>
+                </div>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+  };
+
+  const renderRolesList = () => {
+    const container = document.getElementById('container-roles-cards');
+    if (!container) return;
+
+    if (!systemRoles.length) {
+      container.innerHTML = `
+        <div class="col-span-full p-8 text-center text-on-surface-variant font-mono text-xs">
+          No hay roles registrados en MySQL.
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = systemRoles.map(role => {
+      let badgeClass = 'badge-pending';
+      if (role.codigo === 'superadmin') badgeClass = 'badge-approved';
+      else if (role.codigo === 'constructor' || role.badge_color === 'amber') badgeClass = 'badge bg-amber-500/20 text-amber-400 border border-amber-500/40';
+      else if (role.codigo === 'admin' || role.badge_color === 'secondary') badgeClass = 'badge bg-cyan-500/20 text-cyan-400 border border-cyan-500/40';
+      else if (role.codigo === 'auditor' || role.badge_color === 'warning') badgeClass = 'badge bg-secondary/20 text-secondary border border-secondary/40';
+      else if (role.codigo === 'encuestador' || role.badge_color === 'success' || role.badge_color === 'emerald') badgeClass = 'badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
+      else if (role.codigo === 'cliente') badgeClass = 'badge bg-blue-500/20 text-blue-400 border border-blue-500/40';
+
+      const permCount = role.total_permisos || (role.permisos_ids ? role.permisos_ids.length : 0);
+      const userCount = role.total_usuarios || cachedUsers.filter(u => u.rol === role.codigo).length;
+
+      // Extraer nombres de módulos que tienen permisos activos
+      const allowedModuleNames = [];
+      const assignedPermCodigos = role.permisos_codigos || rolesMatrix[role.codigo] || [];
+      if (role.codigo === 'superadmin') {
+        systemModulos.forEach(m => allowedModuleNames.push(m.nombre));
+      } else {
+        systemModulos.forEach(m => {
+          const modPerms = systemPermisos.filter(p => parseInt(p.modulo_id) === parseInt(m.id)).map(p => p.codigo);
+          const hasAny = modPerms.some(cp => assignedPermCodigos.includes(cp));
+          if (hasAny) allowedModuleNames.push(m.nombre);
+        });
+      }
+
+      return `
+        <div class="glass-card p-5 flex flex-col justify-between space-y-4 hover:border-amber-500/40 transition-all shadow-sm">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <span class="${badgeClass} text-xs font-bold">${role.nombre}</span>
+              <span class="text-[10px] font-mono text-outline uppercase tracking-wider">#${role.codigo}</span>
+            </div>
+            <p class="text-xs text-on-surface-variant line-clamp-2 mb-3 min-h-[32px]">${role.descripcion || 'Sin descripción asignada.'}</p>
+
+            <div class="flex items-center gap-4 text-xs mb-3 font-mono">
+              <div class="flex items-center gap-1.5 text-on-surface">
+                <span class="material-symbols-outlined text-sm text-amber-500">key</span>
+                <span class="font-bold text-amber-400">${permCount}/18</span>
+                <span class="text-outline text-[10px]">Permisos</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-on-surface">
+                <span class="material-symbols-outlined text-sm text-secondary">group</span>
+                <span class="font-bold">${userCount}</span>
+                <span class="text-outline text-[10px]">Usuarios</span>
+              </div>
+            </div>
+
+            <!-- Chips de módulos autorizados -->
+            <div class="flex flex-wrap gap-1">
+              ${allowedModuleNames.map(mn => `
+                <span class="badge text-[9px] bg-surface-container border border-outline-variant/30 text-on-surface font-sans">
+                  ${mn}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-outline-variant/30 flex items-center justify-between gap-2">
+            <button type="button" class="btn btn-secondary text-[11px] py-1 px-2.5 flex items-center gap-1" onclick="App.openModal('modal-roles-matrix')">
+              <span class="material-symbols-outlined text-sm text-secondary">visibility</span>
+              <span>Ver Matriz</span>
+            </button>
+            <button type="button" class="btn btn-primary text-[11px] py-1 px-3 flex items-center gap-1 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30" onclick="App.openEditRoleModal(${role.id})">
+              <span class="material-symbols-outlined text-sm">edit</span>
+              <span>Editar Permisos</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  };
+
+  const openEditRoleModal = (roleId) => {
+    const role = systemRoles.find(r => parseInt(r.id) === parseInt(roleId));
+    if (!role) return;
+
+    document.getElementById('edit-role-id').value = role.id;
+    document.getElementById('edit-role-nombre').value = role.nombre;
+    document.getElementById('edit-role-color').value = role.badge_color || 'amber';
+    document.getElementById('edit-role-descripcion').value = role.descripcion || '';
+
+    const titleEl = document.getElementById('edit-role-modal-title');
+    const subEl = document.getElementById('edit-role-modal-subtitle');
+    if (titleEl) titleEl.textContent = `Editar Permisos: ${role.nombre}`;
+    if (subEl) subEl.textContent = `Código: ${role.codigo} • ${role.total_permisos || (role.permisos_ids ? role.permisos_ids.length : 0)} permisos asignados`;
+
+    const listContainer = document.getElementById('edit-role-permissions-list');
+    if (listContainer) {
+      const activeIds = (role.permisos_ids || []).map(id => parseInt(id));
+
+      listContainer.innerHTML = systemModulos.map(mod => {
+        const perms = systemPermisos.filter(p => parseInt(p.modulo_id) === parseInt(mod.id));
+        return `
+          <div class="p-2.5 rounded-lg bg-surface-container/60 border border-outline-variant/30 space-y-1.5">
+            <div class="flex items-center justify-between pb-1 border-b border-outline-variant/30">
+              <span class="font-bold text-[11px] text-primary flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">${mod.icono || 'folder'}</span>
+                <span>${mod.nombre}</span>
+              </span>
+              <button type="button" class="text-[9px] text-amber-500 hover:underline font-mono" onclick="App.toggleModulePerms('edit', ${mod.id})">Todo</button>
+            </div>
+            <div class="space-y-1">
+              ${perms.map(p => {
+                const isChecked = role.codigo === 'superadmin' || activeIds.includes(parseInt(p.id));
+                return `
+                  <label class="flex items-start gap-1.5 p-1 rounded hover:bg-surface-container cursor-pointer text-xs">
+                    <input type="checkbox" name="edit_role_perms" value="${p.id}" data-mod-id="${mod.id}" class="accent-primary rounded mt-0.5 h-3.5 w-3.5" ${isChecked ? 'checked' : ''} />
+                    <div class="flex flex-col min-w-0">
+                      <span class="font-medium text-on-surface text-[10px] leading-tight">${p.nombre}</span>
+                      <span class="text-[8px] text-outline font-mono truncate">${p.codigo}</span>
+                    </div>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    openModal('modal-edit-role-permissions');
+  };
+
+  const toggleModulePerms = (mode, modId) => {
+    const selector = mode === 'create' ? `input[name="new_role_perms"][data-mod-id="${modId}"]` : `input[name="edit_role_perms"][data-mod-id="${modId}"]`;
+    const cbs = Array.from(document.querySelectorAll(selector));
+    const allChecked = cbs.every(cb => cb.checked);
+    cbs.forEach(cb => cb.checked = !allChecked);
+  };
+
   const renderRolesMatrixTable = () => {
+    const theadRow = document.getElementById('matrix-thead-row');
     const tbody = document.getElementById('matrix-tbody');
     if (!tbody) return;
 
-    const modulosList = [
-      {
-        modulo: 'Encuestas Activas (UBIGEO)',
-        permisos: [
-          { clave: 'encuestas.ver', desc: 'Consultar catálogo de encuestas activas y filtrado UBIGEO' },
-          { clave: 'encuestas.responder', desc: 'Llenar y remitir formularios de campo georreferenciados' },
-          { clave: 'encuestas.crear', desc: 'Registrar nuevos instrumentos en la plataforma' },
-          { clave: 'encuestas.editar', desc: 'Modificar configuración o metadatos de encuesta' },
-          { clave: 'encuestas.eliminar', desc: 'Dar de baja o archivar encuestas existentes' }
-        ]
-      },
-      {
-        modulo: 'Constructor & Importador Excel',
-        permisos: [
-          { clave: 'constructor.ver', desc: 'Acceder a la interfaz de construcción de encuestas' },
-          { clave: 'constructor.crear', desc: 'Diseñar y añadir preguntas interactivas dinámicas' },
-          { clave: 'constructor.editar', desc: 'Reordenar o modificar lógica condicional' },
-          { clave: 'constructor.importar_excel', desc: 'Procesar masivamente hojas .XLSX / .CSV con SheetJS' }
-        ]
-      },
-      {
-        modulo: 'Aprobación SuperAdmin (Auditoría)',
-        permisos: [
-          { clave: 'aprobaciones.ver', desc: 'Visualizar cola de instrumentos pendientes de firma' },
-          { clave: 'aprobaciones.aprobar', desc: 'Aprobar técnicamente y emitir resolución legal' },
-          { clave: 'aprobaciones.rechazar', desc: 'Rechazar instrumento con pliego de observaciones' },
-          { clave: 'aprobaciones.firmar', desc: 'Firmar digitalmente con sello criptográfico SHA-256' }
-        ]
-      },
-      {
-        modulo: 'Bento Analytics (Geointeligencia)',
-        permisos: [
-          { clave: 'analitica.ver', desc: 'Ver tableros analíticos, KPIs y series temporales' },
-          { clave: 'analitica.exportar', desc: 'Exportar microdatos consolidados a Excel/PDF' },
-          { clave: 'analitica.filtrar_ubigeo', desc: 'Segmentar reportes por Región, Provincia y Distrito' }
-        ]
-      },
-      {
-        modulo: 'Gestión de Usuarios & Seguridad RBAC',
-        permisos: [
-          { clave: 'usuarios.ver', desc: 'Ver directorio de usuarios del sistema' },
-          { clave: 'usuarios.gestionar', desc: 'Crear, editar roles y desactivar identidades' },
-          { clave: 'roles.ver', desc: 'Inspeccionar matriz de permisos y políticas de acceso' }
-        ]
-      }
-    ];
+    // Si systemRoles está disponible, renderizar cabecera dinámica
+    if (theadRow && systemRoles.length > 0) {
+      theadRow.innerHTML = `
+        <th class="py-2.5 px-3">Módulo Funcional</th>
+        <th class="py-2.5 px-3">Código de Permiso</th>
+        <th class="py-2.5 px-3">Descripción de Función</th>
+        ${systemRoles.map(r => `
+          <th class="py-2.5 px-3 text-center text-xs font-bold font-sans">${r.nombre}</th>
+        `).join('')}
+      `;
+    }
 
-    tbody.innerHTML = modulosList.map(mod => {
-      const rows = mod.permisos.map((p, idx) => {
-        const superCheck = `<span class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>`;
-        
-        // Admin
-        const adminAllowed = !['usuarios.gestionar', 'aprobaciones.firmar'].includes(p.clave);
-        const adminCheck = adminAllowed
-          ? `<span class="material-symbols-outlined text-cyan-400 text-sm">check_circle</span>`
-          : `<span class="material-symbols-outlined text-outline text-sm">remove</span>`;
+    // Renderizar cuerpo agrupado por módulo
+    if (systemModulos.length > 0 && systemPermisos.length > 0) {
+      tbody.innerHTML = systemModulos.map(mod => {
+        const perms = systemPermisos.filter(p => parseInt(p.modulo_id) === parseInt(mod.id));
+        return perms.map((p, idx) => {
+          const roleCols = systemRoles.map(role => {
+            const isSuper = role.codigo === 'superadmin';
+            const hasPerm = isSuper || (rolesMatrix[role.codigo] && rolesMatrix[role.codigo].includes(p.codigo));
+            return hasPerm
+              ? `<td class="py-2 px-3 text-center"><span class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span></td>`
+              : `<td class="py-2 px-3 text-center"><span class="material-symbols-outlined text-outline text-sm">remove</span></td>`;
+          }).join('');
 
-        // Auditor
-        const auditorAllowed = ['encuestas.ver', 'constructor.ver', 'aprobaciones.ver', 'aprobaciones.aprobar', 'aprobaciones.rechazar', 'aprobaciones.firmar', 'analitica.ver', 'analitica.filtrar_ubigeo'].includes(p.clave);
-        const auditorCheck = auditorAllowed
-          ? `<span class="material-symbols-outlined text-secondary text-sm">check_circle</span>`
-          : `<span class="material-symbols-outlined text-outline text-sm">remove</span>`;
-
-        // Encuestador
-        const encuestadorAllowed = ['encuestas.ver', 'encuestas.responder', 'analitica.ver', 'analitica.filtrar_ubigeo'].includes(p.clave);
-        const encuestadorCheck = encuestadorAllowed
-          ? `<span class="material-symbols-outlined text-amber-400 text-sm">check_circle</span>`
-          : `<span class="material-symbols-outlined text-outline text-sm">remove</span>`;
-
-        return `
-          <tr class="hover:bg-surface-container/30 transition-colors">
-            ${idx === 0 ? `<td rowspan="${mod.permisos.length}" class="py-2.5 px-3 font-bold text-primary align-top border-r border-outline-variant/30 text-xs">${mod.modulo}</td>` : ''}
-            <td class="py-2 px-3 text-on-surface font-mono font-semibold">${p.clave}</td>
-            <td class="py-2 px-3 text-on-surface-variant font-sans text-xs">${p.desc}</td>
-            <td class="py-2 px-3 text-center">${superCheck}</td>
-            <td class="py-2 px-3 text-center">${adminCheck}</td>
-            <td class="py-2 px-3 text-center">${auditorCheck}</td>
-            <td class="py-2 px-3 text-center">${encuestadorCheck}</td>
-          </tr>
-        `;
+          return `
+            <tr class="hover:bg-surface-container/30 transition-colors">
+              ${idx === 0 ? `<td rowspan="${perms.length}" class="py-2.5 px-3 font-bold text-primary align-top border-r border-outline-variant/30 text-xs">${mod.nombre}</td>` : ''}
+              <td class="py-2 px-3 text-on-surface font-mono font-semibold">${p.codigo}</td>
+              <td class="py-2 px-3 text-on-surface-variant font-sans text-xs">${p.descripcion || p.nombre}</td>
+              ${roleCols}
+            </tr>
+          `;
+        }).join('');
       }).join('');
-
-      return rows;
-    }).join('');
+    }
   };
 
   /* ==========================================================================
@@ -1049,6 +1389,9 @@ const App = (() => {
     handleToggleStatus,
     openAssignSurveysModal,
     loadUsersTable,
+    loadRolesAndMatrix,
+    openEditRoleModal,
+    toggleModulePerms,
     getCurrentUser: () => currentUser
   };
 })();

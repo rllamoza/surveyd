@@ -217,7 +217,7 @@ class AuthHelper {
      */
     public static function canAccessSurvey(array $user, int $encuestaId): bool {
         $rol = $user['rol'] ?? '';
-        if ($rol === 'superadmin' || $rol === 'admin' || $rol === 'auditor') {
+        if ($rol === 'superadmin' || $rol === 'admin' || $rol === 'auditor' || $rol === 'constructor') {
             return true;
         }
         $assigned = $user['encuestas_asignadas'] ?? self::getAssignedSurveyIds((int)($user['id'] ?? 0));

@@ -1376,13 +1376,17 @@
                 <span class="text-xs font-mono text-outline">POLÍTICA ZERO-TRUST</span>
               </div>
               <h1 class="font-headline text-2xl sm:text-3xl font-bold text-primary">Gestión de Usuarios & Control de Acceso</h1>
-              <p class="text-xs sm:text-sm text-on-surface-variant">Administración centralizada de identidades, asignación de roles y permisos por módulo.</p>
+              <p class="text-xs sm:text-sm text-on-surface-variant">Administración centralizada de identidades, creación de roles y matriz de permisos granulares por módulo.</p>
             </div>
 
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2.5 flex-wrap">
               <button class="btn btn-secondary text-xs" id="btn-open-matrix" type="button">
                 <span class="material-symbols-outlined text-base text-secondary">security</span>
                 <span>Matriz de Permisos (18)</span>
+              </button>
+              <button class="btn btn-secondary text-xs border-amber-500/40 text-amber-500 hover:bg-amber-500/10" id="btn-toggle-new-role" type="button">
+                <span class="material-symbols-outlined text-base">add_moderator</span>
+                <span>+ Nuevo Rol</span>
               </button>
               <button class="btn btn-primary text-xs" id="btn-toggle-new-user" type="button">
                 <span class="material-symbols-outlined text-base">person_add</span>
@@ -1391,144 +1395,297 @@
             </div>
           </div>
 
-          <!-- Métricas Resumen RBAC -->
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="glass-card p-4 flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary-container">
-                <span class="material-symbols-outlined text-2xl">group</span>
+          <!-- Pestañas de Sub-Navegación: Usuarios vs Roles & Permisos -->
+          <div class="flex items-center gap-2 border-b border-outline-variant/30 pb-1">
+            <button type="button" class="btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 font-bold transition-all rounded-t-xl bg-primary/10 border-primary text-primary" id="subtab-btn-users">
+              <span class="material-symbols-outlined text-base">manage_accounts</span>
+              <span>Directorio de Usuarios</span>
+              <span class="badge text-[10px] bg-primary/20 text-primary border border-primary/30" id="subtab-badge-users">...</span>
+            </button>
+            <button type="button" class="btn text-xs py-2 px-4 flex items-center gap-2 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-bold transition-all rounded-t-xl" id="subtab-btn-roles">
+              <span class="material-symbols-outlined text-base text-amber-500">shield_person</span>
+              <span>Roles & Permisos del Sistema</span>
+              <span class="badge text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30" id="subtab-badge-roles">...</span>
+            </button>
+          </div>
+
+          <!-- SUB-VISTA 1: DIRECTORIO DE USUARIOS -->
+          <div id="subview-users" class="space-y-6">
+            <!-- Métricas Resumen RBAC Usuarios -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="glass-card p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary-container">
+                  <span class="material-symbols-outlined text-2xl">group</span>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Usuarios Registrados</span>
+                  <span class="text-xl font-headline font-bold text-on-surface" id="stat-total-users">0</span>
+                </div>
               </div>
-              <div>
-                <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Usuarios Registrados</span>
-                <span class="text-xl font-headline font-bold text-on-surface" id="stat-total-users">4</span>
+
+              <div class="glass-card p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-secondary/20 border border-secondary/40 flex items-center justify-center text-secondary">
+                  <span class="material-symbols-outlined text-2xl">admin_panel_settings</span>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">SuperAdmins</span>
+                  <span class="text-xl font-headline font-bold text-on-surface" id="stat-superadmin-users">0</span>
+                </div>
+              </div>
+
+              <div class="glass-card p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                  <span class="material-symbols-outlined text-2xl">construction</span>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Constructores & Campo</span>
+                  <span class="text-xl font-headline font-bold text-amber-400" id="stat-builder-users">0</span>
+                </div>
+              </div>
+
+              <div class="glass-card p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                  <span class="material-symbols-outlined text-2xl">key</span>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Permisos Granulares</span>
+                  <span class="text-xl font-headline font-bold text-emerald-400">18 Activos</span>
+                </div>
               </div>
             </div>
 
-            <div class="glass-card p-4 flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-secondary/20 border border-secondary/40 flex items-center justify-center text-secondary">
-                <span class="material-symbols-outlined text-2xl">admin_panel_settings</span>
+            <!-- Panel de Creación de Usuario (Colapsable) -->
+            <div id="panel-new-user" class="glass-panel p-5 hidden animate-fade-in border-2 border-primary/30">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary text-xl">person_add</span>
+                  <h3 class="font-headline text-base font-bold text-on-surface">Registrar Nuevo Usuario del Sistema</h3>
+                </div>
+                <button class="text-xs text-outline hover:text-on-surface" id="btn-cancel-new-user" type="button">Cancelar</button>
               </div>
-              <div>
-                <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">SuperAdmins</span>
-                <span class="text-xl font-headline font-bold text-on-surface" id="stat-superadmin-users">2</span>
-              </div>
+
+              <form id="form-create-user" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Nombre Completo:</label>
+                    <input type="text" id="new-user-nombre" class="input-glass text-xs w-full" placeholder="Ej. Dr. Mario Vargas" required />
+                  </div>
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Correo Electrónico:</label>
+                    <input type="email" id="new-user-email" class="input-glass text-xs w-full" placeholder="usuario@omnipoll.pe" required />
+                  </div>
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Contraseña Inicial:</label>
+                    <input type="password" id="new-user-password" class="input-glass text-xs w-full" placeholder="Mínimo 6 caracteres" required />
+                  </div>
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Cargo / Especialidad:</label>
+                    <input type="text" id="new-user-cargo" class="input-glass text-xs w-full" placeholder="Ej. Analista Estadístico" />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Rol RBAC Asignado:</label>
+                    <select id="new-user-rol" class="input-glass text-xs w-full bg-surface-container">
+                      <!-- Opciones dinámicas pobladas desde systemRoles -->
+                      <option value="superadmin">SuperAdmin Root</option>
+                      <option value="admin">Administrador Metodológico</option>
+                      <option value="constructor" selected>Constructor de Encuestas (Creación & Publicación)</option>
+                      <option value="auditor">Auditor INEI</option>
+                      <option value="encuestador">Encuestador de Campo</option>
+                      <option value="cliente">Cliente / Visualizador de Reportes</option>
+                    </select>
+                  </div>
+                  <div class="flex items-end justify-end gap-2">
+                    <button type="submit" class="btn btn-primary text-xs py-2 px-5">
+                      <span class="material-symbols-outlined text-base">save</span>
+                      <span>Guardar y Habilitar Usuario</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Selector de Encuestas Asignadas al Usuario -->
+                <div id="new-user-surveys-box" class="p-3 rounded-xl bg-surface-container/40 border border-primary/20 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-sm text-primary">assignment_turned_in</span>
+                      <span>Asignar Reportes / Encuestas Autorizadas:</span>
+                    </span>
+                    <span class="text-[10px] text-outline font-mono">Los clientes solo podrán ver y analizar las encuestas marcadas</span>
+                  </div>
+                  <div id="new-user-surveys-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-40 overflow-y-auto pr-1">
+                    <!-- Checkboxes generados dinámicamente desde App.loadUsersTable -->
+                  </div>
+                </div>
+              </form>
             </div>
 
-            <div class="glass-card p-4 flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-tertiary-fixed/20 border border-tertiary-fixed/40 flex items-center justify-center text-tertiary-fixed">
-                <span class="material-symbols-outlined text-2xl">verified_user</span>
+            <!-- Directorio de Usuarios -->
+            <div class="glass-panel p-5">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary text-xl">contacts</span>
+                  <h3 class="font-headline text-base font-bold text-on-surface">Directorio de Usuarios Activos</h3>
+                </div>
+                <button class="btn btn-secondary text-xs py-1 px-3" id="btn-refresh-users" type="button">
+                  <span class="material-symbols-outlined text-sm">refresh</span>
+                  <span>Actualizar Lista</span>
+                </button>
               </div>
-              <div>
-                <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Auditores & Operadores</span>
-                <span class="text-xl font-headline font-bold text-on-surface" id="stat-audit-users">2</span>
-              </div>
-            </div>
 
-            <div class="glass-card p-4 flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
-                <span class="material-symbols-outlined text-2xl">key</span>
-              </div>
-              <div>
-                <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Permisos Granulares</span>
-                <span class="text-xl font-headline font-bold text-emerald-400">18 Activos</span>
+              <!-- Tabla Glass Responsive -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="border-b border-outline-variant/30 text-outline uppercase font-mono text-[10px]">
+                      <th class="py-3 px-3">Usuario / Identidad</th>
+                      <th class="py-3 px-3">Cargo / Dependencia</th>
+                      <th class="py-3 px-3">Rol RBAC</th>
+                      <th class="py-3 px-3">Permisos</th>
+                      <th class="py-3 px-3">Estado</th>
+                      <th class="py-3 px-3 text-right">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-tbody" class="divide-y divide-outline-variant/20">
+                    <!-- Renderizado dinámico desde app.js -->
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
 
-          <!-- Panel de Creación de Usuario (Colapsable) -->
-          <div id="panel-new-user" class="glass-panel p-5 hidden animate-fade-in border-2 border-primary/30">
-            <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary text-xl">person_add</span>
-                <h3 class="font-headline text-base font-bold text-on-surface">Registrar Nuevo Usuario del Sistema</h3>
+          <!-- SUB-VISTA 2: GESTIÓN DE ROLES & PERMISOS -->
+          <div id="subview-roles" class="space-y-6 hidden">
+            <!-- Métricas Resumen Roles -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="glass-card p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                  <span class="material-symbols-outlined text-2xl">shield_person</span>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Roles Configurados</span>
+                  <span class="text-xl font-headline font-bold text-on-surface" id="stat-total-roles">6</span>
+                </div>
               </div>
-              <button class="text-xs text-outline hover:text-on-surface" id="btn-cancel-new-user" type="button">Cancelar</button>
+
+              <div class="glass-card p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                  <span class="material-symbols-outlined text-2xl">key</span>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Permisos Granulares</span>
+                  <span class="text-xl font-headline font-bold text-emerald-400">18 Activos</span>
+                </div>
+              </div>
+
+              <div class="glass-card p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-secondary/20 border border-secondary/40 flex items-center justify-center text-secondary">
+                  <span class="material-symbols-outlined text-2xl">grid_view</span>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Módulos Blindados</span>
+                  <span class="text-xl font-headline font-bold text-secondary">5 Módulos</span>
+                </div>
+              </div>
+
+              <div class="glass-card p-4 flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-2xl">lock</span>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase tracking-wider text-outline block font-mono">Arquitectura RBAC</span>
+                  <span class="text-xs font-headline font-bold text-primary">Zero-Trust Dinámico</span>
+                </div>
+              </div>
             </div>
 
-            <form id="form-create-user" class="space-y-4">
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <label class="text-xs text-on-surface-variant block mb-1">Nombre Completo:</label>
-                  <input type="text" id="new-user-nombre" class="input-glass text-xs w-full" placeholder="Ej. Dr. Mario Vargas" required />
+            <!-- Panel de Creación de Nuevo Rol (Colapsable) -->
+            <div id="panel-new-role" class="glass-panel p-5 hidden animate-fade-in border-2 border-amber-500/30">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-amber-500 text-xl">add_moderator</span>
+                  <div>
+                    <h3 class="font-headline text-base font-bold text-on-surface">Crear Nuevo Rol de Sistema</h3>
+                    <p class="text-xs text-on-surface-variant">Defina los privilegios de navegación y acción de los operadores</p>
+                  </div>
                 </div>
-                <div>
-                  <label class="text-xs text-on-surface-variant block mb-1">Correo Electrónico:</label>
-                  <input type="email" id="new-user-email" class="input-glass text-xs w-full" placeholder="usuario@omnipoll.pe" required />
-                </div>
-                <div>
-                  <label class="text-xs text-on-surface-variant block mb-1">Contraseña Inicial:</label>
-                  <input type="password" id="new-user-password" class="input-glass text-xs w-full" placeholder="Mínimo 6 caracteres" required />
-                </div>
-                <div>
-                  <label class="text-xs text-on-surface-variant block mb-1">Cargo / Especialidad:</label>
-                  <input type="text" id="new-user-cargo" class="input-glass text-xs w-full" placeholder="Ej. Analista Estadístico" />
-                </div>
+                <button class="text-xs text-outline hover:text-on-surface" id="btn-cancel-new-role" type="button">Cancelar</button>
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="text-xs text-on-surface-variant block mb-1">Rol RBAC Asignado:</label>
-                  <select id="new-user-rol" class="input-glass text-xs w-full bg-surface-container">
-                    <option value="superadmin">SuperAdmin (Acceso Total & Configuración)</option>
-                    <option value="admin">Administrador (Gestión & Aprobaciones)</option>
-                    <option value="auditor">Auditor INEI (Revisión & Dictamen)</option>
-                    <option value="encuestador" selected>Encuestador (Toma de Datos & Campo)</option>
-                    <option value="cliente">Cliente (Visualizador de Reportes Asignados)</option>
-                  </select>
+              <form id="form-create-role" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Nombre del Rol:</label>
+                    <input type="text" id="new-role-nombre" class="input-glass text-xs w-full" placeholder="Ej. Constructor de Encuestas" required />
+                  </div>
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Código Identificador (Slug):</label>
+                    <input type="text" id="new-role-codigo" class="input-glass text-xs w-full font-mono" placeholder="Ej. constructor" required />
+                    <span class="text-[9px] text-outline">Identificador único del rol (sin espacios)</span>
+                  </div>
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Color Distintivo (Badge):</label>
+                    <select id="new-role-color" class="input-glass text-xs w-full bg-surface-container">
+                      <option value="amber" selected>Ámbar / Oro (Constructor)</option>
+                      <option value="primary">Azul Cobalto (Primary)</option>
+                      <option value="secondary">Cyan Tech (Auditoría/Admin)</option>
+                      <option value="emerald">Verde Esmeralda (Success)</option>
+                      <option value="purple">Púrpura Neón (Purple)</option>
+                      <option value="rose">Rosa Carmesí (Special)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-xs text-on-surface-variant block mb-1">Descripción del Perfil:</label>
+                    <input type="text" id="new-role-descripcion" class="input-glass text-xs w-full" placeholder="Ej. Solo herramientas de diseño y publicación" />
+                  </div>
                 </div>
-                <div class="flex items-end justify-end gap-2">
-                  <button type="submit" class="btn btn-primary text-xs py-2 px-5">
-                    <span class="material-symbols-outlined text-base">save</span>
-                    <span>Guardar y Habilitar Usuario</span>
+
+                <!-- Matriz de Selección de Permisos por Módulo -->
+                <div class="p-4 rounded-xl bg-surface-container/50 border border-outline-variant/30 space-y-3">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-outline-variant/30 gap-2">
+                    <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-base text-amber-500">key</span>
+                      <span class="font-bold text-xs text-on-surface">Seleccione los permisos autorizados para este nuevo rol:</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button type="button" class="btn btn-secondary text-[10px] py-1 px-2.5" id="btn-select-all-role-perms">Marcar Todos (18)</button>
+                      <button type="button" class="btn btn-secondary text-[10px] py-1 px-2.5" id="btn-clear-all-role-perms">Desmarcar Todos</button>
+                    </div>
+                  </div>
+
+                  <div id="new-role-permissions-matrix" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- Checkboxes generados dinámicamente desde App.renderNewRolePermissionsMatrix -->
+                  </div>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" class="btn btn-secondary text-xs py-2 px-4" id="btn-cancel-new-role-2">Cancelar</button>
+                  <button type="submit" class="btn btn-primary text-xs py-2 px-6 flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 border-amber-500 text-slate-950 font-bold">
+                    <span class="material-symbols-outlined text-base">shield</span>
+                    <span>Registrar y Guardar Rol</span>
                   </button>
                 </div>
-              </div>
-
-              <!-- Selector de Encuestas Asignadas al Usuario -->
-              <div id="new-user-surveys-box" class="p-3 rounded-xl bg-surface-container/40 border border-primary/20 space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-on-surface flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm text-primary">assignment_turned_in</span>
-                    <span>Asignar Reportes / Encuestas Autorizadas:</span>
-                  </span>
-                  <span class="text-[10px] text-outline font-mono">Los clientes solo podrán ver y analizar las encuestas marcadas</span>
-                </div>
-                <div id="new-user-surveys-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-40 overflow-y-auto pr-1">
-                  <!-- Checkboxes generados dinámicamente desde App.loadUsersTable -->
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <!-- Directorio de Usuarios -->
-          <div class="glass-panel p-5">
-            <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary text-xl">contacts</span>
-                <h3 class="font-headline text-base font-bold text-on-surface">Directorio de Usuarios Activos</h3>
-              </div>
-              <button class="btn btn-secondary text-xs py-1 px-3" id="btn-refresh-users" type="button">
-                <span class="material-symbols-outlined text-sm">refresh</span>
-                <span>Actualizar Lista</span>
-              </button>
+              </form>
             </div>
 
-            <!-- Tabla Glass Responsive -->
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr class="border-b border-outline-variant/30 text-outline uppercase font-mono text-[10px]">
-                    <th class="py-3 px-3">Usuario / Identidad</th>
-                    <th class="py-3 px-3">Cargo / Dependencia</th>
-                    <th class="py-3 px-3">Rol RBAC</th>
-                    <th class="py-3 px-3">Permisos</th>
-                    <th class="py-3 px-3">Estado</th>
-                    <th class="py-3 px-3 text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="users-tbody" class="divide-y divide-outline-variant/20">
-                  <!-- Renderizado dinámico desde app.js -->
-                </tbody>
-              </table>
+            <!-- Listado de Roles Configurados -->
+            <div class="glass-panel p-5">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-amber-500 text-xl">shield_person</span>
+                  <h3 class="font-headline text-base font-bold text-on-surface">Roles del Sistema & Privilegios Asignados</h3>
+                </div>
+                <button class="btn btn-secondary text-xs py-1 px-3" id="btn-refresh-roles" type="button">
+                  <span class="material-symbols-outlined text-sm">refresh</span>
+                  <span>Actualizar Roles</span>
+                </button>
+              </div>
+
+              <!-- Contenedor de Tarjetas de Roles -->
+              <div id="container-roles-cards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <!-- Tarjetas dinámicas renderizadas desde App.renderRolesList -->
+              </div>
             </div>
           </div>
         </div>
@@ -1721,14 +1878,10 @@
       <div class="overflow-x-auto max-h-[60vh] overflow-y-auto mb-4">
         <table class="w-full text-left text-xs border-collapse font-sans">
           <thead class="sticky top-0 bg-surface-container border-b border-outline-variant/40 z-10">
-            <tr class="text-outline uppercase font-mono text-[10px]">
+            <tr class="text-outline uppercase font-mono text-[10px]" id="matrix-thead-row">
               <th class="py-2.5 px-3">Módulo Funcional</th>
               <th class="py-2.5 px-3">Código de Permiso</th>
               <th class="py-2.5 px-3">Descripción de Función</th>
-              <th class="py-2.5 px-3 text-center text-primary">SuperAdmin</th>
-              <th class="py-2.5 px-3 text-center text-cyan-400">Admin</th>
-              <th class="py-2.5 px-3 text-center text-secondary">Auditor INEI</th>
-              <th class="py-2.5 px-3 text-center text-amber-400">Encuestador</th>
             </tr>
           </thead>
           <tbody id="matrix-tbody" class="divide-y divide-outline-variant/20 font-mono text-[11px]">
@@ -1744,6 +1897,74 @@
         </div>
         <button class="btn btn-secondary text-xs" onclick="App.closeModal('modal-roles-matrix')">Cerrar Matriz</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Permisos de Rol -->
+  <div id="modal-edit-role-permissions" class="modal-overlay">
+    <div class="modal-dialog modal-lg">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant/30">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-amber-500 text-2xl">shield_person</span>
+          <div>
+            <h3 class="font-headline text-lg font-bold text-on-surface" id="edit-role-modal-title">Editar Permisos de Rol</h3>
+            <span class="text-xs text-on-surface-variant font-mono" id="edit-role-modal-subtitle">Asignación de privilegios de acceso por módulo</span>
+          </div>
+        </div>
+        <button class="btn-icon" onclick="App.closeModal('modal-edit-role-permissions')" title="Cerrar">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <form id="form-edit-role-permissions" class="space-y-4">
+        <input type="hidden" id="edit-role-id" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="text-on-surface-variant block mb-1">Nombre del Rol:</label>
+            <input type="text" id="edit-role-nombre" class="input-glass text-xs w-full" required />
+          </div>
+          <div>
+            <label class="text-on-surface-variant block mb-1">Color Distintivo:</label>
+            <select id="edit-role-color" class="input-glass text-xs w-full bg-surface-container">
+              <option value="amber">Ámbar / Oro (Warning/Constructor)</option>
+              <option value="primary">Azul Cobalto (Primary)</option>
+              <option value="secondary">Cyan Tech (Secondary)</option>
+              <option value="emerald">Verde Esmeralda (Success)</option>
+              <option value="purple">Púrpura Neón (Purple)</option>
+              <option value="rose">Rosa Carmesí (Rose)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs text-on-surface-variant block mb-1">Descripción del Perfil:</label>
+          <input type="text" id="edit-role-descripcion" class="input-glass text-xs w-full" />
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-surface-container/50 border border-outline-variant/30 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-outline-variant/30 gap-2">
+            <span class="font-bold text-xs text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-primary">key</span>
+              <span>Matriz de Permisos Autorizados:</span>
+            </span>
+            <div class="flex gap-2">
+              <button type="button" class="btn btn-secondary text-[10px] py-1 px-2.5" id="btn-edit-role-select-all">Marcar Todos</button>
+              <button type="button" class="btn btn-secondary text-[10px] py-1 px-2.5" id="btn-edit-role-clear-all">Desmarcar Todos</button>
+            </div>
+          </div>
+          <div id="edit-role-permissions-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-[45vh] overflow-y-auto pr-1">
+            <!-- Checkboxes generados dinámicamente -->
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-outline-variant/30">
+          <button type="button" class="btn btn-secondary text-xs" onclick="App.closeModal('modal-edit-role-permissions')">Cancelar</button>
+          <button type="submit" class="btn btn-primary text-xs flex items-center gap-1.5" id="btn-save-role-perms">
+            <span class="material-symbols-outlined text-base">save</span>
+            <span>Guardar Configuración de Rol</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
