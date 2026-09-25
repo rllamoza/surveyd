@@ -45,5 +45,5 @@ ServerSignature Off
     ExpiresByType application/font-woff2 "access plus 1 year"
 </IfModule>
 
-# 6. Página de inicio por defecto
-DirectoryIndex frontend/index.html index.html index.php
+# 6. Página de inicio por defecto (redirige mediante index.php al frontend)
+DirectoryIndex index.php

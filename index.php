@@ -1,7 +1,11 @@
 <?php
 /**
  * SurveyD (OmniPoll) - Entrada principal
- * Redirecciona automáticamente a la interfaz web
+ * Redirecciona automáticamente al frontend con la ruta base correcta
  */
-header('Location: frontend/index.html');
+$scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+$base = rtrim(str_replace('\\', '/', $scriptDir), '/');
+$target = ($base !== '' ? $base : '') . '/frontend/index.html';
+
+header("Location: $target", true, 302);
 exit;
