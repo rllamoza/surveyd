@@ -559,9 +559,8 @@ const App = (() => {
       SurveyBuilder.refreshSurveySelector();
     }
 
-    // Cerrar sidebar móvil si está abierto
-    const sidebar = document.querySelector('.app-sidebar');
-    if (sidebar) sidebar.classList.remove('open');
+    // Cerrar sidebar móvil/tablet si está abierto
+    closeMobileSidebar();
 
     // Scroll arriba suave
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -569,19 +568,33 @@ const App = (() => {
 
   const setupMobileSidebar = () => {
     const btnToggle = document.getElementById('btn-toggle-mobile-menu');
+    const btnClose = document.getElementById('btn-close-sidebar');
     const sidebar = document.querySelector('.app-sidebar');
     const backdrop = document.getElementById('sidebar-backdrop');
 
     if (btnToggle && sidebar) {
-      btnToggle.addEventListener('click', () => {
+      btnToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
         const isOpen = sidebar.classList.toggle('open');
         if (backdrop) backdrop.classList.toggle('hidden', !isOpen);
+      });
+    }
+
+    if (btnClose) {
+      btnClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeMobileSidebar();
       });
     }
 
     if (backdrop && sidebar) {
       backdrop.addEventListener('click', closeMobileSidebar);
     }
+
+    // Cerrar también con tecla Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMobileSidebar();
+    });
   };
 
   const closeMobileSidebar = () => {

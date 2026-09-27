@@ -154,17 +154,23 @@
     <aside class="app-sidebar">
       <div>
         <!-- Logo de Marca OmniPoll -->
-        <div class="app-brand">
-          <div class="brand-icon">
-            <span class="material-symbols-outlined text-2xl font-bold">radar</span>
-          </div>
-          <div class="flex flex-col">
-            <div class="brand-title">
-              <span>OmniPoll</span>
-              <span class="brand-tag">Spatial 3.0</span>
+        <div class="app-brand flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="brand-icon">
+              <span class="material-symbols-outlined text-2xl font-bold">radar</span>
             </div>
-            <span class="text-xs text-on-surface-variant font-mono font-medium">Data Intelligence Core</span>
+            <div class="flex flex-col">
+              <div class="brand-title">
+                <span>OmniPoll</span>
+                <span class="brand-tag">Spatial 3.0</span>
+              </div>
+              <span class="text-xs text-on-surface-variant font-mono font-medium">Data Intelligence Core</span>
+            </div>
           </div>
+          <!-- Botón Cerrar Sidebar en iPad / Móvil -->
+          <button class="btn-icon btn-close-sidebar" id="btn-close-sidebar" type="button" title="Cerrar Menú" aria-label="Cerrar Menú">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
         </div>
 
         <!-- Navegación Cuántica -->
@@ -272,33 +278,35 @@
 
     <!-- CABECERA SUPERIOR (HEADER) -->
     <header class="app-header">
-      <div class="flex items-center gap-3">
-        <!-- Botón Menú Móvil -->
-        <button class="lg:hidden btn-icon" id="btn-toggle-mobile-menu" aria-label="Abrir Menú">
+      <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+        <!-- Botón Menú Móvil / Tablet (iPad) -->
+        <button class="btn-icon btn-hamburger-menu shrink-0" id="btn-toggle-mobile-menu" aria-label="Abrir Menú de Navegación" title="Abrir Menú">
           <span class="material-symbols-outlined text-xl">menu</span>
         </button>
         
-        <div class="header-badge">
+        <div class="header-badge hidden sm:flex shrink-0">
           <span class="material-symbols-outlined text-sm text-primary-fixed-dim">terminal</span>
           <span>v3.5.0-PRO / SPATIAL_SURVEY</span>
         </div>
       </div>
 
+      <!-- Controles y Acciones Superiores -->
+      <div class="header-actions flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <!-- Switch Día/Noche con Alto Contraste (Modo Día por Defecto) -->
-        <button class="btn btn-secondary text-xs py-1.5 px-3 flex items-center gap-2" id="btn-toggle-theme" type="button" title="Alternar Modo Día / Noche">
+        <button class="btn btn-secondary text-xs py-1.5 px-2.5 sm:px-3 flex items-center gap-1.5 sm:gap-2 shrink-0" id="btn-toggle-theme" type="button" title="Alternar Modo Día / Noche">
           <span class="material-symbols-outlined text-amber-500 text-base">light_mode</span>
-          <span class="hidden sm:inline font-semibold text-slate-800">Modo Día</span>
+          <span class="hidden md:inline font-semibold text-slate-800">Modo Día</span>
           <span class="h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]"></span>
         </button>
 
         <!-- Botón Rápido Importar Excel -->
-        <button class="btn btn-primary text-xs py-1.5 px-3.5" onclick="App.navigateTo('constructor-excel')" type="button">
+        <button class="btn btn-primary text-xs py-1.5 px-2.5 sm:px-3.5 shrink-0" onclick="App.navigateTo('constructor-excel')" type="button" title="Importar Archivo .XLSX">
           <span class="material-symbols-outlined text-base">upload_file</span>
-          <span class="hidden sm:inline">+ Importar .XLSX</span>
+          <span class="hidden md:inline">+ Importar .XLSX</span>
         </button>
 
         <!-- Botón & Drawer de Notificaciones -->
-        <div class="relative flex items-center">
+        <div class="relative flex items-center shrink-0">
           <button class="btn-icon" id="btn-notifications" type="button" title="Notificaciones en tiempo real">
             <span class="material-symbols-outlined text-lg">notifications</span>
             <span id="notifications-badge-dot" class="absolute top-2 right-2 h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_#fbabff]"></span>
@@ -340,16 +348,16 @@
         </div>
 
         <!-- Divisor Vertical -->
-        <div class="h-6 w-px bg-outline-variant/40 hidden sm:block"></div>
+        <div class="h-6 w-px bg-outline-variant/40 hidden sm:block shrink-0"></div>
 
         <!-- Botón & Dropdown de Usuario -->
-        <div class="relative flex items-center">
+        <div class="relative flex items-center shrink-0">
           <button class="user-profile-btn" id="btn-user-profile" type="button" title="Opciones de Usuario">
             <div class="relative flex items-center justify-center">
               <img id="header-user-avatar" alt="Avatar" class="w-7 h-7 rounded-full object-cover ring-2 ring-primary-container/40" src="../diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'"/>
               <span class="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-tertiary-fixed-dim ring-2 ring-surface"></span>
             </div>
-            <div class="hidden md:flex flex-col text-left">
+            <div class="hidden lg:flex flex-col text-left">
               <span class="font-headline text-xs font-bold text-on-surface" id="header-user-name">Raúl Llamoza</span>
               <span class="font-mono text-[9px] text-primary-fixed-dim" id="header-user-role">SuperAdmin Root</span>
             </div>
@@ -398,10 +406,11 @@
         </div>
 
         <!-- Botón Directo Salir (Logout) -->
-        <button class="btn btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 text-error hover:text-error hover:bg-error/10 border-error/30 transition-colors" id="btn-quick-logout" type="button" title="Cerrar Sesión del Sistema">
+        <button class="btn btn-secondary text-xs py-1 px-2.5 sm:px-3 flex items-center gap-1.5 text-error hover:text-error hover:bg-error/10 border-error/30 transition-colors shrink-0" id="btn-quick-logout" type="button" title="Cerrar Sesión del Sistema">
           <span class="material-symbols-outlined text-base">logout</span>
           <span class="hidden sm:inline font-semibold">Salir</span>
         </button>
+      </div>
     </header>
 
     <!-- CONTENEDOR PRINCIPAL DE VISTAS (MAIN) -->
