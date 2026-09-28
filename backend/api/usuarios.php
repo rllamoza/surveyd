@@ -162,10 +162,22 @@ try {
             }
 
             $nombre = trim($data['nombre'] ?? '');
+            $email = trim(strtolower($data['email'] ?? ''));
             $rolCodigo = trim($data['rol'] ?? '');
             $cargo = trim($data['cargo'] ?? '');
             $activo = isset($data['activo']) ? (int)$data['activo'] : null;
             $password = trim($data['password'] ?? '');
+
+            // Validar unicidad de email si se envió
+            if (!empty($email)) {
+                $checkEmail = $pdo->prepare("SELECT id FROM `usuarios` WHERE email = ? AND id != ?");
+                $checkEmail->execute([$email, $id]);
+                if ($checkEmail->fetch()) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'error' => 'El correo electrónico ya se encuentra registrado por otro usuario']);
+                    exit;
+                }
+            }
 
             // Buscar rol_id
             $roleId = null;
@@ -179,6 +191,7 @@ try {
             $params = [];
 
             if (!empty($nombre)) { $updates[] = "`nombre` = ?"; $params[] = $nombre; }
+            if (!empty($email)) { $updates[] = "`email` = ?"; $params[] = $email; }
             if (!empty($rolCodigo)) { $updates[] = "`rol` = ?"; $params[] = $rolCodigo; }
             if ($hasRolIdCol && $roleId !== null) { $updates[] = "`rol_id` = ?"; $params[] = $roleId; }
             if (!empty($cargo)) { $updates[] = "`cargo` = ?"; $params[] = $cargo; }
@@ -220,13 +233,40 @@ try {
                 exit;
             }
 
-            // Desactivar en lugar de borrar físicamente para mantener integridad
-            $stmtDel = $pdo->prepare("UPDATE `usuarios` SET `activo` = 0, `auth_token` = NULL, `updated_at` = NOW() WHERE `id` = ?");
+            // Obtener datos del usuario a eliminar
+            $stmtUser = $pdo->prepare("SELECT id, nombre, email, rol FROM `usuarios` WHERE id = ?");
+            $stmtUser->execute([$id]);
+            $userToDelete = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+            if (!$userToDelete) {
+                http_response_code(404);
+                echo json_encode(['success' => false, 'error' => 'Usuario no encontrado']);
+                exit;
+            }
+
+            // Protección de cuenta SuperAdmin Principal
+            if ($id === 1 || ($userToDelete['rol'] === 'superadmin' && (strpos($userToDelete['email'], 'valdivia') !== false || strpos($userToDelete['email'], 'admin') !== false))) {
+                http_response_code(403);
+                echo json_encode(['success' => false, 'error' => 'No está permitido eliminar la cuenta SuperAdmin Root principal del sistema']);
+                exit;
+            }
+
+            // Validar sesión actual si está disponible
+            $sessionUser = AuthHelper::getCurrentUser();
+            if ($sessionUser && (int)$sessionUser['id'] === $id) {
+                http_response_code(403);
+                echo json_encode(['success' => false, 'error' => 'No puedes eliminar tu propia cuenta mientras estás en sesión activa']);
+                exit;
+            }
+
+            // Eliminar asignaciones y registro de usuario
+            $pdo->prepare("DELETE FROM `usuario_encuestas` WHERE `usuario_id` = ?")->execute([$id]);
+            $stmtDel = $pdo->prepare("DELETE FROM `usuarios` WHERE `id` = ?");
             $stmtDel->execute([$id]);
 
             echo json_encode([
                 'success' => true,
-                'message' => 'Usuario desactivado correctamente'
+                'message' => "Usuario '{$userToDelete['nombre']}' eliminado exitosamente"
             ]);
             break;
 

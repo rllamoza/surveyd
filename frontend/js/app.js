@@ -833,11 +833,14 @@ const App = (() => {
     }
 
     setupAssignSurveysSubmit();
+    setupEditUserSubmit();
   };
 
   let cachedUsers = [];
   let cachedAvailableSurveys = [];
   let currentAssignUserId = null;
+  let currentEditUserId = null;
+  let currentDeleteUserId = null;
 
   const loadUsersTable = async () => {
     const tbody = document.getElementById('users-tbody');
@@ -966,13 +969,25 @@ const App = (() => {
           </td>
           <td class="py-3 px-3 text-right">
             <div class="flex items-center justify-end gap-1.5">
-              <button class="btn btn-secondary text-xs py-1 px-2" onclick="App.openAssignSurveysModal(${user.id})" title="Asignar encuestas de reporte">
+              <button class="btn btn-secondary text-xs py-1 px-2.5 flex items-center gap-1 hover:border-primary/50 hover:text-primary transition-all" onclick="App.openEditUserModal(${user.id})" title="Editar perfil completo de usuario">
+                <span class="material-symbols-outlined text-sm text-primary">edit</span>
+                <span class="hidden xl:inline">Editar</span>
+              </button>
+              <button class="btn btn-secondary text-xs py-1 px-2 flex items-center hover:text-secondary" onclick="App.openAssignSurveysModal(${user.id})" title="Asignar encuestas de reporte">
                 <span class="material-symbols-outlined text-sm">assignment</span>
               </button>
-              <button class="btn btn-secondary text-xs py-1 px-2.5" onclick="App.handleToggleStatus(${user.id}, ${isActive ? 0 : 1})">
-                <span class="material-symbols-outlined text-sm">${isActive ? 'block' : 'check'}</span>
-                <span>${isActive ? 'Desactivar' : 'Reactivar'}</span>
+              <button class="btn btn-secondary text-xs py-1 px-2 flex items-center ${isActive ? 'hover:text-amber-500' : 'hover:text-emerald-400'}" onclick="App.handleToggleStatus(${user.id}, ${isActive ? 0 : 1})" title="${isActive ? 'Desactivar acceso' : 'Reactivar acceso'}">
+                <span class="material-symbols-outlined text-sm ${isActive ? 'text-amber-500' : 'text-emerald-400'}">${isActive ? 'block' : 'check'}</span>
               </button>
+              ${(parseInt(user.id) === 1 || user.rol === 'superadmin') ? `
+                <button class="btn btn-secondary text-xs py-1 px-2 opacity-30 cursor-not-allowed text-outline" title="Cuenta protegida de SuperAdmin Root" disabled>
+                  <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+              ` : `
+                <button class="btn btn-secondary text-xs py-1 px-2 flex items-center hover:bg-rose-500/15 hover:border-rose-500/40 text-rose-400 hover:text-rose-300 transition-all" onclick="App.openDeleteUserModal(${user.id})" title="Eliminar usuario permanentemente">
+                  <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+              `}
             </div>
           </td>
         </tr>
@@ -1091,6 +1106,198 @@ const App = (() => {
       await loadUsersTable();
     } else {
       showToast(res?.error || 'Error al cambiar estado', 'error');
+    }
+  };
+
+  const openEditUserModal = (userId) => {
+    const user = cachedUsers.find(u => parseInt(u.id) === parseInt(userId));
+    if (!user) return;
+
+    currentEditUserId = parseInt(userId);
+    document.getElementById('edit-user-id').value = user.id;
+    document.getElementById('edit-user-nombre').value = user.nombre || '';
+    document.getElementById('edit-user-email').value = user.email || '';
+    document.getElementById('edit-user-cargo').value = user.cargo || '';
+    document.getElementById('edit-user-activo').value = user.activo !== undefined ? user.activo : 1;
+    document.getElementById('edit-user-password').value = '';
+
+    const titleEl = document.getElementById('edit-user-modal-title');
+    const subEl = document.getElementById('edit-user-modal-subtitle');
+    if (titleEl) titleEl.textContent = `Editar Usuario: ${user.nombre}`;
+    if (subEl) subEl.textContent = `ID #${user.id} • ${user.email} • Rol: ${user.rol.toUpperCase()}`;
+
+    // Poblar combo de roles
+    const rolSelect = document.getElementById('edit-user-rol');
+    if (rolSelect) {
+      if (systemRoles.length > 0) {
+        rolSelect.innerHTML = systemRoles.map(r => `
+          <option value="${r.codigo}" ${user.rol === r.codigo ? 'selected' : ''}>
+            ${r.nombre} (${r.descripcion ? r.descripcion.substring(0, 36) + '...' : r.codigo})
+          </option>
+        `).join('');
+      } else {
+        rolSelect.innerHTML = `
+          <option value="superadmin" ${user.rol === 'superadmin' ? 'selected' : ''}>SuperAdmin Root</option>
+          <option value="constructor" ${user.rol === 'constructor' ? 'selected' : ''}>Constructor</option>
+          <option value="admin" ${user.rol === 'admin' ? 'selected' : ''}>Administrador</option>
+          <option value="auditor" ${user.rol === 'auditor' ? 'selected' : ''}>Auditor INEI</option>
+          <option value="encuestador" ${user.rol === 'encuestador' ? 'selected' : ''}>Encuestador</option>
+          <option value="cliente" ${user.rol === 'cliente' ? 'selected' : ''}>Cliente</option>
+        `;
+      }
+    }
+
+    // Poblar encuestas asignadas
+    const surveysContainer = document.getElementById('edit-user-surveys-list');
+    if (surveysContainer) {
+      const assignedIds = (user.encuestas_asignadas || []).map(id => parseInt(id));
+      if (cachedAvailableSurveys.length === 0) {
+        surveysContainer.innerHTML = '<div class="text-xs text-outline py-2 text-center col-span-2 font-mono">No hay encuestas registradas en el sistema.</div>';
+      } else {
+        surveysContainer.innerHTML = cachedAvailableSurveys.map(e => {
+          const isChecked = assignedIds.includes(parseInt(e.id));
+          return `
+            <label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container/60 hover:bg-surface-container cursor-pointer border border-outline-variant/30 text-xs transition-colors">
+              <input type="checkbox" name="edit_user_surveys" value="${e.id}" class="accent-primary rounded h-3.5 w-3.5" ${isChecked ? 'checked' : ''} />
+              <div class="flex flex-col min-w-0">
+                <span class="font-bold text-on-surface truncate text-[11px]">${e.codigo ? `[${e.codigo}] ` : ''}${e.titulo}</span>
+                <span class="text-[9px] text-outline font-mono">${e.total_respuestas || 0} respuestas</span>
+              </div>
+            </label>
+          `;
+        }).join('');
+      }
+    }
+
+    openModal('modal-edit-user');
+  };
+
+  const setupEditUserSubmit = () => {
+    const form = document.getElementById('form-edit-user');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = 'true';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = parseInt(document.getElementById('edit-user-id').value);
+      const nombre = document.getElementById('edit-user-nombre').value.trim();
+      const email = document.getElementById('edit-user-email').value.trim();
+      const rol = document.getElementById('edit-user-rol').value;
+      const cargo = document.getElementById('edit-user-cargo').value.trim();
+      const activo = parseInt(document.getElementById('edit-user-activo').value);
+      const password = document.getElementById('edit-user-password').value;
+
+      if (!id || !nombre || !email) {
+        showToast('Nombre y correo electrónico son requeridos', 'error');
+        return;
+      }
+
+      const checkedSurveys = Array.from(document.querySelectorAll('input[name="edit_user_surveys"]:checked'));
+      const encuestas_asignadas = checkedSurveys.map(cb => parseInt(cb.value));
+
+      const payload = {
+        id,
+        nombre,
+        email,
+        rol,
+        cargo,
+        activo,
+        encuestas_asignadas
+      };
+
+      if (password && password.trim().length >= 6) {
+        payload.password = password.trim();
+      }
+
+      const btnSave = document.getElementById('btn-save-edit-user');
+      if (btnSave) {
+        btnSave.disabled = true;
+        btnSave.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">sync</span><span>Guardando...</span>`;
+      }
+
+      const res = await API.updateUsuario(payload);
+
+      if (btnSave) {
+        btnSave.disabled = false;
+        btnSave.innerHTML = `<span class="material-symbols-outlined text-base">save</span><span>Guardar Cambios</span>`;
+      }
+
+      if (res && res.success) {
+        showToast(`Usuario "${nombre}" actualizado correctamente`, 'success');
+        closeModal('modal-edit-user');
+        await loadUsersTable();
+        await loadRolesAndMatrix();
+
+        // Si el usuario editado es el que está en sesión, refrescar perfil
+        if (currentUser && parseInt(currentUser.id) === id) {
+          await checkAuthSession();
+        }
+      } else {
+        showToast(res?.error || 'Error al actualizar usuario', 'error');
+      }
+    });
+  };
+
+  const openDeleteUserModal = (userId) => {
+    const user = cachedUsers.find(u => parseInt(u.id) === parseInt(userId));
+    if (!user) return;
+
+    // Validación de seguridad en cliente
+    if (parseInt(user.id) === 1 || user.rol === 'superadmin') {
+      showToast('No es posible eliminar la cuenta SuperAdmin Root principal del sistema', 'warning');
+      return;
+    }
+
+    if (currentUser && parseInt(currentUser.id) === parseInt(userId)) {
+      showToast('No puedes eliminar tu propia cuenta en sesión activa', 'warning');
+      return;
+    }
+
+    currentDeleteUserId = parseInt(userId);
+
+    const nameEl = document.getElementById('delete-user-name');
+    const emailEl = document.getElementById('delete-user-email');
+    const idEl = document.getElementById('delete-user-id-label');
+    const badgeEl = document.getElementById('delete-user-role-badge');
+    const avatarEl = document.getElementById('delete-user-avatar');
+
+    if (nameEl) nameEl.textContent = user.nombre;
+    if (emailEl) emailEl.textContent = user.email;
+    if (idEl) idEl.textContent = `ID #${user.id}`;
+    if (avatarEl) avatarEl.src = user.avatar_url || 'diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png';
+
+    if (badgeEl) {
+      badgeEl.textContent = user.rol.toUpperCase();
+      badgeEl.className = 'badge text-[10px] font-mono bg-surface-container border border-outline-variant/30 text-on-surface';
+    }
+
+    openModal('modal-delete-user');
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!currentDeleteUserId) return;
+
+    const btn = document.getElementById('btn-confirm-delete-user');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">sync</span><span>Eliminando...</span>`;
+    }
+
+    const res = await API.deleteUsuario(currentDeleteUserId);
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span class="material-symbols-outlined text-base">delete_forever</span><span>Sí, Eliminar Permanentemente</span>`;
+    }
+
+    if (res && res.success) {
+      showToast(res.message || 'Usuario eliminado permanentemente del sistema', 'success');
+      closeModal('modal-delete-user');
+      currentDeleteUserId = null;
+      await loadUsersTable();
+      await loadRolesAndMatrix();
+    } else {
+      showToast(res?.error || 'Error al eliminar usuario', 'error');
     }
   };
 
@@ -1486,6 +1693,9 @@ const App = (() => {
     handleRoleChange,
     handleToggleStatus,
     openAssignSurveysModal,
+    openEditUserModal,
+    openDeleteUserModal,
+    confirmDeleteUser,
     loadUsersTable,
     loadRolesAndMatrix,
     openEditRoleModal,

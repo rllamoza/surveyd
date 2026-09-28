@@ -248,6 +248,13 @@ const API = (() => {
       return res;
     },
 
+    async deleteUsuario(id) {
+      const res = await request(`usuarios.php?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE'
+      });
+      return res;
+    },
+
     // --- ROLES & PERMISOS ---
     async getRoles() {
       const res = await request('roles.php');
