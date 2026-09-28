@@ -1008,43 +1008,59 @@ const App = (() => {
   };
 
   const openAssignSurveysModal = (userId) => {
-    const user = cachedUsers.find(u => parseInt(u.id) === parseInt(userId));
-    if (!user) return;
+    try {
+      const user = cachedUsers.find(u => parseInt(u.id) === parseInt(userId));
+      if (!user) {
+        showToast('Usuario no encontrado', 'error');
+        return;
+      }
 
-    currentAssignUserId = userId;
-    const nameEl = document.getElementById('assign-survey-username');
-    if (nameEl) {
-      nameEl.textContent = `Usuario: ${user.nombre} (${user.email}) • Rol: ${user.rol.toUpperCase()}`;
-    }
+      currentAssignUserId = userId;
+      const nameEl = document.getElementById('assign-survey-username');
+      if (nameEl) {
+        nameEl.textContent = `Usuario: ${user.nombre} (${user.email}) • Rol: ${(user.rol || '').toUpperCase()}`;
+      }
 
-    const checklistContainer = document.getElementById('assign-surveys-checklist');
-    if (!checklistContainer) return;
+      const checklistContainer = document.getElementById('assign-surveys-checklist');
+      if (!checklistContainer) return;
 
-    const assignedIds = (user.encuestas_asignadas || []).map(id => parseInt(id));
+      let assignedIds = [];
+      if (Array.isArray(user.encuestas_asignadas)) {
+        assignedIds = user.encuestas_asignadas.map(item => {
+          if (typeof item === 'object' && item !== null) return parseInt(item.id);
+          return parseInt(item);
+        }).filter(n => !isNaN(n));
+      } else if (typeof user.encuestas_asignadas === 'string' && user.encuestas_asignadas.trim()) {
+        assignedIds = user.encuestas_asignadas.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+      }
 
-    if (cachedAvailableSurveys.length === 0) {
-      checklistContainer.innerHTML = '<div class="text-xs text-outline py-2 text-center">No hay encuestas registradas en la base de datos.</div>';
-    } else {
-      checklistContainer.innerHTML = cachedAvailableSurveys.map(e => {
-        const isChecked = assignedIds.includes(parseInt(e.id));
-        return `
-          <label class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container/60 hover:bg-surface-container cursor-pointer border border-outline-variant/30 text-xs transition-colors">
-            <div class="flex items-center gap-2.5">
-              <input type="checkbox" name="assign_survey_cb" value="${e.id}" class="accent-primary rounded h-4 w-4" ${isChecked ? 'checked' : ''} />
-              <div>
-                <span class="font-bold text-on-surface">${e.codigo ? `[${e.codigo}] ` : ''}${e.titulo}</span>
-                <div class="text-[10px] text-on-surface-variant font-mono">${e.categoria || 'General'} • Estado: ${e.estado || 'activa'}</div>
+      if (cachedAvailableSurveys.length === 0) {
+        checklistContainer.innerHTML = '<div class="text-xs text-outline py-2 text-center">No hay encuestas registradas en la base de datos.</div>';
+      } else {
+        checklistContainer.innerHTML = cachedAvailableSurveys.map(e => {
+          const isChecked = assignedIds.includes(parseInt(e.id));
+          return `
+            <label class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container/60 hover:bg-surface-container cursor-pointer border border-outline-variant/30 text-xs transition-colors">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" name="assign_survey_cb" value="${e.id}" class="accent-primary rounded h-4 w-4" ${isChecked ? 'checked' : ''} />
+                <div>
+                  <span class="font-bold text-on-surface">${e.codigo ? `[${e.codigo}] ` : ''}${e.titulo}</span>
+                  <div class="text-[10px] text-on-surface-variant font-mono">${e.categoria || 'General'} • Estado: ${e.estado || 'activa'}</div>
+                </div>
               </div>
-            </div>
-            <span class="badge text-[10px] bg-primary/10 text-primary border border-primary/20 font-mono">
-              ${e.total_respuestas || 0} respuestas
-            </span>
-          </label>
-        `;
-      }).join('');
-    }
+              <span class="badge text-[10px] bg-primary/10 text-primary border border-primary/20 font-mono">
+                ${e.total_respuestas || 0} respuestas
+              </span>
+            </label>
+          `;
+        }).join('');
+      }
 
-    openModal('modal-assign-surveys');
+      openModal('modal-assign-surveys');
+    } catch (err) {
+      console.error('Error in openAssignSurveysModal:', err);
+      showToast('Error al abrir asignaciones: ' + err.message, 'error');
+    }
   };
 
   const setupAssignSurveysSubmit = () => {
@@ -1110,66 +1126,90 @@ const App = (() => {
   };
 
   const openEditUserModal = (userId) => {
-    const user = cachedUsers.find(u => parseInt(u.id) === parseInt(userId));
-    if (!user) return;
-
-    currentEditUserId = parseInt(userId);
-    document.getElementById('edit-user-id').value = user.id;
-    document.getElementById('edit-user-nombre').value = user.nombre || '';
-    document.getElementById('edit-user-email').value = user.email || '';
-    document.getElementById('edit-user-cargo').value = user.cargo || '';
-    document.getElementById('edit-user-activo').value = user.activo !== undefined ? user.activo : 1;
-    document.getElementById('edit-user-password').value = '';
-
-    const titleEl = document.getElementById('edit-user-modal-title');
-    const subEl = document.getElementById('edit-user-modal-subtitle');
-    if (titleEl) titleEl.textContent = `Editar Usuario: ${user.nombre}`;
-    if (subEl) subEl.textContent = `ID #${user.id} • ${user.email} • Rol: ${user.rol.toUpperCase()}`;
-
-    // Poblar combo de roles
-    const rolSelect = document.getElementById('edit-user-rol');
-    if (rolSelect) {
-      if (systemRoles.length > 0) {
-        rolSelect.innerHTML = systemRoles.map(r => `
-          <option value="${r.codigo}" ${user.rol === r.codigo ? 'selected' : ''}>
-            ${r.nombre} (${r.descripcion ? r.descripcion.substring(0, 36) + '...' : r.codigo})
-          </option>
-        `).join('');
-      } else {
-        rolSelect.innerHTML = `
-          <option value="superadmin" ${user.rol === 'superadmin' ? 'selected' : ''}>SuperAdmin Root</option>
-          <option value="constructor" ${user.rol === 'constructor' ? 'selected' : ''}>Constructor</option>
-          <option value="admin" ${user.rol === 'admin' ? 'selected' : ''}>Administrador</option>
-          <option value="auditor" ${user.rol === 'auditor' ? 'selected' : ''}>Auditor INEI</option>
-          <option value="encuestador" ${user.rol === 'encuestador' ? 'selected' : ''}>Encuestador</option>
-          <option value="cliente" ${user.rol === 'cliente' ? 'selected' : ''}>Cliente</option>
-        `;
+    try {
+      const user = cachedUsers.find(u => parseInt(u.id) === parseInt(userId));
+      if (!user) {
+        showToast('No se encontró el usuario seleccionado', 'error');
+        return;
       }
-    }
 
-    // Poblar encuestas asignadas
-    const surveysContainer = document.getElementById('edit-user-surveys-list');
-    if (surveysContainer) {
-      const assignedIds = (user.encuestas_asignadas || []).map(id => parseInt(id));
-      if (cachedAvailableSurveys.length === 0) {
-        surveysContainer.innerHTML = '<div class="text-xs text-outline py-2 text-center col-span-2 font-mono">No hay encuestas registradas en el sistema.</div>';
-      } else {
-        surveysContainer.innerHTML = cachedAvailableSurveys.map(e => {
-          const isChecked = assignedIds.includes(parseInt(e.id));
-          return `
-            <label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container/60 hover:bg-surface-container cursor-pointer border border-outline-variant/30 text-xs transition-colors">
-              <input type="checkbox" name="edit_user_surveys" value="${e.id}" class="accent-primary rounded h-3.5 w-3.5" ${isChecked ? 'checked' : ''} />
-              <div class="flex flex-col min-w-0">
-                <span class="font-bold text-on-surface truncate text-[11px]">${e.codigo ? `[${e.codigo}] ` : ''}${e.titulo}</span>
-                <span class="text-[9px] text-outline font-mono">${e.total_respuestas || 0} respuestas</span>
-              </div>
-            </label>
+      currentEditUserId = parseInt(userId);
+      const elId = document.getElementById('edit-user-id');
+      const elNombre = document.getElementById('edit-user-nombre');
+      const elEmail = document.getElementById('edit-user-email');
+      const elCargo = document.getElementById('edit-user-cargo');
+      const elActivo = document.getElementById('edit-user-activo');
+      const elPassword = document.getElementById('edit-user-password');
+
+      if (elId) elId.value = user.id;
+      if (elNombre) elNombre.value = user.nombre || '';
+      if (elEmail) elEmail.value = user.email || '';
+      if (elCargo) elCargo.value = user.cargo || '';
+      if (elActivo) elActivo.value = user.activo !== undefined ? user.activo : 1;
+      if (elPassword) elPassword.value = '';
+
+      const titleEl = document.getElementById('edit-user-modal-title');
+      const subEl = document.getElementById('edit-user-modal-subtitle');
+      if (titleEl) titleEl.textContent = `Editar Usuario: ${user.nombre}`;
+      if (subEl) subEl.textContent = `ID #${user.id} • ${user.email} • Rol: ${(user.rol || '').toUpperCase()}`;
+
+      // Poblar combo de roles
+      const rolSelect = document.getElementById('edit-user-rol');
+      if (rolSelect) {
+        if (systemRoles.length > 0) {
+          rolSelect.innerHTML = systemRoles.map(r => `
+            <option value="${r.codigo}" ${user.rol === r.codigo ? 'selected' : ''}>
+              ${r.nombre} (${r.descripcion ? r.descripcion.substring(0, 36) + '...' : r.codigo})
+            </option>
+          `).join('');
+        } else {
+          rolSelect.innerHTML = `
+            <option value="superadmin" ${user.rol === 'superadmin' ? 'selected' : ''}>SuperAdmin Root</option>
+            <option value="constructor" ${user.rol === 'constructor' ? 'selected' : ''}>Constructor</option>
+            <option value="admin" ${user.rol === 'admin' ? 'selected' : ''}>Administrador</option>
+            <option value="auditor" ${user.rol === 'auditor' ? 'selected' : ''}>Auditor INEI</option>
+            <option value="encuestador" ${user.rol === 'encuestador' ? 'selected' : ''}>Encuestador</option>
+            <option value="cliente" ${user.rol === 'cliente' ? 'selected' : ''}>Cliente</option>
           `;
-        }).join('');
+        }
       }
-    }
 
-    openModal('modal-edit-user');
+      // Poblar encuestas asignadas
+      const surveysContainer = document.getElementById('edit-user-surveys-list');
+      if (surveysContainer) {
+        let assignedIds = [];
+        if (Array.isArray(user.encuestas_asignadas)) {
+          assignedIds = user.encuestas_asignadas.map(item => {
+            if (typeof item === 'object' && item !== null) return parseInt(item.id);
+            return parseInt(item);
+          }).filter(n => !isNaN(n));
+        } else if (typeof user.encuestas_asignadas === 'string' && user.encuestas_asignadas.trim()) {
+          assignedIds = user.encuestas_asignadas.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+        }
+
+        if (cachedAvailableSurveys.length === 0) {
+          surveysContainer.innerHTML = '<div class="text-xs text-outline py-2 text-center col-span-2 font-mono">No hay encuestas registradas en el sistema.</div>';
+        } else {
+          surveysContainer.innerHTML = cachedAvailableSurveys.map(e => {
+            const isChecked = assignedIds.includes(parseInt(e.id));
+            return `
+              <label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container/60 hover:bg-surface-container cursor-pointer border border-outline-variant/30 text-xs transition-colors">
+                <input type="checkbox" name="edit_user_surveys" value="${e.id}" class="accent-primary rounded h-3.5 w-3.5" ${isChecked ? 'checked' : ''} />
+                <div class="flex flex-col min-w-0">
+                  <span class="font-bold text-on-surface truncate text-[11px]">${e.codigo ? `[${e.codigo}] ` : ''}${e.titulo}</span>
+                  <span class="text-[9px] text-outline font-mono">${e.total_respuestas || 0} respuestas</span>
+                </div>
+              </label>
+            `;
+          }).join('');
+        }
+      }
+
+      openModal('modal-edit-user');
+    } catch (err) {
+      console.error('Error in openEditUserModal:', err);
+      showToast('Error al abrir editor de usuario: ' + err.message, 'error');
+    }
   };
 
   const setupEditUserSubmit = () => {
@@ -1239,39 +1279,47 @@ const App = (() => {
   };
 
   const openDeleteUserModal = (userId) => {
-    const user = cachedUsers.find(u => parseInt(u.id) === parseInt(userId));
-    if (!user) return;
+    try {
+      const user = cachedUsers.find(u => parseInt(u.id) === parseInt(userId));
+      if (!user) {
+        showToast('No se encontró el usuario seleccionado', 'error');
+        return;
+      }
 
-    // Validación de seguridad en cliente
-    if (parseInt(user.id) === 1 || user.rol === 'superadmin') {
-      showToast('No es posible eliminar la cuenta SuperAdmin Root principal del sistema', 'warning');
-      return;
+      // Validación de seguridad en cliente
+      if (parseInt(user.id) === 1 || user.rol === 'superadmin') {
+        showToast('No es posible eliminar la cuenta SuperAdmin Root principal del sistema', 'warning');
+        return;
+      }
+
+      if (currentUser && parseInt(currentUser.id) === parseInt(userId)) {
+        showToast('No puedes eliminar tu propia cuenta en sesión activa', 'warning');
+        return;
+      }
+
+      currentDeleteUserId = parseInt(userId);
+
+      const nameEl = document.getElementById('delete-user-name');
+      const emailEl = document.getElementById('delete-user-email');
+      const idEl = document.getElementById('delete-user-id-label');
+      const badgeEl = document.getElementById('delete-user-role-badge');
+      const avatarEl = document.getElementById('delete-user-avatar');
+
+      if (nameEl) nameEl.textContent = user.nombre;
+      if (emailEl) emailEl.textContent = user.email;
+      if (idEl) idEl.textContent = `ID #${user.id}`;
+      if (avatarEl) avatarEl.src = user.avatar_url || 'diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png';
+
+      if (badgeEl) {
+        badgeEl.textContent = (user.rol || '').toUpperCase();
+        badgeEl.className = 'badge text-[10px] font-mono bg-surface-container border border-outline-variant/30 text-on-surface';
+      }
+
+      openModal('modal-delete-user');
+    } catch (err) {
+      console.error('Error in openDeleteUserModal:', err);
+      showToast('Error al abrir confirmación: ' + err.message, 'error');
     }
-
-    if (currentUser && parseInt(currentUser.id) === parseInt(userId)) {
-      showToast('No puedes eliminar tu propia cuenta en sesión activa', 'warning');
-      return;
-    }
-
-    currentDeleteUserId = parseInt(userId);
-
-    const nameEl = document.getElementById('delete-user-name');
-    const emailEl = document.getElementById('delete-user-email');
-    const idEl = document.getElementById('delete-user-id-label');
-    const badgeEl = document.getElementById('delete-user-role-badge');
-    const avatarEl = document.getElementById('delete-user-avatar');
-
-    if (nameEl) nameEl.textContent = user.nombre;
-    if (emailEl) emailEl.textContent = user.email;
-    if (idEl) idEl.textContent = `ID #${user.id}`;
-    if (avatarEl) avatarEl.src = user.avatar_url || 'diseno/assets/modern_high_tech_professional_avatar_portrait_of_a.png';
-
-    if (badgeEl) {
-      badgeEl.textContent = user.rol.toUpperCase();
-      badgeEl.className = 'badge text-[10px] font-mono bg-surface-container border border-outline-variant/30 text-on-surface';
-    }
-
-    openModal('modal-delete-user');
   };
 
   const confirmDeleteUser = async () => {
@@ -1703,6 +1751,12 @@ const App = (() => {
     getCurrentUser: () => currentUser
   };
 })();
+
+// Exponer globalmente en window para compatibilidad con handlers inline
+window.App = App;
+window.openEditUserModal = (id) => App.openEditUserModal(id);
+window.openDeleteUserModal = (id) => App.openDeleteUserModal(id);
+window.confirmDeleteUser = () => App.confirmDeleteUser();
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', App.init);
