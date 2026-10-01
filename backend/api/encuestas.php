@@ -48,7 +48,12 @@ if ($method === 'GET') {
 
                     foreach ($preguntas as &$preg) {
                         if (!empty($preg['configuracion_json']) && is_string($preg['configuracion_json'])) {
-                            $preg['configuracion'] = json_decode($preg['configuracion_json'], true);
+                            $decoded = json_decode($preg['configuracion_json'], true);
+                            $preg['configuracion'] = $decoded;
+                            // Exponer como 'validacion' para el constructor frontend
+                            $preg['validacion'] = $decoded;
+                        } else {
+                            $preg['validacion'] = null;
                         }
                         $opcStmt = $pdo->prepare("SELECT * FROM opciones_pregunta WHERE pregunta_id = :pid ORDER BY numero_orden ASC");
                         $opcStmt->execute([':pid' => $preg['id']]);
@@ -140,6 +145,7 @@ if ($method === 'POST') {
         sendError('El título de la encuesta es obligatorio', 400);
     }
 
+    $surveyId = !empty($body['id']) ? (int)$body['id'] : null;
     $titulo = trim($body['titulo']);
     $descripcion = trim($body['descripcion'] ?? 'Encuesta creada en OmniPoll');
     $categoria = trim($body['categoria'] ?? 'General');
@@ -154,6 +160,170 @@ if ($method === 'POST') {
         try {
             $pdo->beginTransaction();
 
+            // CASO 1: Edición de una encuesta existente (no generar nueva)
+            if ($surveyId) {
+                $stmtCheck = $pdo->prepare("SELECT * FROM encuestas WHERE id = :id");
+                $stmtCheck->execute([':id' => $surveyId]);
+                $existing = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+                if ($existing) {
+                    $encuestaId = $surveyId;
+                    $codigoOficial = $existing['codigo']; // Mantener código oficial original (ej: CCAVX024)
+
+                    // Si no se envió publicar=true y la encuesta ya estaba aprobada, conservar su estado o el enviado
+                    $estadoFinal = $esPublicada ? 'aprobada' : ($body['estado'] ?? $existing['estado']);
+
+                    $updateStmt = $pdo->prepare("UPDATE encuestas SET 
+                        titulo = :tit,
+                        descripcion = :des,
+                        norma_tecnica = :nor,
+                        categoria = :cat,
+                        estado = :est,
+                        tiempo_estimado_min = :tmp,
+                        total_pasos = :pas,
+                        branding_json = :brn,
+                        updated_at = NOW()
+                        WHERE id = :id");
+                    $updateStmt->execute([
+                        ':tit' => $titulo,
+                        ':des' => $descripcion,
+                        ':nor' => $norma,
+                        ':cat' => $categoria,
+                        ':est' => $estadoFinal,
+                        ':tmp' => max(3, (int)ceil($totalPasos * 0.8)),
+                        ':pas' => $totalPasos,
+                        ':brn' => $brandingJson,
+                        ':id'  => $encuestaId
+                    ]);
+
+                    // Obtener o asegurar sección principal
+                    $secStmt = $pdo->prepare("SELECT id FROM secciones WHERE encuesta_id = :eid ORDER BY numero_orden ASC LIMIT 1");
+                    $secStmt->execute([':eid' => $encuestaId]);
+                    $seccionId = $secStmt->fetchColumn();
+                    if (!$seccionId) {
+                        $secIns = $pdo->prepare("INSERT INTO secciones (encuesta_id, numero_orden, titulo, descripcion) VALUES (:eid, 1, 'Sección Principal', 'Cuestionario General')");
+                        $secIns->execute([':eid' => $encuestaId]);
+                        $seccionId = (int)$pdo->lastInsertId();
+                    }
+
+                    // Obtener preguntas actuales registradas en BD
+                    $stmtOldPreg = $pdo->prepare("SELECT id FROM preguntas WHERE encuesta_id = :eid");
+                    $stmtOldPreg->execute([':eid' => $encuestaId]);
+                    $existingPreguntaIds = $stmtOldPreg->fetchAll(PDO::FETCH_COLUMN);
+
+                    $keptPreguntaIds = [];
+
+                    $updPregStmt = $pdo->prepare("UPDATE preguntas SET 
+                        seccion_id = :sid,
+                        numero_orden = :ord,
+                        tipo = :tip,
+                        enunciado = :enu,
+                        ayuda = :ayu,
+                        es_requerida = :req,
+                        configuracion_json = :cfg
+                        WHERE id = :id AND encuesta_id = :eid");
+
+                    $insPregStmt = $pdo->prepare("INSERT INTO preguntas 
+                        (encuesta_id, seccion_id, numero_orden, tipo, enunciado, ayuda, es_requerida, configuracion_json) 
+                        VALUES (:eid, :sid, :ord, :tip, :enu, :ayu, :req, :cfg)");
+
+                    $delOpcStmt = $pdo->prepare("DELETE FROM opciones_pregunta WHERE pregunta_id = :pid");
+                    $insOpcStmt = $pdo->prepare("INSERT INTO opciones_pregunta (pregunta_id, numero_orden, etiqueta, valor) VALUES (:pid, :ord, :eti, :val)");
+
+                    $orden = 1;
+                    foreach ($preguntas as $p) {
+                        $enunciado = $p['enunciado'] ?? $p['pregunta'] ?? 'Pregunta sin título';
+                        $tipo = $p['tipo'] ?? 'opcion_unica';
+                        $ayuda = $p['ayuda'] ?? '';
+                        $req = (!isset($p['requerida']) || !empty($p['requerida'])) ? 1 : 0;
+                        $qId = isset($p['id']) && is_numeric($p['id']) ? (int)$p['id'] : 0;
+
+                        $validacionJson = isset($p['validacion']) ? json_encode($p['validacion'], JSON_UNESCAPED_UNICODE) : null;
+
+                        if ($qId > 0 && in_array($qId, $existingPreguntaIds)) {
+                            // Actualizar pregunta existente en su mismo ID (mantiene relaciones con respuestas)
+                            $updPregStmt->execute([
+                                ':sid' => $seccionId,
+                                ':ord' => $orden++,
+                                ':tip' => $tipo,
+                                ':enu' => $enunciado,
+                                ':ayu' => $ayuda,
+                                ':req' => $req,
+                                ':cfg' => $validacionJson,
+                                ':id'  => $qId,
+                                ':eid' => $encuestaId
+                            ]);
+                            $currentPregId = $qId;
+                        } else {
+                            // Insertar nueva pregunta agregada por el usuario
+                            $insPregStmt->execute([
+                                ':eid' => $encuestaId,
+                                ':sid' => $seccionId,
+                                ':ord' => $orden++,
+                                ':tip' => $tipo,
+                                ':enu' => $enunciado,
+                                ':ayu' => $ayuda,
+                                ':req' => $req,
+                                ':cfg' => $validacionJson
+                            ]);
+                            $currentPregId = (int)$pdo->lastInsertId();
+                        }
+                        $keptPreguntaIds[] = $currentPregId;
+
+                        // Actualizar opciones
+                        $delOpcStmt->execute([':pid' => $currentPregId]);
+                        if (!empty($p['opciones']) && is_array($p['opciones'])) {
+                            $opcOrden = 1;
+                            foreach ($p['opciones'] as $opt) {
+                                $etiqueta = is_array($opt) ? ($opt['etiqueta'] ?? '') : $opt;
+                                $valor = is_array($opt) ? ($opt['valor'] ?? '') : strtolower(preg_replace('/[^a-zA-Z0-9]/', '_', $etiqueta));
+                                $insOpcStmt->execute([
+                                    ':pid' => $currentPregId,
+                                    ':ord' => $opcOrden++,
+                                    ':eti' => $etiqueta,
+                                    ':val' => $valor
+                                ]);
+                            }
+                        }
+                    }
+
+                    // Eliminar preguntas que el usuario haya retirado de la encuesta
+                    $toDelete = array_diff($existingPreguntaIds, $keptPreguntaIds);
+                    if (!empty($toDelete)) {
+                        $placeholders = implode(',', array_fill(0, count($toDelete), '?'));
+                        $delStmt = $pdo->prepare("DELETE FROM preguntas WHERE encuesta_id = ? AND id IN ($placeholders)");
+                        $delStmt->execute(array_merge([$encuestaId], array_values($toDelete)));
+                    }
+
+                    // Registrar auditoría de actualización
+                    $audAccion = $esPublicada ? 'aprobada' : 'enviada_revision';
+                    $audComentario = $esPublicada 
+                        ? 'Encuesta actualizada y publicada oficialmente (' . $codigoOficial . ')' 
+                        : 'Encuesta modificada en el constructor (' . $codigoOficial . ')';
+                    $audStmt = $pdo->prepare("INSERT INTO auditoria_aprobaciones (encuesta_id, usuario_id, usuario_nombre, accion, comentario) VALUES (:eid, 1, 'Ing. Carlos Valdivia', :acc, :com)");
+                    $audStmt->execute([
+                        ':eid' => $encuestaId,
+                        ':acc' => $audAccion,
+                        ':com' => $audComentario
+                    ]);
+
+                    $pdo->commit();
+
+                    sendResponse([
+                        'id' => $encuestaId,
+                        'codigo' => $codigoOficial,
+                        'titulo' => $titulo,
+                        'estado' => $estadoFinal,
+                        'url_publica' => 'encuesta.html?id=' . $codigoOficial,
+                        'url_runner' => '?encuesta=' . $codigoOficial,
+                        'total_preguntas' => count($preguntas),
+                        'modo' => 'actualizado'
+                    ], 200, $esPublicada ? 'Encuesta ' . $codigoOficial . ' actualizada y publicada con éxito' : 'Cambios guardados en la encuesta ' . $codigoOficial);
+                    exit;
+                }
+            }
+
+            // CASO 2: Creación de NUEVA encuesta (id es nulo o 0)
             // Código temporal único mientras se obtiene el ID autoincremental
             $tempCodigo = 'TEMP-' . bin2hex(random_bytes(6));
 
@@ -187,7 +357,7 @@ if ($method === 'POST') {
             $seccionId = (int)$pdo->lastInsertId();
 
             // Insertar preguntas
-            $pregStmt = $pdo->prepare("INSERT INTO preguntas (encuesta_id, seccion_id, numero_orden, tipo, enunciado, ayuda, es_requerida) VALUES (:eid, :sid, :ord, :tip, :enu, :ayu, :req)");
+            $pregStmt = $pdo->prepare("INSERT INTO preguntas (encuesta_id, seccion_id, numero_orden, tipo, enunciado, ayuda, es_requerida, configuracion_json) VALUES (:eid, :sid, :ord, :tip, :enu, :ayu, :req, :cfg)");
             $opcStmt = $pdo->prepare("INSERT INTO opciones_pregunta (pregunta_id, numero_orden, etiqueta, valor) VALUES (:pid, :ord, :eti, :val)");
 
             $orden = 1;
@@ -196,6 +366,7 @@ if ($method === 'POST') {
                 $tipo = $p['tipo'] ?? 'opcion_unica';
                 $ayuda = $p['ayuda'] ?? '';
                 $req = (!isset($p['requerida']) || !empty($p['requerida'])) ? 1 : 0;
+                $validacionJson = isset($p['validacion']) ? json_encode($p['validacion'], JSON_UNESCAPED_UNICODE) : null;
 
                 $pregStmt->execute([
                     ':eid' => $nuevaEncuestaId,
@@ -204,7 +375,8 @@ if ($method === 'POST') {
                     ':tip' => $tipo,
                     ':enu' => $enunciado,
                     ':ayu' => $ayuda,
-                    ':req' => $req
+                    ':req' => $req,
+                    ':cfg' => $validacionJson
                 ]);
                 $preguntaId = (int)$pdo->lastInsertId();
 
@@ -242,7 +414,8 @@ if ($method === 'POST') {
                 'estado' => $estado,
                 'url_publica' => 'encuesta.html?id=' . $codigoOficial,
                 'url_runner' => '?encuesta=' . $codigoOficial,
-                'total_preguntas' => count($preguntas)
+                'total_preguntas' => count($preguntas),
+                'modo' => 'creado'
             ], 201, $esPublicada ? 'Encuesta publicada con código ' . $codigoOficial : 'Encuesta guardada con código ' . $codigoOficial);
         } catch (PDOException $e) {
             if ($pdo->inTransaction()) $pdo->rollBack();

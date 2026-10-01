@@ -92,6 +92,10 @@ const AdminApproval = (() => {
               <span class="material-symbols-outlined text-sm">open_in_new</span>
               <span>Ver Encuesta</span>
             </a>
+            <button type="button" class="btn btn-secondary text-xs py-1.5 px-2.5 flex items-center gap-1 border-primary/40 text-primary hover:bg-primary/10" onclick="AdminApproval.editSurvey(${e.id})" title="Editar preguntas y contenido en esta misma encuesta">
+              <span class="material-symbols-outlined text-sm">edit</span>
+              <span>Editar</span>
+            </button>
             <button type="button" class="btn btn-secondary text-xs py-1.5 px-2.5 flex items-center gap-1 border-outline-variant/40 hover:text-emerald-400 hover:border-emerald-500/40" onclick="AdminApproval.copyShareLink('${encodeURIComponent(e.codigo || e.id)}')" title="Copiar enlace directo para compartir a los encuestados">
               <span class="material-symbols-outlined text-sm">share</span>
               <span class="hidden sm:inline">Copiar Enlace</span>
@@ -259,11 +263,11 @@ const AdminApproval = (() => {
     }
   };
 
-  const escapeHtml = (str) => {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+  const editSurvey = (id) => {
+    if (typeof App !== 'undefined' && App.navigateTo) {
+      App.navigateTo('constructor-excel', id);
+    }
   };
 
-  return { init, openApproveModal, openRejectModal, openPreviewModal, copyShareLink, closeModal };
+  return { init, openApproveModal, openRejectModal, openPreviewModal, copyShareLink, closeModal, editSurvey };
 })();

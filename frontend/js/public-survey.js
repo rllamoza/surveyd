@@ -175,6 +175,14 @@ const PublicSurvey = (() => {
       if (defaultLogoIcon) defaultLogoIcon.classList.add('hidden');
     }
 
+    // 3.1 Banner de cabecera de la encuesta
+    const bannerCont = document.getElementById('public-survey-banner-container');
+    const bannerImg = document.getElementById('public-survey-banner-img');
+    if (branding.banner_url && bannerCont && bannerImg) {
+      bannerImg.src = branding.banner_url;
+      bannerCont.classList.remove('hidden');
+    }
+
     // 4. Título, subtítulo y textos presentados
     const pubTitle = branding.public_title || branding.titulo_publico;
     const pubSubtitle = branding.public_subtitle || branding.subtitulo_publico;
@@ -247,6 +255,39 @@ const PublicSurvey = (() => {
     }).join('');
 
     setupInteractiveControls();
+  };
+
+  /* ==========================================================================
+     DETECCIÓN INTELIGENTE DE SUBTIPO NUMÉRICO POR ENUNCIADO
+     ========================================================================== */
+  const detectNumericSubtype = (enunciado) => {
+    const t = (enunciado || '').toLowerCase();
+
+    // DNI / Documento de identidad
+    if (/\bdni\b|\bdocumento\b|documento de identidad|n[úu]mero de documento/.test(t))
+      return { subtype: 'dni', label: 'DNI (8 dígitos)', min: 10000000, max: 99999999, maxlength: 8, step: 1, pattern: '[0-9]{8}', hint: 'Ingrese los 8 dígitos del DNI sin puntos ni espacios.' };
+
+    // Teléfono / celular
+    if (/tel[eé]fono|celular|m[oó]vil|n[úu]mero de contacto|whatsapp/.test(t))
+      return { subtype: 'telefono', label: 'Número telefónico (9 dígitos)', min: 900000000, max: 999999999, maxlength: 9, step: 1, pattern: '[0-9]{9}', hint: 'Ingrese los 9 dígitos del celular sin espacios (ej: 987654321).' };
+
+    // Edad
+    if (/\bedad\b|a[ñn]os de edad|cuántos a[ñn]os|cu[aá]ntos a[ñn]os/.test(t))
+      return { subtype: 'edad', label: 'Edad (años)', min: 1, max: 99, step: 1, hint: 'Ingrese un número entero entre 1 y 99.' };
+
+    // Año
+    if (/\ba[ñn]o\b|año de nacimiento|año en que|en qu[eé] a[ñn]o/.test(t))
+      return { subtype: 'anio', label: 'Año', min: 1900, max: new Date().getFullYear(), step: 1, hint: `Ingrese un año entre 1900 y ${new Date().getFullYear()}.` };
+
+    // Cantidad / número genérico
+    if (/cu[aá]nto[s]?|cantidad|n[úu]mero de|promedio|porcentaje|horas|d[íi]as|meses|semanas|personas|miembros|hijos/.test(t))
+      return { subtype: 'cantidad', label: 'Cantidad', min: 0, max: 9999, step: 1, hint: 'Ingrese un número entero positivo.' };
+
+    // Puntaje / calificación numérica
+    if (/puntaje|calificaci[oó]n num[eé]rica|nota|punta/.test(t))
+      return { subtype: 'puntaje', label: 'Puntaje (0-100)', min: 0, max: 100, step: 1, hint: 'Ingrese un número entre 0 y 100.' };
+
+    return null;
   };
 
   const renderInputForType = (q) => {
@@ -383,13 +424,190 @@ const PublicSurvey = (() => {
         `;
 
       case 'texto':
-      default:
-        return `
-          <div class="space-y-2">
-            <textarea id="q_${q.id}" rows="4" class="input-glass w-full text-sm p-4 rounded-xl resize-none leading-relaxed" placeholder="Escriba su respuesta detallada aquí con sus propias palabras..." oninput="PublicSurvey.onAnswerChange(${q.id}, this.value)"></textarea>
-            <div class="text-right text-[10px] font-mono text-on-surface-variant">Máximo 500 caracteres</div>
-          </div>
-        `;
+      default: {
+        const v = q.validacion || null;
+        const modo = v ? v.modo : null;
+
+        // ── MODO: Solo Números (configurado explícitamente) ──────────────────
+        if (modo === 'solo_numero') {
+          const minVal = (v.min !== '' && v.min !== undefined && v.min !== null) ? Number(v.min) : null;
+          const maxVal = (v.max !== '' && v.max !== undefined && v.max !== null) ? Number(v.max) : null;
+          const isDec = Boolean(v.decimales);
+          const placeholderParts = [];
+          if (minVal !== null) placeholderParts.push(`Mín: ${minVal}`);
+          if (maxVal !== null) placeholderParts.push(`Máx: ${maxVal}`);
+          const placeholder = placeholderParts.length ? placeholderParts.join('  |  ') : 'Ingrese solo números';
+          return `
+            <div class="space-y-2">
+              <div class="relative">
+                <input
+                  type="text"
+                  inputmode="${isDec ? 'decimal' : 'numeric'}"
+                  id="q_${q.id}"
+                  class="input-glass w-full text-lg font-bold py-3 px-4 rounded-xl font-mono text-slate-900 dark:text-white"
+                  placeholder="${placeholder}"
+                  onkeydown="PublicSurvey.onNumericKeyDown(event, ${isDec})"
+                  onpaste="PublicSurvey.onNumericPaste(event, ${isDec})"
+                  oninput="PublicSurvey.onNumericInput(${q.id}, this, ${minVal !== null ? minVal : 'null'}, ${maxVal !== null ? maxVal : 'null'}, ${isDec})"
+                  onblur="PublicSurvey.validateNumericBlur(${q.id}, this, ${minVal !== null ? minVal : 'null'}, ${maxVal !== null ? maxVal : 'null'}, ${isDec})"
+                  autocomplete="off"
+                />
+              </div>
+              <p class="text-[11px] text-on-surface-variant font-mono flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs text-primary">pin</span>
+                Solo números${isDec ? ' (enteros o decimales)' : ' enteros'}${minVal !== null || maxVal !== null ? `. Rango: ${minVal ?? '−∞'} a ${maxVal ?? '+∞'}.` : '.'}
+              </p>
+              <p id="q_${q.id}_error" class="text-[11px] text-rose-500 font-semibold hidden flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">error</span>
+                <span id="q_${q.id}_error_msg"></span>
+              </p>
+            </div>
+          `;
+        }
+
+        // ── MODO: Solo Letras ─────────────────────────────────────────────────
+        if (modo === 'solo_texto') {
+          const maxLen = v.maxlength || 200;
+          const minChars = v.min_chars || 0;
+          return `
+            <div class="space-y-2">
+              <textarea
+                id="q_${q.id}"
+                rows="3"
+                maxlength="${maxLen}"
+                class="input-glass w-full text-sm p-4 rounded-xl resize-none leading-relaxed transition-colors"
+                placeholder="Solo letras, espacios y acentos permitidos..."
+                oninput="PublicSurvey.onTextOnlyInput(${q.id}, this, ${maxLen})"
+                onblur="PublicSurvey.validateTextBlur(${q.id}, this)"
+              ></textarea>
+              <div class="flex items-center justify-between">
+                <p id="q_${q.id}_text_error" class="text-[11px] text-rose-500 font-semibold hidden flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">error</span>
+                  <span id="q_${q.id}_text_error_msg"></span>
+                </p>
+                <div class="text-right text-[10px] font-mono ml-auto">
+                  <span id="q_${q.id}_charcount" class="text-on-surface-variant">0</span>
+                  <span class="text-on-surface-variant"> / ${maxLen}</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-on-surface-variant font-mono flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs text-amber-400">text_fields</span>
+                Solo letras, espacios y acentos. No se permiten números ni símbolos especiales.${minChars > 0 ? ` Mínimo ${minChars} caracteres.` : ''}
+              </p>
+            </div>
+          `;
+        }
+
+        // ── MODO: Lista de Valores ────────────────────────────────────────────
+        if (modo === 'lista') {
+          const lista = Array.isArray(v.lista) ? v.lista : [];
+          const listId = `datalist_q_${q.id}`;
+          return `
+            <div class="space-y-2">
+              <div class="relative">
+                <input
+                  type="text"
+                  id="q_${q.id}"
+                  list="${listId}"
+                  class="input-glass w-full text-base py-3 px-4 rounded-xl font-semibold"
+                  placeholder="Escriba o seleccione un valor..."
+                  autocomplete="off"
+                  oninput="PublicSurvey.onListaInput(${q.id}, this, ${JSON.stringify(lista)})"
+                  onblur="PublicSurvey.validateListaBlur(${q.id}, this, ${JSON.stringify(lista)})"
+                />
+                <datalist id="${listId}">
+                  ${lista.map(item => `<option value="${escapeHtml(item)}"></option>`).join('')}
+                </datalist>
+              </div>
+              ${lista.length > 0 ? `
+                <div class="flex flex-wrap gap-1.5">
+                  ${lista.map(item => `
+                    <button type="button"
+                      class="px-2.5 py-1 rounded-lg bg-surface-container border border-outline-variant/40 font-mono text-[11px] font-semibold text-on-surface-variant hover:border-primary hover:text-primary transition-all cursor-pointer"
+                      onclick="document.getElementById('q_${q.id}').value='${escapeHtml(item)}'; PublicSurvey.onListaInput(${q.id}, document.getElementById('q_${q.id}'), ${JSON.stringify(lista)})"
+                    >${escapeHtml(item)}</button>
+                  `).join('')}
+                </div>
+              ` : ''}
+              <p id="q_${q.id}_text_error" class="text-[11px] text-rose-500 font-semibold hidden flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">error</span>
+                <span id="q_${q.id}_text_error_msg"></span>
+              </p>
+              <p class="text-[11px] text-on-surface-variant font-mono flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs text-emerald-400">checklist</span>
+                Seleccione o escriba exactamente uno de los ${lista.length} valor(es) permitido(s).
+              </p>
+            </div>
+          `;
+        }
+
+        // ── MODO: Texto Libre (default) + fallback auto-detect por enunciado ──
+        {
+          const maxLen = (v && v.maxlength) ? v.maxlength : 500;
+          const minChars = (v && v.min_chars) ? v.min_chars : 0;
+
+          // Fallback: auto-detect numérico si no hay config o modo es 'libre'
+          if (!v || modo === 'libre' || !modo) {
+            const numSub = detectNumericSubtype(q.enunciado);
+            if (numSub) {
+              return `
+                <div class="space-y-2">
+                  <div class="relative">
+                    <input
+                      type="text"
+                      inputmode="numeric"
+                      id="q_${q.id}"
+                      ${numSub.maxlength ? `maxlength="${numSub.maxlength}"` : ''}
+                      class="input-glass w-full text-lg font-bold py-3 px-4 rounded-xl pr-28 font-mono text-slate-900 dark:text-white"
+                      placeholder="${numSub.min} – ${numSub.max ?? '...'}"
+                      onkeydown="PublicSurvey.onNumericKeyDown(event, false)"
+                      onpaste="PublicSurvey.onNumericPaste(event, false)"
+                      oninput="PublicSurvey.onNumericInput(${q.id}, this, ${numSub.min}, ${numSub.max ?? 'null'}, false)"
+                      onblur="PublicSurvey.validateNumericBlur(${q.id}, this, ${numSub.min}, ${numSub.max ?? 'null'}, false)"
+                      autocomplete="off"
+                    />
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-outline pointer-events-none select-none">${numSub.label}</span>
+                  </div>
+                  <p class="text-[11px] text-on-surface-variant font-mono flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs text-primary">info</span>
+                    ${numSub.hint}
+                  </p>
+                  <p id="q_${q.id}_error" class="text-[11px] text-rose-500 font-semibold hidden flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">error</span>
+                    <span id="q_${q.id}_error_msg"></span>
+                  </p>
+                </div>
+              `;
+            }
+          }
+
+          // Textarea estándar con contador
+          return `
+            <div class="space-y-2">
+              <textarea
+                id="q_${q.id}"
+                rows="4"
+                maxlength="${maxLen}"
+                class="input-glass w-full text-sm p-4 rounded-xl resize-none leading-relaxed transition-colors"
+                placeholder="Escriba su respuesta detallada aquí con sus propias palabras..."
+                oninput="PublicSurvey.onTextInput(${q.id}, this, ${maxLen})"
+                onblur="PublicSurvey.validateTextBlur(${q.id}, this)"
+              ></textarea>
+              <div class="flex items-center justify-between">
+                <p id="q_${q.id}_text_error" class="text-[11px] text-rose-500 font-semibold hidden flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">error</span>
+                  <span id="q_${q.id}_text_error_msg"></span>
+                </p>
+                <div class="text-right text-[10px] font-mono ml-auto">
+                  <span id="q_${q.id}_charcount" class="text-on-surface-variant">0</span>
+                  <span class="text-on-surface-variant"> / ${maxLen}</span>
+                </div>
+              </div>
+              ${minChars > 0 ? `<p class="text-[11px] text-on-surface-variant font-mono">Mínimo ${minChars} caracteres requeridos.</p>` : ''}
+            </div>
+          `;
+        }
+      }
     }
   };
 
@@ -561,6 +779,309 @@ const PublicSurvey = (() => {
     if (val !== undefined && val !== null && String(val).trim() !== '') {
       state.answeredQuestions.add(qidNum);
     } else {
+      state.answeredQuestions.delete(qidNum);
+    }
+    updateProgress();
+  };
+
+  /* ==========================================================================
+     VALIDACIONES EN TIEMPO REAL POR TIPO
+     ========================================================================== */
+
+  /**
+   * Bloqueo inmediato a nivel de pulsación de tecla para campos numéricos
+   */
+  const onNumericKeyDown = (e, allowDecimals = false) => {
+    // Teclas permitidas de control y edición
+    if ([
+      'Backspace', 'Delete', 'Tab', 'Escape', 'Enter',
+      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+      'Home', 'End'
+    ].includes(e.key)) {
+      return;
+    }
+    // Combinaciones de teclado (Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z, etc.)
+    if (e.ctrlKey || e.metaKey) {
+      return;
+    }
+    // Permitir punto o coma decimal si se configuran decimales y no existe ya uno
+    if (allowDecimals && (e.key === '.' || e.key === ',') && !e.target.value.includes('.')) {
+      return;
+    }
+    // Si no es un dígito del 0 al 9, bloquear la pulsación inmediatamente
+    if (!/^[0-9]$/.test(e.key)) {
+      e.preventDefault();
+      const qid = e.target.id ? e.target.id.replace('q_', '') : null;
+      if (qid) {
+        setNumericError(qid, '⚠️ Solo se permiten números. Las letras no están permitidas.');
+        setTimeout(() => setNumericError(qid, null), 2200);
+      }
+    }
+  };
+
+  /**
+   * Filtrar pegado en portapapeles para evitar que peguen texto con letras
+   */
+  const onNumericPaste = (e, allowDecimals = false) => {
+    e.preventDefault();
+    const clipText = (e.clipboardData || window.clipboardData).getData('text') || '';
+    let filtered = allowDecimals
+      ? clipText.replace(/[^0-9.]/g, '')
+      : clipText.replace(/[^0-9]/g, '');
+    if (allowDecimals) {
+      const parts = filtered.split('.');
+      if (parts.length > 2) filtered = parts[0] + '.' + parts.slice(1).join('');
+    }
+    if (filtered.length > 0) {
+      document.execCommand('insertText', false, filtered);
+    } else {
+      const qid = e.target.id ? e.target.id.replace('q_', '') : null;
+      if (qid) {
+        setNumericError(qid, '⚠️ El texto pegado no contiene números válidos.');
+        setTimeout(() => setNumericError(qid, null), 2200);
+      }
+    }
+  };
+
+  /**
+   * Handler para input numérico: bloquea letras y caracteres inválidos en tiempo real
+   */
+  const onNumericInput = (qid, el, min, max, allowDecimals = false) => {
+    const qidNum = Number(qid);
+    // Eliminar cualquier carácter que no sea dígito (o punto si se permiten decimales)
+    let raw = allowDecimals ? el.value.replace(/[^0-9.]/g, '') : el.value.replace(/[^0-9]/g, '');
+    if (allowDecimals) {
+      const parts = raw.split('.');
+      if (parts.length > 2) raw = parts[0] + '.' + parts.slice(1).join('');
+    }
+    if (raw !== el.value) {
+      el.value = raw;
+      setNumericError(qid, '⚠️ Solo se permiten números. Caracteres no numéricos eliminados.');
+      setTimeout(() => setNumericError(qid, null), 2000);
+    }
+
+    const val = raw === '' ? null : (allowDecimals ? parseFloat(raw) : parseInt(raw, 10));
+
+    if (val !== null && !isNaN(val)) {
+      setNumericError(qid, null);
+      state.respuestas[`q_${qidNum}`] = val;
+      state.answeredQuestions.add(qidNum);
+    } else {
+      delete state.respuestas[`q_${qidNum}`];
+      state.answeredQuestions.delete(qidNum);
+    }
+    updateProgress();
+  };
+
+  /**
+   * Handler onblur para validar rango al perder foco en campo numérico
+   */
+  const validateNumericBlur = (qid, el, min, max, allowDecimals = false) => {
+    const raw = el.value.trim();
+    if (raw === '') {
+      setNumericError(qid, null);
+      return;
+    }
+
+    const val = allowDecimals ? parseFloat(raw) : parseInt(raw, 10);
+    if (isNaN(val)) {
+      setNumericError(qid, allowDecimals ? 'Por favor ingrese un número válido.' : 'Por favor ingrese solo números enteros.');
+      el.value = '';
+      delete state.respuestas[`q_${qid}`];
+      state.answeredQuestions.delete(Number(qid));
+      updateProgress();
+      return;
+    }
+    if (min !== null && val < min) {
+      setNumericError(qid, `El valor mínimo permitido es ${min}.`);
+      el.value = min;
+      const qidNum = Number(qid);
+      state.respuestas[`q_${qidNum}`] = min;
+      return;
+    }
+    if (max !== null && val > max) {
+      setNumericError(qid, `El valor máximo permitido es ${max}.`);
+      el.value = max;
+      const qidNum = Number(qid);
+      state.respuestas[`q_${qidNum}`] = max;
+      return;
+    }
+    setNumericError(qid, null);
+  };
+
+  const setNumericError = (qid, msg) => {
+    const errEl = document.getElementById(`q_${qid}_error`);
+    const errMsg = document.getElementById(`q_${qid}_error_msg`);
+    if (!errEl || !errMsg) return;
+    if (msg) {
+      errMsg.textContent = msg;
+      errEl.classList.remove('hidden');
+    } else {
+      errEl.classList.add('hidden');
+    }
+  };
+
+  /**
+   * Handler oninput para textarea con contador de caracteres en tiempo real
+   */
+  const onTextInput = (qid, el, maxLen) => {
+    const qidNum = Number(qid);
+    let val = el.value;
+
+    // Truncar si por alguna razón supera el máximo
+    if (val.length > maxLen) {
+      val = val.substring(0, maxLen);
+      el.value = val;
+    }
+
+    // Actualizar contador
+    const counter = document.getElementById(`q_${qidNum}_charcount`);
+    if (counter) {
+      counter.textContent = val.length;
+      // Colorear el contador según cercanía al límite
+      counter.className = val.length > maxLen * 0.9
+        ? 'text-rose-500 font-bold'
+        : val.length > maxLen * 0.75
+          ? 'text-amber-400 font-semibold'
+          : 'text-on-surface-variant';
+    }
+
+    // Ocultar error mientras el usuario escribe
+    setTextError(qid, null);
+
+    if (val.trim() !== '') {
+      state.respuestas[`q_${qidNum}`] = val;
+      state.answeredQuestions.add(qidNum);
+    } else {
+      delete state.respuestas[`q_${qidNum}`];
+      state.answeredQuestions.delete(qidNum);
+    }
+    updateProgress();
+  };
+
+  /**
+   * Handler onblur para validar texto mínimo al perder foco
+   */
+  const validateTextBlur = (qid, el) => {
+    const val = el.value.trim();
+    const qidNum = Number(qid);
+
+    // Verificar si la pregunta es requerida
+    const q = surveyData && surveyData.preguntas
+      ? surveyData.preguntas.find(p => Number(p.id) === qidNum)
+      : null;
+
+    if (q && q.es_requerida && val === '') {
+      setTextError(qid, 'Este campo es obligatorio. Por favor escriba su respuesta.');
+      el.classList.add('border-rose-500/60');
+      return;
+    }
+
+    // Verificar longitud mínima para campos no vacíos
+    if (val !== '' && val.length < 3) {
+      setTextError(qid, 'La respuesta debe tener al menos 3 caracteres.');
+      return;
+    }
+
+    setTextError(qid, null);
+    el.classList.remove('border-rose-500/60');
+  };
+
+  const setTextError = (qid, msg) => {
+    const errEl = document.getElementById(`q_${qid}_text_error`);
+    const errMsg = document.getElementById(`q_${qid}_text_error_msg`);
+    if (!errEl || !errMsg) return;
+    if (msg) {
+      errMsg.textContent = msg;
+      errEl.classList.remove('hidden');
+    } else {
+      errEl.classList.add('hidden');
+    }
+  };
+
+  /**
+   * Handler oninput para campo Solo Letras: bloquea dígitos y símbolos en tiempo real
+   */
+  const onTextOnlyInput = (qid, el, maxLen) => {
+    const qidNum = Number(qid);
+    // Eliminar dígitos y caracteres no permitidos (permitir letras, espacios, acentos, guiones, puntos, coma, apóstrofo)
+    let val = el.value.replace(/[0-9!@#$%^&*()_+=\[\]{};:"\\|<>\/~`]/g, '');
+    if (val !== el.value) {
+      el.value = val;
+      setTextError(qid, 'Solo se permiten letras, espacios y acentos.');
+      setTimeout(() => setTextError(qid, null), 2000);
+    }
+    // Truncar si supera el máximo
+    if (val.length > maxLen) {
+      val = val.substring(0, maxLen);
+      el.value = val;
+    }
+    // Actualizar contador
+    const counter = document.getElementById(`q_${qidNum}_charcount`);
+    if (counter) {
+      counter.textContent = val.length;
+      counter.className = val.length > maxLen * 0.9
+        ? 'text-rose-500 font-bold'
+        : val.length > maxLen * 0.75
+          ? 'text-amber-400 font-semibold'
+          : 'text-on-surface-variant';
+    }
+    setTextError(qid, null);
+    if (val.trim() !== '') {
+      state.respuestas[`q_${qidNum}`] = val;
+      state.answeredQuestions.add(qidNum);
+    } else {
+      delete state.respuestas[`q_${qidNum}`];
+      state.answeredQuestions.delete(qidNum);
+    }
+    updateProgress();
+  };
+
+  /**
+   * Handler oninput para campo Lista de Valores: guarda valor y marca respuesta
+   */
+  const onListaInput = (qid, el, lista) => {
+    const qidNum = Number(qid);
+    const val = el.value.trim();
+    // Ocultar error mientras escribe
+    setTextError(qid, null);
+    el.classList.remove('border-rose-500/60');
+
+    if (val !== '') {
+      state.respuestas[`q_${qidNum}`] = val;
+      // Si el valor está en la lista, marcar como respondida inmediatamente
+      if (lista.includes(val)) {
+        state.answeredQuestions.add(qidNum);
+      } else {
+        // Puede que aún esté escribiendo; mantener como respondida si ya estaba
+      }
+    } else {
+      delete state.respuestas[`q_${qidNum}`];
+      state.answeredQuestions.delete(qidNum);
+    }
+    updateProgress();
+  };
+
+  /**
+   * Handler onblur para campo Lista de Valores: valida que el valor sea exactamente uno de la lista
+   */
+  const validateListaBlur = (qid, el, lista) => {
+    const val = el.value.trim();
+    const qidNum = Number(qid);
+    if (val === '') return;
+
+    // Normalizar comparación (case-insensitive)
+    const matchExact = lista.find(item => item.toLowerCase() === val.toLowerCase());
+    if (matchExact) {
+      // Autocorrect capitalización exacta
+      el.value = matchExact;
+      state.respuestas[`q_${qidNum}`] = matchExact;
+      state.answeredQuestions.add(qidNum);
+      setTextError(qid, null);
+      el.classList.remove('border-rose-500/60');
+    } else {
+      setTextError(qid, `"${val}" no es un valor permitido. Use uno de los valores de la lista.`);
+      el.classList.add('border-rose-500/60');
       state.answeredQuestions.delete(qidNum);
     }
     updateProgress();
@@ -799,29 +1320,127 @@ const PublicSurvey = (() => {
 
     // 1. Validar que todas las preguntas obligatorias hayan sido respondidas
     const missingQuestions = [];
+    const invalidQuestions = [];
+
     (surveyData.preguntas || []).forEach((q, idx) => {
-      if (q.es_requerida) {
-        if (q.tipo === 'ubigeo_cascada') {
-          // Si el usuario no modificó el ubigeo, usamos el valor por defecto cargado
-          if (!state.respuestas[`q_${q.id}`]) {
-            state.respuestas[`q_${q.id}`] = `${state.departamentoNombre} > ${state.provinciaNombre} > ${state.distritoNombre} (${state.distrito})`;
-            state.answeredQuestions.add(Number(q.id));
+      if (q.tipo === 'ubigeo_cascada') {
+        // Si el usuario no modificó el ubigeo, usamos el valor por defecto cargado
+        if (!state.respuestas[`q_${q.id}`]) {
+          state.respuestas[`q_${q.id}`] = `${state.departamentoNombre} > ${state.provinciaNombre} > ${state.distritoNombre} (${state.distrito})`;
+          state.answeredQuestions.add(Number(q.id));
+        }
+        return;
+      }
+
+      const val = state.respuestas[`q_${q.id}`];
+      const hasAnswer = val !== undefined && val !== null && (Array.isArray(val) ? val.length > 0 : String(val).trim() !== '');
+
+      if (q.es_requerida && !hasAnswer) {
+        missingQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado });
+        return;
+      }
+
+      // Validación exhaustiva según q.validacion o detección inteligente
+      if (q.tipo === 'texto' && hasAnswer) {
+        const v = q.validacion || null;
+        const modo = v ? v.modo : null;
+
+        if (modo === 'solo_numero') {
+          const valStr = String(val).trim();
+          const allowDec = Boolean(v.decimales);
+          // Verificar formato numérico estricto (rechazar letras)
+          const isNum = allowDec ? /^-?\d+(\.\d+)?$/.test(valStr) : /^-?\d+$/.test(valStr);
+          if (!isNum) {
+            invalidQuestions.push({
+              qid: q.id,
+              index: idx + 2,
+              enunciado: q.enunciado,
+              msg: allowDec ? 'Debe ser un número válido (no se permiten letras).' : 'Debe ser un número entero (sin letras ni decimales).'
+            });
+          } else {
+            const numVal = allowDec ? parseFloat(valStr) : parseInt(valStr, 10);
+            const minVal = (v.min !== '' && v.min !== undefined && v.min !== null) ? Number(v.min) : null;
+            const maxVal = (v.max !== '' && v.max !== undefined && v.max !== null) ? Number(v.max) : null;
+            if (minVal !== null && numVal < minVal) {
+              invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: `El valor mínimo permitido es ${minVal}.` });
+            } else if (maxVal !== null && numVal > maxVal) {
+              invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: `El valor máximo permitido es ${maxVal}.` });
+            }
+          }
+        } else if (modo === 'solo_texto') {
+          const valStr = String(val).trim();
+          if (/[0-9]/.test(valStr)) {
+            invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: 'Solo se permiten letras. No se permiten números.' });
+          } else {
+            const minChars = v.min_chars || 0;
+            const maxLen = v.maxlength || 200;
+            if (minChars > 0 && valStr.length < minChars) {
+              invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: `Debe tener al menos ${minChars} caracteres.` });
+            } else if (valStr.length > maxLen) {
+              invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: `No puede exceder los ${maxLen} caracteres.` });
+            }
+          }
+        } else if (modo === 'lista') {
+          const valStr = String(val).trim();
+          const lista = Array.isArray(v.lista) ? v.lista : [];
+          if (lista.length > 0 && !lista.some(item => item.toLowerCase() === valStr.toLowerCase())) {
+            invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: 'El valor ingresado no coincide con las opciones permitidas.' });
           }
         } else {
-          const val = state.respuestas[`q_${q.id}`];
-          const hasAnswer = val !== undefined && val !== null && (Array.isArray(val) ? val.length > 0 : String(val).trim() !== '');
-          if (!hasAnswer) {
-            missingQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado });
+          // Modo libre o sin validación explícita: fallback inteligente por enunciado
+          const numSub = detectNumericSubtype(q.enunciado);
+          if (numSub) {
+            const valStr = String(val).trim();
+            const numVal = parseInt(valStr, 10);
+            if (isNaN(numVal) || !/^-?\d+$/.test(valStr)) {
+              invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: 'Debe ser un número entero válido (sin letras).' });
+            } else if (numSub.min !== undefined && numVal < numSub.min) {
+              invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: `El valor mínimo es ${numSub.min}.` });
+            } else if (numSub.max !== undefined && numSub.max !== null && numVal > numSub.max) {
+              invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: `El valor máximo es ${numSub.max}.` });
+            }
+          } else {
+            const minChars = (v && v.min_chars) ? v.min_chars : (q.es_requerida ? 3 : 0);
+            if (minChars > 0 && String(val).trim().length < minChars) {
+              invalidQuestions.push({ qid: q.id, index: idx + 2, enunciado: q.enunciado, msg: `La respuesta debe tener al menos ${minChars} caracteres.` });
+            }
           }
         }
       }
     });
 
+    // Mostrar errores de campos faltantes
     if (missingQuestions.length > 0) {
       const firstMissing = missingQuestions[0];
-      showToast(`Por favor responda la Pregunta ${String(firstMissing.index).padStart(2, '0')}: "${firstMissing.enunciado.substring(0, 40)}..."`, 'error');
+      const shortEnunciado = firstMissing.enunciado.length > 40
+        ? firstMissing.enunciado.substring(0, 40) + '...'
+        : firstMissing.enunciado;
+      showToast(`⚠️ Pregunta ${String(firstMissing.index).padStart(2, '0')} sin responder: "${shortEnunciado}"`, 'error');
 
       const qBlock = document.querySelector(`.question-block[data-question-id="${firstMissing.qid}"]`);
+      if (qBlock) {
+        qBlock.classList.add('question-required-highlight');
+        qBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => qBlock.classList.remove('question-required-highlight'), 3000);
+      }
+      return;
+    }
+
+    // Mostrar errores de validación de formato/rango
+    if (invalidQuestions.length > 0) {
+      const firstInvalid = invalidQuestions[0];
+      showToast(`❌ Pregunta ${String(firstInvalid.index).padStart(2, '0')}: ${firstInvalid.msg}`, 'error');
+
+      // Mostrar error inline y hacer scroll
+      const qObj = surveyData.preguntas ? surveyData.preguntas.find(p => p.id === firstInvalid.qid) : null;
+      const isNumMode = (qObj && qObj.validacion && qObj.validacion.modo === 'solo_numero') || detectNumericSubtype(firstInvalid.enunciado);
+      if (isNumMode) {
+        setNumericError(firstInvalid.qid, firstInvalid.msg);
+      } else {
+        setTextError(firstInvalid.qid, firstInvalid.msg);
+      }
+
+      const qBlock = document.querySelector(`.question-block[data-question-id="${firstInvalid.qid}"]`);
       if (qBlock) {
         qBlock.classList.add('question-required-highlight');
         qBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1159,7 +1778,16 @@ const PublicSurvey = (() => {
     onCheckboxChange,
     onConsentChange,
     resetToNewSurvey,
-    copyCurrentUrl
+    copyCurrentUrl,
+    onNumericKeyDown,
+    onNumericPaste,
+    onNumericInput,
+    validateNumericBlur,
+    onTextInput,
+    validateTextBlur,
+    onTextOnlyInput,
+    onListaInput,
+    validateListaBlur
   };
 })();
 

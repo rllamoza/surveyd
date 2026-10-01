@@ -324,12 +324,35 @@ const API = (() => {
     },
 
     async createEncuesta(payload) {
+      return this.saveEncuesta(payload);
+    },
+
+    async saveEncuesta(payload) {
       const res = await request('encuestas.php', {
         method: 'POST',
         body: JSON.stringify(payload)
       });
       if (res) return res;
 
+      // Fallback localStore: Si viene con id de encuesta existente, actualizar
+      if (payload.id) {
+        const idx = localStore.encuestas.findIndex(e => e.id === Number(payload.id));
+        if (idx !== -1) {
+          localStore.encuestas[idx] = {
+            ...localStore.encuestas[idx],
+            titulo: payload.titulo,
+            descripcion: payload.descripcion || localStore.encuestas[idx].descripcion,
+            norma_tecnica: payload.norma_tecnica || localStore.encuestas[idx].norma_tecnica,
+            categoria: payload.categoria || localStore.encuestas[idx].categoria,
+            estado: payload.publicar ? 'aprobada' : (payload.estado || localStore.encuestas[idx].estado),
+            total_pasos: payload.preguntas ? payload.preguntas.length : localStore.encuestas[idx].total_pasos,
+            updated_at: new Date().toISOString().replace('T', ' ').slice(0, 19)
+          };
+          return localStore.encuestas[idx];
+        }
+      }
+
+      // Si es nueva encuesta:
       const nuevoId = localStore.encuestas.length + 1;
       const cleanTitle = (payload.titulo || 'POLL')
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -362,6 +385,31 @@ const API = (() => {
         body: JSON.stringify({ encuesta_id: encuestaId, branding: brandingPayload })
       });
       return res;
+    },
+
+    // --- SUBIDA DE IMÁGENES / LOGOTIPOS ---
+    async uploadImage(file) {
+      try {
+        const token = localStorage.getItem('omnipoll_token');
+        const authHeaders = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const res = await fetch(`${BASE_URL}/upload.php`, {
+          method: 'POST',
+          headers: authHeaders,
+          body: formData
+        });
+
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          throw new Error(json.message || 'Error al subir la imagen al servidor');
+        }
+        return json.data;
+      } catch (err) {
+        console.error('Error en API.uploadImage:', err);
+        throw err;
+      }
     },
 
     // --- RESPUESTAS DE ENCUESTA ---

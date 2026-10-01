@@ -516,7 +516,7 @@ const App = (() => {
     });
   };
 
-  const navigateTo = (path) => {
+  const navigateTo = (path, param = null) => {
     if (!currentUser) {
       applyUserToUI();
       return;
@@ -556,7 +556,11 @@ const App = (() => {
       BentoAnalytics.init();
     }
     if (path === 'constructor-excel' && typeof SurveyBuilder !== 'undefined') {
-      SurveyBuilder.refreshSurveySelector();
+      SurveyBuilder.refreshSurveySelector().then(() => {
+        if (param) {
+          SurveyBuilder.loadSurveyForEdit(param);
+        }
+      });
     }
 
     // Cerrar sidebar móvil/tablet si está abierto

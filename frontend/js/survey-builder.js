@@ -17,6 +17,7 @@ const SurveyBuilder = (() => {
 
   const init = async () => {
     setupDropZone();
+    setupBrandingDropzones();
     setupEventListeners();
     await refreshSurveySelector();
     // Iniciar con lienzo vacío por defecto
@@ -59,6 +60,7 @@ const SurveyBuilder = (() => {
     const secondaryInput = document.getElementById('branding-color-secondary');
     const fontInput = document.getElementById('branding-font-family');
     const logoInput = document.getElementById('branding-logo-url');
+    const bannerInput = document.getElementById('branding-banner-url');
     const titleInput = document.getElementById('branding-public-title');
     const subInput = document.getElementById('branding-public-subtitle');
     const welcomeInput = document.getElementById('branding-welcome-msg');
@@ -69,11 +71,267 @@ const SurveyBuilder = (() => {
       secondary_color: secondaryInput ? secondaryInput.value : '#8B5CF6',
       font_family: fontInput ? fontInput.value : 'Plus Jakarta Sans',
       logo_url: logoInput ? logoInput.value.trim() : '',
+      banner_url: bannerInput ? bannerInput.value.trim() : '',
       public_title: titleInput ? titleInput.value.trim() : '',
       public_subtitle: subInput ? subInput.value.trim() : '',
       welcome_message: welcomeInput ? welcomeInput.value.trim() : '',
       thank_you_message: thanksInput ? thanksInput.value.trim() : ''
     };
+  };
+
+  /**
+   * Actualizar el estado visual del selector/dropzone del logo
+   */
+  const updateLogoDropzoneUI = (url, fileName = '') => {
+    const emptyState = document.getElementById('branding-logo-empty-state');
+    const loadingState = document.getElementById('branding-logo-loading-state');
+    const previewState = document.getElementById('branding-logo-preview-state');
+    const thumbImg = document.getElementById('branding-logo-thumb');
+    const fileNameEl = document.getElementById('branding-logo-filename');
+    const fileSizeEl = document.getElementById('branding-logo-filesize');
+
+    if (loadingState) loadingState.classList.add('hidden');
+
+    if (url && url.trim()) {
+      if (emptyState) emptyState.classList.add('hidden');
+      if (previewState) {
+        previewState.classList.remove('hidden');
+        previewState.classList.add('flex');
+      }
+      if (thumbImg) thumbImg.src = url;
+      if (fileNameEl) {
+        const name = fileName || url.split('/').pop() || 'logo.png';
+        fileNameEl.textContent = name;
+        fileNameEl.title = url;
+      }
+      if (fileSizeEl) fileSizeEl.textContent = 'Alojado en el servidor';
+    } else {
+      if (emptyState) emptyState.classList.remove('hidden');
+      if (previewState) {
+        previewState.classList.add('hidden');
+        previewState.classList.remove('flex');
+      }
+      if (thumbImg) thumbImg.src = '';
+    }
+  };
+
+  /**
+   * Actualizar el estado visual del selector/dropzone del banner
+   */
+  const updateBannerDropzoneUI = (url, fileName = '') => {
+    const emptyState = document.getElementById('branding-banner-empty-state');
+    const loadingState = document.getElementById('branding-banner-loading-state');
+    const previewState = document.getElementById('branding-banner-preview-state');
+    const thumbImg = document.getElementById('branding-banner-thumb');
+    const fileNameEl = document.getElementById('branding-banner-filename');
+    const fileSizeEl = document.getElementById('branding-banner-filesize');
+
+    if (loadingState) loadingState.classList.add('hidden');
+
+    if (url && url.trim()) {
+      if (emptyState) emptyState.classList.add('hidden');
+      if (previewState) {
+        previewState.classList.remove('hidden');
+        previewState.classList.add('flex');
+      }
+      if (thumbImg) thumbImg.src = url;
+      if (fileNameEl) {
+        const name = fileName || url.split('/').pop() || 'banner.png';
+        fileNameEl.textContent = name;
+        fileNameEl.title = url;
+      }
+      if (fileSizeEl) fileSizeEl.textContent = 'Alojado en el servidor';
+    } else {
+      if (emptyState) emptyState.classList.remove('hidden');
+      if (previewState) {
+        previewState.classList.add('hidden');
+        previewState.classList.remove('flex');
+      }
+      if (thumbImg) thumbImg.src = '';
+    }
+  };
+
+  /**
+   * Subir archivo de Logo al servidor mediante API.uploadImage
+   */
+  const handleLogoUpload = async (file) => {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/') && !file.name.toLowerCase().endsWith('.svg')) {
+      App.showToast('Por favor seleccione un archivo de imagen válido (PNG, JPG, SVG, WEBP)', 'error');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      App.showToast('El archivo de imagen no debe superar los 10 MB', 'error');
+      return;
+    }
+
+    const emptyState = document.getElementById('branding-logo-empty-state');
+    const loadingState = document.getElementById('branding-logo-loading-state');
+    const previewState = document.getElementById('branding-logo-preview-state');
+
+    if (emptyState) emptyState.classList.add('hidden');
+    if (previewState) {
+      previewState.classList.add('hidden');
+      previewState.classList.remove('flex');
+    }
+    if (loadingState) loadingState.classList.remove('hidden');
+
+    try {
+      const data = await API.uploadImage(file);
+      const logoUrlInput = document.getElementById('branding-logo-url');
+      if (logoUrlInput) {
+        logoUrlInput.value = data.url;
+      }
+      updateLogoDropzoneUI(data.url, data.original_name || data.filename);
+      updateLivePreview();
+      App.showToast(`Logo "${data.original_name || file.name}" alojado correctamente en el servidor`, 'success');
+    } catch (err) {
+      console.error('Error subiendo logo:', err);
+      updateLogoDropzoneUI(document.getElementById('branding-logo-url')?.value || '');
+      App.showToast(err.message || 'Error al subir imagen al servidor', 'error');
+    }
+  };
+
+  /**
+   * Subir archivo de Banner al servidor mediante API.uploadImage
+   */
+  const handleBannerUpload = async (file) => {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/') && !file.name.toLowerCase().endsWith('.svg')) {
+      App.showToast('Por favor seleccione un archivo de imagen válido (PNG, JPG, SVG, WEBP)', 'error');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      App.showToast('El archivo de imagen no debe superar los 10 MB', 'error');
+      return;
+    }
+
+    const emptyState = document.getElementById('branding-banner-empty-state');
+    const loadingState = document.getElementById('branding-banner-loading-state');
+    const previewState = document.getElementById('branding-banner-preview-state');
+
+    if (emptyState) emptyState.classList.add('hidden');
+    if (previewState) {
+      previewState.classList.add('hidden');
+      previewState.classList.remove('flex');
+    }
+    if (loadingState) loadingState.classList.remove('hidden');
+
+    try {
+      const data = await API.uploadImage(file);
+      const bannerUrlInput = document.getElementById('branding-banner-url');
+      if (bannerUrlInput) {
+        bannerUrlInput.value = data.url;
+      }
+      updateBannerDropzoneUI(data.url, data.original_name || data.filename);
+      updateLivePreview();
+      App.showToast(`Banner "${data.original_name || file.name}" alojado correctamente en el servidor`, 'success');
+    } catch (err) {
+      console.error('Error subiendo banner:', err);
+      updateBannerDropzoneUI(document.getElementById('branding-banner-url')?.value || '');
+      App.showToast(err.message || 'Error al subir banner al servidor', 'error');
+    }
+  };
+
+  const removeLogoImage = () => {
+    const logoUrlInput = document.getElementById('branding-logo-url');
+    const fileInput = document.getElementById('branding-logo-file-input');
+    if (logoUrlInput) logoUrlInput.value = '';
+    if (fileInput) fileInput.value = '';
+    updateLogoDropzoneUI('');
+    updateLivePreview();
+    App.showToast('Logotipo removido', 'info');
+  };
+
+  const removeBannerImage = () => {
+    const bannerUrlInput = document.getElementById('branding-banner-url');
+    const fileInput = document.getElementById('branding-banner-file-input');
+    if (bannerUrlInput) bannerUrlInput.value = '';
+    if (fileInput) fileInput.value = '';
+    updateBannerDropzoneUI('');
+    updateLivePreview();
+    App.showToast('Banner removido', 'info');
+  };
+
+  /**
+   * Configuración de Dropzones de Imágenes (Logo y Banner)
+   */
+  const setupBrandingDropzones = () => {
+    // Dropzone Logo
+    const dropLogo = document.getElementById('dropzone-branding-logo');
+    const inputLogo = document.getElementById('branding-logo-file-input');
+    const urlLogo = document.getElementById('branding-logo-url');
+
+    if (dropLogo && inputLogo) {
+      ['dragenter', 'dragover'].forEach(name => {
+        dropLogo.addEventListener(name, (e) => {
+          e.preventDefault();
+          dropLogo.classList.add('border-primary', 'bg-primary/10');
+        });
+      });
+      ['dragleave', 'drop'].forEach(name => {
+        dropLogo.addEventListener(name, (e) => {
+          e.preventDefault();
+          dropLogo.classList.remove('border-primary', 'bg-primary/10');
+        });
+      });
+      dropLogo.addEventListener('drop', (e) => {
+        const files = e.dataTransfer?.files;
+        if (files && files.length) handleLogoUpload(files[0]);
+      });
+      inputLogo.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) {
+          handleLogoUpload(e.target.files[0]);
+        }
+      });
+    }
+
+    if (urlLogo) {
+      urlLogo.addEventListener('input', (e) => {
+        updateLogoDropzoneUI(e.target.value.trim());
+        updateLivePreview();
+      });
+    }
+
+    // Dropzone Banner
+    const dropBanner = document.getElementById('dropzone-branding-banner');
+    const inputBanner = document.getElementById('branding-banner-file-input');
+    const urlBanner = document.getElementById('branding-banner-url');
+
+    if (dropBanner && inputBanner) {
+      ['dragenter', 'dragover'].forEach(name => {
+        dropBanner.addEventListener(name, (e) => {
+          e.preventDefault();
+          dropBanner.classList.add('border-secondary', 'bg-secondary/10');
+        });
+      });
+      ['dragleave', 'drop'].forEach(name => {
+        dropBanner.addEventListener(name, (e) => {
+          e.preventDefault();
+          dropBanner.classList.remove('border-secondary', 'bg-secondary/10');
+        });
+      });
+      dropBanner.addEventListener('drop', (e) => {
+        const files = e.dataTransfer?.files;
+        if (files && files.length) handleBannerUpload(files[0]);
+      });
+      inputBanner.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) {
+          handleBannerUpload(e.target.files[0]);
+        }
+      });
+    }
+
+    if (urlBanner) {
+      urlBanner.addEventListener('input', (e) => {
+        updateBannerDropzoneUI(e.target.value.trim());
+        updateLivePreview();
+      });
+    }
   };
 
   /**
@@ -85,6 +343,7 @@ const SurveyBuilder = (() => {
     const secondaryInput = document.getElementById('branding-color-secondary');
     const fontInput = document.getElementById('branding-font-family');
     const logoInput = document.getElementById('branding-logo-url');
+    const bannerInput = document.getElementById('branding-banner-url');
     const titleInput = document.getElementById('branding-public-title');
     const subInput = document.getElementById('branding-public-subtitle');
     const welcomeInput = document.getElementById('branding-welcome-msg');
@@ -101,11 +360,14 @@ const SurveyBuilder = (() => {
     if (labelSecondary) labelSecondary.textContent = sec;
     if (fontInput) fontInput.value = data.font_family || 'Plus Jakarta Sans';
     if (logoInput) logoInput.value = data.logo_url || '';
+    if (bannerInput) bannerInput.value = data.banner_url || '';
     if (titleInput) titleInput.value = data.public_title || '';
     if (subInput) subInput.value = data.public_subtitle || '';
     if (welcomeInput) welcomeInput.value = data.welcome_message || '';
     if (thanksInput) thanksInput.value = data.thank_you_message || '';
 
+    updateLogoDropzoneUI(data.logo_url || '');
+    updateBannerDropzoneUI(data.banner_url || '');
     updateLivePreview();
   };
 
@@ -133,6 +395,7 @@ const SurveyBuilder = (() => {
   const setLogoPreset = (url) => {
     const el = document.getElementById('branding-logo-url');
     if (el) el.value = url;
+    updateLogoDropzoneUI(url);
     updateLivePreview();
   };
 
@@ -147,6 +410,8 @@ const SurveyBuilder = (() => {
     const previewBtn = document.getElementById('preview-btn');
     const previewLogoIcon = document.getElementById('preview-logo-icon');
     const previewLogoImg = document.getElementById('preview-logo-img');
+    const previewBannerContainer = document.getElementById('preview-banner-container');
+    const previewBannerImg = document.getElementById('preview-banner-img');
 
     if (previewBox) {
       previewBox.style.fontFamily = `'${data.font_family}', sans-serif`;
@@ -171,6 +436,109 @@ const SurveyBuilder = (() => {
         previewLogoIcon.classList.remove('hidden');
         previewLogoIcon.style.color = data.primary_color;
       }
+    }
+    if (previewBannerContainer && previewBannerImg) {
+      if (data.banner_url) {
+        previewBannerImg.src = data.banner_url;
+        previewBannerContainer.classList.remove('hidden');
+      } else {
+        previewBannerContainer.classList.add('hidden');
+      }
+    }
+  };
+
+  /**
+   * Actualizar texto e iconos de los botones de acción según el modo (Crear vs Editar)
+   */
+  const updateActionButtons = (isEditing) => {
+    const saveBtns = [
+      document.getElementById('btn-save-draft'),
+      document.getElementById('btn-save-draft-bottom')
+    ].filter(Boolean);
+
+    const publishBtns = [
+      document.getElementById('btn-publish-survey'),
+      document.getElementById('btn-publish-survey-bottom')
+    ].filter(Boolean);
+
+    const btnDuplicate = document.getElementById('btn-builder-duplicate');
+
+    saveBtns.forEach(btn => {
+      btn.innerHTML = isEditing 
+        ? '<span class="material-symbols-outlined text-base">save</span><span>Guardar Cambios</span>'
+        : '<span class="material-symbols-outlined text-base">save</span><span>Guardar Borrador</span>';
+      btn.title = isEditing 
+        ? 'Guardar los cambios o preguntas nuevas directamente en esta misma encuesta' 
+        : 'Guardar como borrador para revisión posterior';
+    });
+
+    publishBtns.forEach(btn => {
+      btn.innerHTML = isEditing 
+        ? '<span class="material-symbols-outlined text-lg">rocket_launch</span><span>Guardar y Publicar</span>'
+        : '<span class="material-symbols-outlined text-lg">rocket_launch</span><span>Publicar Encuesta</span>';
+      btn.title = isEditing 
+        ? 'Publicar los cambios actualizados en esta misma encuesta' 
+        : 'Publicar encuesta oficialmente y generar dirección funcional';
+    });
+
+    if (btnDuplicate) {
+      if (isEditing) {
+        btnDuplicate.classList.remove('hidden');
+        btnDuplicate.classList.add('flex');
+      } else {
+        btnDuplicate.classList.add('hidden');
+        btnDuplicate.classList.remove('flex');
+      }
+    }
+  };
+
+  /**
+   * Duplicar la encuesta cargada como una nueva encuesta separada (con nuevo código)
+   */
+  const duplicateAsNew = () => {
+    if (!editingSurveyId) return;
+
+    editingSurveyId = null;
+
+    // Convertir todas las preguntas en nuevas preguntas (IDs temporales)
+    questions = questions.map((q, idx) => ({
+      ...q,
+      id: Date.now() + idx
+    }));
+
+    const titleInput = document.getElementById('survey-title-input');
+    if (titleInput && !titleInput.value.includes('(Copia)')) {
+      titleInput.value = `${titleInput.value} (Copia)`;
+    }
+
+    const selector = document.getElementById('builder-survey-selector');
+    if (selector) selector.value = 'new';
+
+    const btnViewPublic = document.getElementById('btn-builder-view-public');
+    const btnViewPublicQuick = document.getElementById('btn-builder-view-public-quick');
+    if (btnViewPublic) {
+      btnViewPublic.classList.add('hidden');
+      btnViewPublic.classList.remove('flex');
+    }
+    if (btnViewPublicQuick) {
+      btnViewPublicQuick.classList.add('hidden');
+      btnViewPublicQuick.classList.remove('flex');
+    }
+
+    const modeBadge = document.getElementById('builder-mode-badge');
+    const modeLabel = document.getElementById('builder-mode-label');
+    if (modeBadge) {
+      modeBadge.textContent = 'NUEVA COPIA';
+      modeBadge.className = 'badge bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold';
+    }
+    if (modeLabel) {
+      modeLabel.textContent = '📋 Duplicando como Nueva Encuesta (al guardar se creará un código nuevo)';
+    }
+
+    updateActionButtons(false);
+    renderQuestionsList();
+    if (typeof App !== 'undefined' && App.showToast) {
+      App.showToast('Modo Copia: ahora al guardar se creará una NUEVA encuesta con un código diferente', 'info');
     }
   };
 
@@ -216,6 +584,9 @@ const SurveyBuilder = (() => {
       btnViewPublicQuick.href = '#';
     }
 
+    // Actualizar botones de acción a modo nuevo
+    updateActionButtons(false);
+
     // Resetear branding a valores estándar
     setBrandingData({});
 
@@ -228,7 +599,7 @@ const SurveyBuilder = (() => {
   /**
    * Cargar una encuesta existente para editarla
    */
-  const loadSurveyForEdit = async (idOrCode) => {
+  const loadSurveyForEdit = async (idOrCode, silent = false) => {
     if (!idOrCode || idOrCode === 'new') {
       createNewSurvey();
       return;
@@ -279,6 +650,9 @@ const SurveyBuilder = (() => {
         btnViewPublicQuick.classList.add('flex');
       }
 
+      // Actualizar botones a modo Edición
+      updateActionButtons(true);
+
       // Cargar Branding exclusivo
       setBrandingData(survey.branding || {});
 
@@ -290,13 +664,16 @@ const SurveyBuilder = (() => {
         enunciado: p.enunciado || p.pregunta || 'Pregunta sin título',
         ayuda: p.ayuda || '',
         requerida: p.es_requerida !== undefined ? Boolean(p.es_requerida) : true,
-        opciones: Array.isArray(p.opciones) 
+        opciones: Array.isArray(p.opciones)
           ? p.opciones.map(o => (typeof o === 'object' ? (o.etiqueta || o.valor) : o))
-          : (p.tipo === 'opcion_unica' || p.tipo === 'opcion_multiple' ? ['Alternativa 1', 'Alternativa 2'] : [])
+          : (p.tipo === 'opcion_unica' || p.tipo === 'opcion_multiple' ? ['Alternativa 1', 'Alternativa 2'] : []),
+        validacion: p.validacion || { modo: 'libre', min: '', max: '', maxlength: 500, min_chars: 0, lista: [] }
       }));
 
       renderQuestionsList();
-      App.showToast(`Encuesta "${survey.titulo}" cargada para edición`, 'success');
+      if (!silent && typeof App !== 'undefined' && App.showToast) {
+        App.showToast(`Encuesta "${survey.titulo}" [${surveyCode}] cargada para edición`, 'success');
+      }
     } catch (err) {
       console.error('Error al cargar encuesta para editar:', err);
       App.showToast('Error al cargar la encuesta', 'error');
@@ -589,7 +966,9 @@ const SurveyBuilder = (() => {
         </div>
 
         <!-- Opciones de Respuesta según el Tipo de Pregunta -->
-        ${renderQuestionOptionsBuilder(q)}
+        <div class="options-builder-wrapper">
+          ${renderQuestionOptionsBuilder(q)}
+        </div>
 
       </div>
     `).join('');
@@ -698,12 +1077,140 @@ const SurveyBuilder = (() => {
       `;
     }
 
-    // Texto Libre
+    // Texto Libre Panel de Configuracion de Validacion Explicita
     if (q.tipo === 'texto') {
+      const v = q.validacion || { modo: 'libre', min: '', max: '', maxlength: 500, min_chars: 0, lista: [], decimales: false };
+      const lista = Array.isArray(v.lista) ? v.lista : (v.lista ? String(v.lista).split(',').map(s => s.trim()).filter(Boolean) : []);
+
+      const modeOptions = [
+        { val: 'libre',       icon: 'subject',   label: 'Texto Libre',      desc: 'Escribe libremente (con limite)' },
+        { val: 'solo_texto',  icon: 'abc',       label: 'Solo Letras',      desc: 'Bloquea numeros y simbolos' },
+        { val: 'solo_numero', icon: 'pin',       label: 'Solo Numeros',     desc: 'Enteros o decimales, rango configurable' },
+        { val: 'lista',       icon: 'checklist', label: 'Lista de Valores', desc: 'Solo acepta valores predefinidos' }
+      ];
+
+      let modeSpecificHtml = '';
+      if (v.modo === 'libre') {
+        modeSpecificHtml = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-mono font-bold text-outline uppercase block mb-1">Max. Caracteres</label>
+              <input type="number" min="10" max="2000" value="${v.maxlength || 500}"
+                oninput="SurveyBuilder.updateValidacion(${q.id}, 'maxlength', parseInt(this.value)||500)"
+                class="input-glass w-full text-sm py-2 px-3 rounded-lg font-mono" placeholder="500" />
+            </div>
+            <div>
+              <label class="text-[10px] font-mono font-bold text-outline uppercase block mb-1">Min. Caracteres</label>
+              <input type="number" min="0" max="500" value="${v.min_chars || 0}"
+                oninput="SurveyBuilder.updateValidacion(${q.id}, 'min_chars', parseInt(this.value)||0)"
+                class="input-glass w-full text-sm py-2 px-3 rounded-lg font-mono" placeholder="0" />
+            </div>
+          </div>
+          <p class="text-[10px] text-on-surface-variant font-mono flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary">info</span>
+            El encuestado escribe libremente. Se aceptan letras, numeros y simbolos.
+          </p>`;
+      } else if (v.modo === 'solo_texto') {
+        modeSpecificHtml = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-mono font-bold text-outline uppercase block mb-1">Max. Caracteres</label>
+              <input type="number" min="3" max="2000" value="${v.maxlength || 200}"
+                oninput="SurveyBuilder.updateValidacion(${q.id}, 'maxlength', parseInt(this.value)||200)"
+                class="input-glass w-full text-sm py-2 px-3 rounded-lg font-mono" placeholder="200" />
+            </div>
+            <div>
+              <label class="text-[10px] font-mono font-bold text-outline uppercase block mb-1">Min. Caracteres</label>
+              <input type="number" min="0" max="500" value="${v.min_chars || 0}"
+                oninput="SurveyBuilder.updateValidacion(${q.id}, 'min_chars', parseInt(this.value)||0)"
+                class="input-glass w-full text-sm py-2 px-3 rounded-lg font-mono" placeholder="0" />
+            </div>
+          </div>
+          <p class="text-[10px] text-on-surface-variant font-mono flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-amber-400">text_fields</span>
+            Solo letras, espacios, acentos y guiones. Se bloquean numeros y simbolos especiales.
+          </p>`;
+      } else if (v.modo === 'solo_numero') {
+        modeSpecificHtml = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-mono font-bold text-outline uppercase block mb-1">Valor Minimo</label>
+              <input type="number" value="${v.min !== undefined && v.min !== '' ? v.min : ''}"
+                oninput="SurveyBuilder.updateValidacion(${q.id}, 'min', this.value)"
+                class="input-glass w-full text-sm py-2 px-3 rounded-lg font-mono" placeholder="Sin limite" />
+            </div>
+            <div>
+              <label class="text-[10px] font-mono font-bold text-outline uppercase block mb-1">Valor Maximo</label>
+              <input type="number" value="${v.max !== undefined && v.max !== '' ? v.max : ''}"
+                oninput="SurveyBuilder.updateValidacion(${q.id}, 'max', this.value)"
+                class="input-glass w-full text-sm py-2 px-3 rounded-lg font-mono" placeholder="Sin limite" />
+            </div>
+          </div>
+          <label class="flex items-center gap-2 cursor-pointer text-[11px] font-semibold text-on-surface-variant">
+            <input type="checkbox" ${v.decimales ? 'checked' : ''}
+              onchange="SurveyBuilder.updateValidacion(${q.id}, 'decimales', this.checked)"
+              class="h-4 w-4 accent-primary rounded cursor-pointer" />
+            Permitir decimales (ej: 1.5, 3.14)
+          </label>
+          <p class="text-[10px] text-on-surface-variant font-mono flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-blue-400">pin</span>
+            Solo numeros${v.decimales ? ' (enteros o decimales)' : ' enteros'}.
+            ${(v.min !== '' && v.min !== undefined) || (v.max !== '' && v.max !== undefined)
+              ? ` Rango: ${v.min !== '' && v.min !== undefined ? v.min : '-inf'} a ${v.max !== '' && v.max !== undefined ? v.max : '+inf'}.`
+              : ' Sin limite de rango.'}
+          </p>`;
+      } else if (v.modo === 'lista') {
+        modeSpecificHtml = `
+          <div>
+            <label class="text-[10px] font-mono font-bold text-outline uppercase block mb-1.5">
+              Valores Permitidos <span class="text-on-surface-variant normal-case font-normal">(separados por coma)</span>
+            </label>
+            <input type="text" value="${escapeHtml(lista.join(', '))}"
+              oninput="SurveyBuilder.updateValidacionLista(${q.id}, this.value)"
+              class="input-glass w-full text-sm py-2.5 px-3 rounded-lg"
+              placeholder="Ej: Lima, Cusco, Arequipa, Piura" />
+          </div>
+          ${lista.length > 0 ? `
+            <div id="val-lista-chips-${q.id}" class="flex flex-wrap gap-1.5">
+              ${lista.map(item => `<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-primary/10 border border-primary/30 text-primary font-mono text-[11px] font-semibold">${escapeHtml(item)}</span>`).join('')}
+            </div>
+            <p id="val-lista-count-${q.id}" class="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check_circle</span>
+              ${lista.length} valor(es) definido(s). El encuestado debera escribir exactamente uno de ellos.
+            </p>
+          ` : `
+            <div id="val-lista-chips-${q.id}"></div>
+            <p id="val-lista-count-${q.id}" class="text-[10px] text-amber-400 font-mono flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">warning</span>
+              Ingrese los valores permitidos separados por coma arriba.
+            </p>
+          `}`;
+      }
+
       return `
-        <div class="mt-4 p-3.5 rounded-xl bg-surface-container/50 border border-outline-variant/30 text-xs text-on-surface-variant">
-          <span class="material-symbols-outlined text-base align-middle mr-1 text-primary">subject</span>
-          <span>Campo de entrada abierta para que el ciudadano redacte su respuesta con sus propias palabras.</span>
+        <div class="mt-4 rounded-2xl border border-primary/30 bg-primary/5 overflow-hidden validation-config-panel">
+          <div class="flex items-center gap-2 px-4 py-2.5 bg-primary/10 border-b border-primary/20">
+            <span class="material-symbols-outlined text-base text-primary">rule_settings</span>
+            <span class="text-[11px] font-mono font-bold text-primary uppercase tracking-wider">Configuracion de Validacion del Campo</span>
+          </div>
+          <div class="p-4 space-y-4">
+            <div>
+              <p class="text-[11px] font-semibold text-on-surface-variant mb-2">Que tipo de dato puede ingresar el encuestado?</p>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                ${modeOptions.map(m => `
+                  <label class="flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 cursor-pointer transition-all select-none ${v.modo === m.val ? 'border-primary bg-primary/15 text-primary shadow-sm' : 'border-outline-variant/40 bg-surface-container/50 text-on-surface-variant hover:border-primary/50'}">
+                    <input type="radio" name="val_modo_${q.id}" value="${m.val}" ${v.modo === m.val ? 'checked' : ''} onchange="SurveyBuilder.updateValidacion(${q.id}, 'modo', this.value)" class="sr-only" />
+                    <span class="material-symbols-outlined text-xl">${m.icon}</span>
+                    <span class="text-[11px] font-bold text-center leading-tight">${m.label}</span>
+                    <span class="text-[9px] text-center leading-tight opacity-70">${m.desc}</span>
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+            <div class="space-y-3 p-3 rounded-xl bg-surface-container/60 border border-outline-variant/30">
+              ${modeSpecificHtml}
+            </div>
+          </div>
         </div>
       `;
     }
@@ -714,6 +1221,47 @@ const SurveyBuilder = (() => {
   /**
    * Operaciones interactivas sobre preguntas
    */
+  /**
+   * Actualizar un campo de la validación de una pregunta de texto
+   */
+  const updateValidacion = (id, campo, valor) => {
+    const q = questions.find(item => item.id === id);
+    if (!q) return;
+    if (!q.validacion) q.validacion = { modo: 'libre', min: '', max: '', maxlength: 500, min_chars: 0, lista: [], decimales: false };
+    q.validacion[campo] = valor;
+
+    // Solo re-renderizar el panel de opciones si cambia de modo estructural
+    if (campo === 'modo' || campo === 'decimales') {
+      const wrapper = document.querySelector(`#builder-q-${id} .options-builder-wrapper`);
+      if (wrapper) {
+        wrapper.innerHTML = renderQuestionOptionsBuilder(q);
+      } else {
+        renderQuestionsList();
+      }
+    }
+  };
+
+  /**
+   * Actualizar la lista de valores permitidos desde una cadena separada por comas
+   */
+  const updateValidacionLista = (id, rawText) => {
+    const q = questions.find(item => item.id === id);
+    if (!q) return;
+    if (!q.validacion) q.validacion = { modo: 'lista', min: '', max: '', maxlength: 500, min_chars: 0, lista: [], decimales: false };
+    // Guardar como array limpio
+    q.validacion.lista = rawText.split(',').map(s => s.trim()).filter(Boolean);
+    // Actualizar solo los chips de preview sin re-renderizar todo
+    const lista = q.validacion.lista;
+    const chipsEl = document.getElementById(`val-lista-chips-${id}`);
+    const countEl = document.getElementById(`val-lista-count-${id}`);
+    if (chipsEl) {
+      chipsEl.innerHTML = lista.map(item =>
+        `<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-primary/10 border border-primary/30 text-primary font-mono text-[11px] font-semibold">${escapeHtml(item)}</span>`
+      ).join('');
+    }
+    if (countEl) countEl.textContent = `✅ ${lista.length} valor(es) permitido(s). El encuestado solo podrá ingresar uno de estos exactamente.`;
+  };
+
   const toggleRequired = (id) => {
     const q = questions.find(item => item.id === id);
     if (!q) return;
@@ -851,9 +1399,10 @@ const SurveyBuilder = (() => {
           enunciado: text,
           ayuda: help,
           requerida: req,
-          opciones: type === 'opcion_unica' || type === 'opcion_multiple' 
-            ? ['Alternativa 1', 'Alternativa 2', 'Alternativa 3'] 
-            : []
+          opciones: type === 'opcion_unica' || type === 'opcion_multiple'
+            ? ['Alternativa 1', 'Alternativa 2', 'Alternativa 3']
+            : [],
+          validacion: { modo: 'libre', min: '', max: '', maxlength: 500, min_chars: 0, lista: [] }
         };
 
         questions.push(newQ);
@@ -869,7 +1418,15 @@ const SurveyBuilder = (() => {
       });
     }
 
-    // Guardar Borrador
+    // Botón Duplicar como Nueva Encuesta
+    const btnDuplicate = document.getElementById('btn-builder-duplicate');
+    if (btnDuplicate) {
+      btnDuplicate.addEventListener('click', () => {
+        duplicateAsNew();
+      });
+    }
+
+    // Guardar Borrador / Guardar Cambios
     const handleSaveDraft = async () => {
       const titleInput = document.getElementById('survey-title-input');
       const catInput = document.getElementById('survey-cat-input');
@@ -896,6 +1453,7 @@ const SurveyBuilder = (() => {
       });
 
       try {
+        const wasEditing = Boolean(editingSurveyId);
         const payload = {
           id: editingSurveyId,
           titulo: title,
@@ -912,7 +1470,6 @@ const SurveyBuilder = (() => {
 
         draftBtns.forEach(btn => {
           btn.disabled = false;
-          btn.innerHTML = '<span class="material-symbols-outlined text-base">save</span><span>Guardar Borrador</span>';
         });
 
         if (res && res.id) {
@@ -935,19 +1492,26 @@ const SurveyBuilder = (() => {
             btnViewPublicQuick.classList.remove('hidden');
             btnViewPublicQuick.classList.add('flex');
           }
-        }
 
-        App.showToast(`Borrador "${title}" guardado en MySQL con éxito`, 'success');
+          // Recargar silenciosamente para sincronizar IDs de preguntas asignadas por la base de datos
+          await loadSurveyForEdit(res.id, true);
+
+          if (wasEditing) {
+            App.showToast(`Cambios guardados en la encuesta "${title}" [${code}] con éxito`, 'success');
+          } else {
+            App.showToast(`Borrador "${title}" guardado en MySQL con éxito`, 'success');
+          }
+        }
       } catch (e) {
         draftBtns.forEach(btn => {
           btn.disabled = false;
-          btn.innerHTML = '<span class="material-symbols-outlined text-base">save</span><span>Guardar Borrador</span>';
         });
-        App.showToast('Error al guardar borrador en base de datos', 'error');
+        updateActionButtons(Boolean(editingSurveyId));
+        App.showToast('Error al guardar en base de datos', 'error');
       }
     };
 
-    // Publicar Encuesta Oficialmente
+    // Publicar Encuesta Oficialmente / Guardar y Publicar
     const handlePublishSurvey = async () => {
       const titleInput = document.getElementById('survey-title-input');
       const catInput = document.getElementById('survey-cat-input');
@@ -975,10 +1539,11 @@ const SurveyBuilder = (() => {
 
       publishBtns.forEach(btn => {
         btn.disabled = true;
-        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-base">autorenew</span> Publicando...';
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-base">autorenew</span> Guardando...';
       });
 
       try {
+        const wasEditing = Boolean(editingSurveyId);
         const payload = {
           id: editingSurveyId,
           titulo: title,
@@ -995,7 +1560,6 @@ const SurveyBuilder = (() => {
 
         publishBtns.forEach(btn => {
           btn.disabled = false;
-          btn.innerHTML = '<span class="material-symbols-outlined text-lg">rocket_launch</span><span>Publicar Encuesta</span>';
         });
 
         const codigoFinal = res.codigo || ('POLL' + String(res.id || 1).padStart(3, '0'));
@@ -1032,16 +1596,27 @@ const SurveyBuilder = (() => {
 
         if (res && res.id) editingSurveyId = res.id;
         await refreshSurveySelector();
+        const selector = document.getElementById('builder-survey-selector');
+        if (selector && res && res.id) selector.value = res.id;
+
+        // Recargar silenciosamente para sincronizar IDs de preguntas
+        if (res && res.id) {
+          await loadSurveyForEdit(res.id, true);
+        }
 
         // Abrir modal conmemorativo
         App.openModal('modal-survey-published');
-        App.showToast(`¡Encuesta publicada con código oficial ${codigoFinal}!`, 'success');
+        if (wasEditing) {
+          App.showToast(`¡Encuesta ${codigoFinal} actualizada y publicada con éxito!`, 'success');
+        } else {
+          App.showToast(`¡Encuesta publicada con código oficial ${codigoFinal}!`, 'success');
+        }
       } catch (err) {
         console.error('Error publicando encuesta:', err);
         publishBtns.forEach(btn => {
           btn.disabled = false;
-          btn.innerHTML = '<span class="material-symbols-outlined text-lg">rocket_launch</span><span>Publicar Encuesta</span>';
         });
+        updateActionButtons(Boolean(editingSurveyId));
         App.showToast('Error al publicar encuesta en MySQL', 'error');
       }
     };
@@ -1151,6 +1726,11 @@ const SurveyBuilder = (() => {
     removeOption,
     moveQuestion,
     duplicateQuestion,
-    deleteQuestion
+    deleteQuestion,
+    duplicateAsNew,
+    removeLogoImage,
+    removeBannerImage,
+    updateValidacion,
+    updateValidacionLista
   };
 })();

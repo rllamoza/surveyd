@@ -164,3 +164,52 @@ Devuelve las métricas consolidadas de la encuesta seleccionada, calculando auto
 - `grafico_tipo`: `donut`, `horizontal_bar`, `rating_stars`, `nps_gauge`, `geo_density`, `sentiment_text`.
 - KPIs de completitud, tiempo promedio y NPS.
 - Curva horaria y distribución geográfica.
+
+---
+
+## 6. Subida de Archivos & Multimedia (Branding)
+
+### `POST /backend/api/upload.php`
+Permite subir archivos de imagen directamente al servidor local para personalización de logotipos, banners institucionales o fondos.
+
+**Formato:** `multipart/form-data`
+
+**Campos aceptados:** `image`, `file`, `logo` o `banner`.
+
+**Restricciones:**
+- Formatos permitidos: `JPEG`, `JPG`, `PNG`, `WEBP`, `SVG`, `GIF`.
+- Tamaño máximo permitido: 5 MB.
+- Seguridad activa: Directorio protegido con `.htaccess` para impedir la ejecución de scripts PHP maliciosos.
+
+**Respuesta exitosa (HTTP 200 / 201):**
+```json
+{
+  "success": true,
+  "status": 201,
+  "message": "Imagen subida exitosamente al servidor",
+  "data": {
+    "url": "http://localhost/APPS/app_encuestas/frontend/assets/uploads/img_6745a12f_banner.png",
+    "relative_url": "assets/uploads/img_6745a12f_banner.png",
+    "filename": "img_6745a12f_banner.png",
+    "size": 245890,
+    "mime": "image/png"
+  }
+}
+```
+
+---
+
+## 7. Errores de Validación de Reglas de Entrada (HTTP 422)
+
+Cuando una respuesta enviada a `/backend/api/respuestas.php` infringe las reglas configuradas en `configuracion_json` de una pregunta (por ejemplo, ingresar texto en campos `solo_numero` o un valor fuera del rango `[min, max]`), la API responde con código `422 Unprocessable Entity`:
+
+```json
+{
+  "success": false,
+  "status": 422,
+  "message": "La pregunta \"Edad\" solo permite números enteros sin letras ni decimales. El valor para \"Edad\" no puede ser mayor a 100.",
+  "errors": null,
+  "timestamp": "2026-10-01T13:15:00-05:00"
+}
+```
+

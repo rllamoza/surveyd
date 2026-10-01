@@ -208,6 +208,12 @@
 
       <!-- Ficha Cabecera Minimalista del Instrumento -->
       <article class="glass-panel p-6 sm:p-8 rounded-2xl border-t-2 border-t-primary/70 relative overflow-hidden">
+        <!-- Banner o Imagen de Cabecera Personalizada -->
+        <div id="public-survey-banner-container" class="hidden -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 mb-6 h-36 sm:h-48 w-[calc(100%+3rem)] sm:w-[calc(100%+4rem)] overflow-hidden border-b border-glass-card-border relative">
+          <img id="public-survey-banner-img" src="" alt="Banner" class="w-full h-full object-cover object-center"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+        </div>
+
         <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
           <div class="flex items-center gap-2">
             <span class="text-xs font-mono font-bold uppercase tracking-wider text-primary" id="public-survey-code">
@@ -519,7 +525,7 @@
   <div id="toast-container" class="toast-container"></div>
 
   <!-- Scripts: Cliente API y Lógica de Encuesta Pública -->
-  <script src="js/api.js"></script>
-  <script src="js/public-survey.js"></script>
+  <script src="js/api.js?v=3.5.2"></script>
+  <script src="js/public-survey.js?v=3.5.2"></script>
 </body>
 </html>

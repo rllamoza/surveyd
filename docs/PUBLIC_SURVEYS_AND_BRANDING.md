@@ -57,9 +57,11 @@ Desde la vista **Constructor & Importador Excel** (`#view-constructor-excel`), c
      - `Poppins`: Redondeada, accesible y dinámica.
      - `Roboto`: Clásica, limpia y funcional.
      - `Playfair Display`: Con serifa, tradicional y de alta distinción editorial.
-3. **Logotipo de la Encuesta**:
-   - URL de imagen personalizada (`logo_url`) que sustituye el icono genérico en el encabezado.
-   - Botones preset (*Escudo Perú*, *Logo Corporativo*, *Icono por Defecto*).
+3. **Logotipo y Banner de la Encuesta**:
+   - **Subida Directa desde la PC**: Botón integrado con selector de archivos para cargar imágenes directamente al servidor (`/backend/api/upload.php`), alojándolas de forma segura en `frontend/assets/uploads/`.
+   - **Compatibilidad**: Soporta imágenes PNG, JPEG, SVG y WebP de hasta 5 MB.
+   - **URL Remota o Presets**: También admite enlaces externos (`https://...`) o presets preconfigurados (*Escudo Perú*, *Logo Corporativo*, *Icono por Defecto*).
+   - **Banner de Cabecera**: Soporte para imagen panorámica de portada que encabeza la encuesta pública.
 4. **Textos y Mensajes Personalizados**:
    - **Título Público Visible** (`public_title`): Reemplaza el título técnico en la vista pública y en la pestaña del navegador.
    - **Subtítulo / Entidad Emisora** (`public_subtitle`): Nombre de la dirección, gerencia o institución responsable.

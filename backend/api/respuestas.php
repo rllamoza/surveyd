@@ -27,24 +27,91 @@ if ($method === 'POST') {
     $depCod = substr($ubigeoCompleto, 0, 2);
     $provCod = substr($ubigeoCompleto, 0, 4);
 
-    // Detectar si la encuesta realmente contiene preguntas de calificación o NPS
+    // Detectar y validar preguntas según configuración oficial registrada en MySQL
     $satisfaccion = null;
     $nps = null;
 
     if ($pdo) {
-        $pregStmt = $pdo->prepare("SELECT id, tipo FROM preguntas WHERE encuesta_id = :eid");
+        $pregStmt = $pdo->prepare("SELECT id, tipo, enunciado, es_requerida, configuracion_json FROM preguntas WHERE encuesta_id = :eid ORDER BY numero_orden ASC");
         $pregStmt->execute([':eid' => $encuestaId]);
-        $pregMap = $pregStmt->fetchAll(PDO::FETCH_KEY_PAIR); // id => tipo
+        $pregList = $pregStmt->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($respuestas as $k => $v) {
-            $pid = (int)str_replace('q_', '', (string)$k);
-            if (isset($pregMap[$pid])) {
-                if ($pregMap[$pid] === 'calificacion' && is_numeric($v)) {
-                    $satisfaccion = (int)$v;
-                } elseif ($pregMap[$pid] === 'escala_nps' && is_numeric($v)) {
-                    $nps = (int)$v;
+        $validationErrors = [];
+
+        foreach ($pregList as $pregRow) {
+            $pid = (int)$pregRow['id'];
+            $tipo = $pregRow['tipo'];
+            $enu = $pregRow['enunciado'];
+            $req = !empty($pregRow['es_requerida']);
+            $cfg = !empty($pregRow['configuracion_json']) ? (is_array($pregRow['configuracion_json']) ? $pregRow['configuracion_json'] : json_decode($pregRow['configuracion_json'], true)) : [];
+            if (!is_array($cfg)) $cfg = [];
+
+            $val = $respuestas["q_$pid"] ?? ($respuestas[$pid] ?? null);
+            $hasVal = ($val !== null && $val !== '' && (!is_array($val) || count($val) > 0));
+
+            // Obligatoriedad
+            if ($req && !$hasVal && $tipo !== 'ubigeo_cascada') {
+                $validationErrors[] = "La pregunta \"$enu\" es obligatoria.";
+                continue;
+            }
+
+            // Validar tipos de texto con restricciones configuradas
+            if ($hasVal && $tipo === 'texto') {
+                $modo = $cfg['modo'] ?? 'libre';
+                $strVal = trim((string)$val);
+
+                if ($modo === 'solo_numero') {
+                    $allowDec = !empty($cfg['decimales']);
+                    // Validar que no contenga letras y cumpla formato numérico
+                    $isNum = $allowDec ? is_numeric($strVal) : (preg_match('/^-?\d+$/', $strVal) === 1);
+                    if (!$isNum) {
+                        $validationErrors[] = "La pregunta \"$enu\" solo permite números" . ($allowDec ? '.' : ' enteros sin letras ni decimales.');
+                    } else {
+                        $numVal = $allowDec ? (float)$strVal : (int)$strVal;
+                        if (isset($cfg['min']) && $cfg['min'] !== '' && $cfg['min'] !== null && $numVal < (float)$cfg['min']) {
+                            $validationErrors[] = "El valor para \"$enu\" no puede ser menor a {$cfg['min']}.";
+                        }
+                        if (isset($cfg['max']) && $cfg['max'] !== '' && $cfg['max'] !== null && $numVal > (float)$cfg['max']) {
+                            $validationErrors[] = "El valor para \"$enu\" no puede ser mayor a {$cfg['max']}.";
+                        }
+                    }
+                } elseif ($modo === 'solo_texto') {
+                    if (preg_match('/[0-9]/', $strVal)) {
+                        $validationErrors[] = "La pregunta \"$enu\" solo permite letras, no números.";
+                    }
+                    if (!empty($cfg['min_chars']) && mb_strlen($strVal) < (int)$cfg['min_chars']) {
+                        $validationErrors[] = "La pregunta \"$enu\" requiere al menos {$cfg['min_chars']} caracteres.";
+                    }
+                } elseif ($modo === 'lista') {
+                    $lista = is_array($cfg['lista'] ?? null) ? $cfg['lista'] : [];
+                    if (!empty($lista)) {
+                        $matched = false;
+                        foreach ($lista as $item) {
+                            if (strcasecmp(trim($item), $strVal) === 0) {
+                                $matched = true;
+                                break;
+                            }
+                        }
+                        if (!$matched) {
+                            $validationErrors[] = "La respuesta a \"$enu\" no coincide con ninguna opción permitida.";
+                        }
+                    }
                 }
             }
+
+            // NPS y Calificación
+            if ($hasVal) {
+                if ($tipo === 'calificacion' && is_numeric($val)) {
+                    $satisfaccion = (int)$val;
+                } elseif ($tipo === 'escala_nps' && is_numeric($val)) {
+                    $nps = (int)$val;
+                }
+            }
+        }
+
+        if (!empty($validationErrors)) {
+            sendError(implode(' ', $validationErrors), 422);
+            exit;
         }
     }
 
