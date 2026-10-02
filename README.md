@@ -146,6 +146,7 @@ surveyd/
 │   ├── API.md                      # Especificación de endpoints REST
 │   ├── BANAHOSTING_CPANEL_GUIDE.md # Guía paso a paso para BanaHosting cPanel
 │   ├── EXCEL_FORMAT.md             # Guía de importación de archivos Excel
+│   ├── GIT_GUIDE.md                # Guía oficial de Git y GitHub
 │   ├── INSTALLATION.md             # Guía paso a paso de instalación local
 │   ├── PRODUCTION_DEPLOYMENT.md    # Guía oficial de despliegue en producción (VPS, cPanel, Docker)
 │   ├── PUBLIC_SURVEYS_AND_BRANDING.md # Guía de encuestas públicas y branding exclusivo
